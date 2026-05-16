@@ -2032,6 +2032,13 @@ h1 {
     overflow: hidden;
     cursor: default;
     mask-image: none;
+    /* 가로 손가락 이동은 값 스크러버로(JS), 세로는 페이지 스크롤로 */
+    touch-action: pan-y;
+  }
+
+  /* 히어로 곡선 위 드래그로 핀조명 readout 스크럽 */
+  .hero-visual {
+    touch-action: pan-y;
   }
 
   .chart-wrap {
@@ -2179,14 +2186,27 @@ h1 {
   .tour-btn,
   .mode-btn,
   .lang-toggle {
-    min-height: 42px;
-    padding-top: 9px;
-    padding-bottom: 9px;
+    min-height: 44px;
+    padding-top: 10px;
+    padding-bottom: 10px;
   }
 
   .modal-close {
-    width: 42px;
-    height: 42px;
+    width: 44px;
+    height: 44px;
+  }
+
+  /* 호버가 없는 터치 기기 — 누르는 순간의 피드백을 명시적으로 */
+  .nav-chip:active,
+  .tour-btn:active,
+  .lang-toggle:active,
+  .modal-close:active {
+    transform: scale(0.95);
+    opacity: 0.85;
+  }
+
+  .chart-point:active {
+    transform: scale(1.25);
   }
 }
 

@@ -1465,6 +1465,12 @@ function enableChartGestures() {
   let downX = 0;
   let downY = 0;
   let moved = false;
+  let scrubbing = false;
+
+  // 가로 스크롤이 없는(모바일 fit-to-width) 차트에서는 손가락 드래그를
+  // 패닝 대신 값 스크러버로 사용한다.
+  const canScrub = () =>
+    coarsePointer && chartScroll.scrollWidth - chartScroll.clientWidth < 4;
 
   // hover(버튼 안 누른 상태)에서만 리빌 — 누른 상태(탭/드래그)는 제외
   chartScroll.addEventListener("pointermove", (event) => {
@@ -1491,12 +1497,30 @@ function enableChartGestures() {
     downX = event.clientX;
     downY = event.clientY;
     moved = false;
+    scrubbing = canScrub();
     chartDragStartX = event.clientX;
     chartDragStartLeft = chartScroll.scrollLeft;
   });
 
   chartScroll.addEventListener("pointermove", (event) => {
     if (downId === null || event.pointerId !== downId) return;
+
+    // 모바일 스크럽: 손가락을 따라 최근접 사건을 실시간으로 비춘다.
+    if (scrubbing) {
+      if (!moved && Math.hypot(event.clientX - downX, event.clientY - downY) > 6) {
+        moved = true;
+        try { chartScroll.setPointerCapture(downId); } catch (e) { /* noop */ }
+      }
+      if (moved) {
+        const near = getNearestPointFromClientX(event.clientX);
+        if (near) {
+          revealPoint(near);
+          showTooltip(near);
+        }
+      }
+      return;
+    }
+
     // 임계 이동 후에만 드래그 시작 (그 전 탭은 보존)
     if (!moved && Math.hypot(event.clientX - downX, event.clientY - downY) > 8) {
       moved = true;
@@ -1512,11 +1536,22 @@ function enableChartGestures() {
   chartScroll.addEventListener("pointerup", (event) => {
     if (downId === null || event.pointerId !== downId) return;
     const wasTap = !moved;
+    const wasScrub = scrubbing && moved;
     try { chartScroll.releasePointerCapture(downId); } catch (e) { /* noop */ }
     downId = null;
+    scrubbing = false;
     isChartDragging = false;
     chartScroll.classList.remove("is-dragging");
-    if (wasTap) {
+    if (wasScrub) {
+      // 스크럽 종료 — 마지막으로 가리킨 사건을 고정하고 라벨을 남긴다.
+      const nearest = getNearestPointFromClientX(event.clientX);
+      if (nearest) {
+        stopTour();
+        revealPoint(nearest, true);
+        showTooltip(nearest);
+        writeHash(nearest.id);
+      }
+    } else if (wasTap) {
       // 탭/클릭 — 가장 가까운 사건의 월 라벨을 띄움 (모바일 포함)
       const nearest = getNearestPointFromClientX(event.clientX);
       if (nearest) {
@@ -1530,6 +1565,7 @@ function enableChartGestures() {
 
   chartScroll.addEventListener("pointercancel", () => {
     downId = null;
+    scrubbing = false;
     isChartDragging = false;
     chartScroll.classList.remove("is-dragging");
   });
@@ -2234,17 +2270,45 @@ function enableEraParallax() {
   });
 }
 
-// 히어로 태극기 핀조명 — 커서 위치(히어로 기준 %)로 마스크 중심 이동.
+// 히어로 태극기 핀조명 — 데스크톱은 커서, 모바일은 자동 스윕 + 손가락 드래그.
 function enableHeroFlag() {
   const hero = document.querySelector(".hero");
-  if (!hero || prefersReducedMotion || coarsePointer) return;
-  hero.addEventListener("pointermove", (e) => {
+  if (!hero || prefersReducedMotion) return;
+
+  const set = (cx, cy) => {
+    hero.style.setProperty("--hero-cx", `${Math.max(0, Math.min(100, cx)).toFixed(1)}%`);
+    hero.style.setProperty("--hero-cy", `${Math.max(0, Math.min(100, cy)).toFixed(1)}%`);
+  };
+
+  if (!coarsePointer) {
+    hero.addEventListener("pointermove", (e) => {
+      const b = hero.getBoundingClientRect();
+      set(((e.clientX - b.left) / b.width) * 100, ((e.clientY - b.top) / b.height) * 100);
+    });
+    return;
+  }
+
+  // 모바일: 빛이 천천히 스윕하다가, 손가락 드래그로 직접 잡아 옮길 수 있음.
+  let holdUntil = 0;
+  let sweep = Math.PI * 0.25;
+  const onTouch = (e) => {
+    const tp = e.touches && e.touches[0] ? e.touches[0] : e;
+    if (tp.clientX == null) return;
     const b = hero.getBoundingClientRect();
-    const cx = ((e.clientX - b.left) / b.width) * 100;
-    const cy = ((e.clientY - b.top) / b.height) * 100;
-    hero.style.setProperty("--hero-cx", `${cx.toFixed(1)}%`);
-    hero.style.setProperty("--hero-cy", `${cy.toFixed(1)}%`);
-  });
+    set(((tp.clientX - b.left) / b.width) * 100, ((tp.clientY - b.top) / b.height) * 100);
+    holdUntil = performance.now() + 2200;
+  };
+  hero.addEventListener("touchstart", onTouch, { passive: true });
+  hero.addEventListener("touchmove", onTouch, { passive: true });
+
+  const sweepStep = () => {
+    if (!document.hidden && performance.now() > holdUntil) {
+      sweep += 0.0042;
+      set(50 + 34 * Math.sin(sweep), 44 + 15 * Math.sin(sweep * 0.73));
+    }
+    window.requestAnimationFrame(sweepStep);
+  };
+  window.requestAnimationFrame(sweepStep);
 }
 
 document.body.dataset.phase = "growth";

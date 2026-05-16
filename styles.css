@@ -12,6 +12,7 @@
   --gold: #f2c85b;
   --shadow: 0 30px 100px rgba(0, 0, 0, 0.42);
   --serif: "Cormorant Garamond", "Times New Roman", serif;
+  --hangul-serif: "Nanum Myeongjo", "Cormorant Garamond", serif;
   --display: "Noto Sans KR", "Inter", system-ui, sans-serif;
   --sans: "Inter", "Noto Sans KR", system-ui, sans-serif;
   --cursor-x: 50vw;
@@ -87,14 +88,18 @@ a {
   text-underline-offset: 3px;
 }
 
+/* 한지(韓紙) 결 — 차가운 그리드 위에 은은한 따뜻한 섬유 톤을 얹습니다. */
 .paper-texture {
   position: fixed;
   inset: 0;
   z-index: 1;
   background-image:
+    radial-gradient(circle at 18% 12%, rgba(242, 200, 91, 0.035), transparent 38%),
+    radial-gradient(circle at 84% 82%, rgba(242, 200, 91, 0.028), transparent 42%),
+    repeating-linear-gradient(94deg, rgba(244, 232, 208, 0.022) 0 1px, transparent 1px 6px),
     repeating-linear-gradient(0deg, rgba(73, 166, 255, 0.045) 0 1px, transparent 1px 5px),
     repeating-linear-gradient(90deg, rgba(237, 245, 255, 0.02) 0 1px, transparent 1px 7px);
-  opacity: 0.32;
+  opacity: 0.34;
   pointer-events: none;
 }
 
@@ -235,6 +240,28 @@ main {
   background: linear-gradient(180deg, transparent, rgba(237, 245, 255, 0.26), transparent);
   opacity: 0.76;
   content: "";
+}
+
+/* 세로쓰기 한국어 악센트 — 은은한 전통 낙관(落款) 느낌 */
+.hero::after {
+  position: absolute;
+  top: clamp(88px, 13vw, 150px);
+  right: clamp(16px, 6vw, 104px);
+  color: rgba(242, 200, 91, 0.32);
+  font-family: var(--hangul-serif);
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  pointer-events: none;
+  content: "코스피 · 기록의 벽";
+}
+
+@media (max-width: 620px) {
+  .hero::after {
+    display: none;
+  }
 }
 
 .hero-mast {
@@ -616,15 +643,18 @@ h1 span {
   user-select: none;
 }
 
+/* 창살(창호) 격자 — 굵은 살 + 가는 살의 한국 전통 창 결을 은은히 */
 .chart-scroll::before {
   position: absolute;
   inset: 4px 0 0;
   z-index: 1;
   background:
-    linear-gradient(90deg, rgba(237, 245, 255, 0.05) 0 1px, transparent 1px 100%),
-    linear-gradient(180deg, rgba(237, 245, 255, 0.035) 0 1px, transparent 1px 100%);
-  background-size: 120px 100%, 100% 92px;
-  opacity: 0.52;
+    linear-gradient(90deg, rgba(242, 200, 91, 0.05) 0 1.4px, transparent 1.4px 100%),
+    linear-gradient(180deg, rgba(242, 200, 91, 0.035) 0 1.4px, transparent 1.4px 100%),
+    linear-gradient(90deg, rgba(237, 245, 255, 0.045) 0 1px, transparent 1px 100%),
+    linear-gradient(180deg, rgba(237, 245, 255, 0.03) 0 1px, transparent 1px 100%);
+  background-size: 360px 100%, 100% 276px, 120px 100%, 100% 92px;
+  opacity: 0.5;
   pointer-events: none;
   content: "";
 }
@@ -698,7 +728,7 @@ h1 span {
 .signal-console .detail-signal {
   margin: 0;
   color: var(--ink);
-  font-family: var(--display);
+  font-family: var(--hangul-serif);
   font-size: clamp(2rem, 3vw, 3.1rem);
   font-weight: 700;
   line-height: 1.22;
@@ -820,7 +850,7 @@ h1 span {
 .detail-signal {
   margin: 20px 0 14px;
   color: var(--ink);
-  font-family: var(--display);
+  font-family: var(--hangul-serif);
   font-size: clamp(2rem, 4.2vw, 4rem);
   font-weight: 700;
   line-height: 1.2;
@@ -932,10 +962,11 @@ h1 span {
 
 .modal-signal {
   margin: 18px 0 10px;
-  font-family: var(--serif);
-  font-size: clamp(2.8rem, 7vw, 6rem);
-  font-weight: 700;
-  line-height: 0.9;
+  font-family: var(--hangul-serif);
+  font-size: clamp(2.4rem, 6vw, 5rem);
+  font-weight: 800;
+  line-height: 1.04;
+  word-break: keep-all;
 }
 
 .modal-sheet h2 {
@@ -1437,31 +1468,21 @@ body:not([data-filter-mode="all"]) .path-glow {
   text-shadow: 0 0 16px rgba(73, 166, 255, 0.55);
 }
 
-/* 스크롤 속도 반응 타이포 */
+/* 스크롤 속도 반응 타이포 (히어로 제목 한정) */
 h1 {
   letter-spacing: calc(var(--scroll-vel, 0) * 0.16em);
   transform: skewX(calc(var(--scroll-vel, 0) * -3deg));
   transition: letter-spacing 240ms ease, transform 240ms ease;
 }
 
+/* 대 타이틀은 은은한 화이트 아웃라인 톤 유지 */
 .chapter-word {
-  transition: transform 260ms ease, color 360ms ease, -webkit-text-stroke-color 360ms ease;
-  transform: skewX(calc(var(--scroll-vel, 0) * 5deg));
+  transition: -webkit-text-stroke-color 480ms ease;
 }
 
-.story-chapter.is-current[data-chapter="CRASH"] .chapter-word {
-  color: rgba(255, 93, 108, 0.92);
-  -webkit-text-stroke-color: var(--red);
-}
-
-.story-chapter.is-current[data-chapter="RECOVER"] .chapter-word {
-  color: rgba(57, 208, 142, 0.9);
-  -webkit-text-stroke-color: var(--green);
-}
-
-.story-chapter.is-current[data-chapter="REPRICE"] .chapter-word {
-  color: rgba(73, 166, 255, 0.9);
-  -webkit-text-stroke-color: var(--blue);
+.story-chapter.is-current .chapter-word {
+  -webkit-text-stroke-color: rgba(237, 245, 255, 0.32);
+  text-stroke-color: rgba(237, 245, 255, 0.32);
 }
 
 /* 과장된 포인트 강조 */

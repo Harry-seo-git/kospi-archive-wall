@@ -336,7 +336,16 @@ const modeLabels = {
   growth: "성장 구간 · 랠리 신호 강조"
 };
 
-const levelLines = [1000, 2000, 3000, 4000];
+// 라이브 데이터(외부 소스). 미연결/실패 시 null → 번들 근사 데이터로 폴백.
+let liveLine = null;
+let liveStartYear = Infinity;
+const dataMeta = { asOf: "2025.12.30", source: "bundled" };
+
+function decimalYearFromDate(dateStr) {
+  const [y, m, d] = String(dateStr).split("-").map(Number);
+  if (!y) return null;
+  return y + (((m || 1) - 1) + (((d || 1) - 1) / 30)) / 12;
+}
 
 function formatIndex(value) {
   return Math.round(value).toLocaleString("ko-KR");
@@ -628,28 +637,66 @@ function createSvgElement(name, attrs = {}) {
   return element;
 }
 
-// 연도별 + 위기 월별 + 사건 포인트를 합쳐 실제 코스피에 가까운 라인을 만듭니다.
+// 연도별 + 위기 월별 + (가능하면 라이브) + 사건 포인트를 합쳐 실제 코스피 라인을 만듭니다.
+// 라이브 데이터가 있으면 그 시작 연도 이전만 번들 근사로 채워 깊은 역사 모양을 유지합니다.
 function buildLinePoints() {
   const merged = [];
+  const cut = liveLine ? liveStartYear : Infinity;
   Object.entries(yearlyCloses).forEach(([year, index]) => {
-    merged.push({ year: Number(year) + 0.96, index });
+    if (Number(year) + 0.96 < cut) merged.push({ year: Number(year) + 0.96, index });
   });
-  crisisMonthly.forEach((p) => merged.push({ year: p.year, index: p.index }));
-  events.forEach((event) => merged.push({ year: event.year, index: event.index }));
+  crisisMonthly.forEach((p) => {
+    if (p.year < cut) merged.push({ year: p.year, index: p.index });
+  });
+  if (liveLine) {
+    // 라이브일 때 라인은 실데이터만 사용 (사건 점은 라인에 스냅됨).
+    liveLine.forEach((p) => merged.push({ year: p.year, index: p.index }));
+  } else {
+    events.forEach((event) => merged.push({ year: event.year, index: event.index }));
+  }
   merged.sort((a, b) => a.year - b.year);
   return merged;
+}
+
+// 라이브 라인에서 특정 연도의 값을 선형 보간 (사건 점을 실데이터 위에 올림).
+function sampleLine(year) {
+  if (!liveLine || !liveLine.length) return null;
+  if (year <= liveLine[0].year) return liveLine[0].index;
+  const last = liveLine[liveLine.length - 1];
+  if (year >= last.year) return last.index;
+  for (let i = 1; i < liveLine.length; i += 1) {
+    const a = liveLine[i - 1];
+    const b = liveLine[i];
+    if (year >= a.year && year <= b.year) {
+      const t = (year - a.year) / (b.year - a.year || 1);
+      return a.index + (b.index - a.index) * t;
+    }
+  }
+  return last.index;
 }
 
 function renderChart() {
   const { width, height } = chartSize;
   const pad = { top: 28, right: 110, bottom: 42, left: 92 };
   const minYear = chartYears.min;
-  const maxYear = chartYears.max;
-  const maxIndex = 4600;
+  const rawLine = buildLinePoints();
+  // 데이터 범위에 맞춰 축·레벨선을 동적으로 산출 (라이브 데이터의 미지 범위까지 안전).
+  const allYears = [...events.map((e) => e.year), ...rawLine.map((p) => p.year)];
+  const allVals = [...events.map((e) => e.index), ...rawLine.map((p) => p.index)];
+  const dataMaxYear = Math.max(...allYears);
+  const maxYear = Math.max(2026.0, Math.ceil((dataMaxYear + 0.15) * 4) / 4);
+  const dataMax = Math.max(...allVals);
+  const maxIndex = Math.max(3000, Math.ceil((dataMax * 1.12) / 500) * 500);
+  const levels = [];
+  for (let v = 1000; v < maxIndex; v += 1000) levels.push(v);
+  const decadeTicks = [];
+  for (let yr = 1980; yr <= Math.floor(maxYear); yr += 10) decadeTicks.push(yr);
+  const lastTick = Math.floor(dataMaxYear);
+  if (!decadeTicks.includes(lastTick)) decadeTicks.push(lastTick);
   const x = (year) => pad.left + ((year - minYear) / (maxYear - minYear)) * (width - pad.left - pad.right);
   const y = (value) => height - pad.bottom - (value / maxIndex) * (height - pad.top - pad.bottom);
   const points = events.map((event) => ({ ...event, x: x(event.year), y: y(event.index) }));
-  const linePoints = buildLinePoints().map((p) => ({ x: x(p.year), y: y(p.index) }));
+  const linePoints = rawLine.map((p) => ({ x: x(p.year), y: y(p.index) }));
   const baseline = height - pad.bottom;
 
   pointPositions = new Map(points.map((point) => [point.id, point]));
@@ -657,9 +704,9 @@ function renderChart() {
   chart.setAttribute("viewBox", `0 0 ${width} ${height}`);
 
   const title = createSvgElement("title", { id: "chart-title" });
-  title.textContent = "코스피 1980년부터 2025년 12월 30일까지 장기 라인 차트";
+  title.textContent = `코스피 1980년부터 ${dataMeta.asOf}까지 장기 라인 차트`;
   const desc = createSvgElement("desc", { id: "chart-desc" });
-  desc.textContent = "1980년 기준 100에서 2025년 12월 30일 종가 4,214.17까지 연·월별 종가와 주요 위기·회복 지점을 연결한 차트";
+  desc.textContent = `1980년 기준 100에서 ${dataMeta.asOf} 기준까지 연·월별 종가와 주요 위기·회복 지점을 연결한 차트 (소스: ${dataMeta.source})`;
   const defs = createSvgElement("defs");
   const gradient = createSvgElement("linearGradient", {
     id: "chartFill",
@@ -686,7 +733,7 @@ function renderChart() {
     }));
   }
 
-  [0, ...levelLines].forEach((tick) => {
+  [0, ...levels].forEach((tick) => {
     chart.appendChild(createSvgElement("line", {
       class: tick === 0 ? "grid-line baseline" : "grid-line level-line",
       x1: pad.left,
@@ -703,7 +750,7 @@ function renderChart() {
     chart.appendChild(label);
   });
 
-  [1980, 1990, 2000, 2010, 2020, 2025].forEach((tick) => {
+  decadeTicks.forEach((tick) => {
     const label = createSvgElement("text", {
       class: "axis-label",
       x: x(tick),
@@ -1264,6 +1311,148 @@ window.addEventListener("pointerleave", () => {
   document.body.classList.remove("has-pointer");
 });
 
+function recentSlopePhase(series) {
+  const last = series[series.length - 1];
+  const refIdx = Math.max(0, series.length - 7);
+  const ref = series[refIdx];
+  if (!last || !ref || !ref.index) return "growth";
+  const pct = ((last.index - ref.index) / ref.index) * 100;
+  if (pct >= 3) return "growth";
+  if (pct <= -3) return "crisis";
+  return "recovery";
+}
+
+// 외부 데이터에서 큰 변곡(임계 등락폭 이상 스윙)을 자동 검출 (간이 ZigZag).
+function detectSwings(series, minPct, sinceYear) {
+  if (series.length < 3) return [];
+  const pivots = [];
+  let dir = 0;
+  let extremeIdx = 0;
+  for (let i = 1; i < series.length; i += 1) {
+    const v = series[i].index;
+    const ev = series[extremeIdx].index;
+    if (dir >= 0 && v > ev) extremeIdx = i;
+    else if (dir <= 0 && v < ev) extremeIdx = i;
+    const change = ((v - series[extremeIdx].index) / series[extremeIdx].index) * 100;
+    if (dir >= 0 && change <= -minPct) {
+      pivots.push({ point: series[extremeIdx], kind: "peak" });
+      dir = -1;
+      extremeIdx = i;
+    } else if (dir <= 0 && change >= minPct) {
+      pivots.push({ point: series[extremeIdx], kind: "trough" });
+      dir = 1;
+      extremeIdx = i;
+    }
+  }
+  return pivots.filter((p) => p.point.year >= sinceYear);
+}
+
+function toDottedDate(value) {
+  return String(value || "").replace(/-/g, ".");
+}
+
+function addSyntheticEvents(series, data) {
+  for (let i = events.length - 1; i >= 0; i -= 1) {
+    if (String(events[i].id).startsWith("live-")) events.splice(i, 1);
+  }
+  const curatedMaxYear = Math.max(...events.map((e) => e.year));
+  const asOf = toDottedDate(data.asOf);
+
+  detectSwings(series, 15, curatedMaxYear + 0.01)
+    .slice(-2)
+    .forEach((sw, n) => {
+      const up = sw.kind === "peak";
+      events.push({
+        id: `live-swing-${n}`,
+        year: sw.point.year,
+        date: toDottedDate(data.monthly.find((m) => m.close === sw.point.index)?.date) || asOf,
+        index: sw.point.index,
+        phase: up ? "growth" : "crisis",
+        phaseLabel: up ? "자동 검출 고점" : "자동 검출 저점",
+        signal: "데이터가 표시한 변곡",
+        title: `${formatIndex(sw.point.index)} 변곡`,
+        summary: `외부 데이터에서 자동 검출한 ${up ? "고점" : "저점"}형 변곡점입니다.`,
+        detail: "큐레이션된 서사 없이, 불러온 시계열에서 임계 등락폭 이상으로 반전한 지점을 표시합니다."
+      });
+    });
+
+  const last = series[series.length - 1];
+  if (last && last.year > curatedMaxYear) {
+    const phase = recentSlopePhase(series);
+    events.push({
+      id: "live-latest",
+      year: last.year,
+      date: asOf,
+      index: last.index,
+      phase,
+      phaseLabel: "현재 기준",
+      signal: "오늘의 벽",
+      title: `${asOf} 코스피 ${formatIndex(last.index)}`,
+      summary: `${asOf} 기준 최신 종가입니다. 방문할 때마다 외부 소스에서 자동 갱신됩니다.`,
+      detail: "이 지점은 큐레이션된 과거 서사가 아니라, 외부 데이터에서 받아온 가장 최근 값입니다. 데이터 소스가 갱신되면 자동으로 따라 움직입니다."
+    });
+  }
+
+  events.sort((a, b) => a.year - b.year);
+}
+
+function updateProvenance() {
+  const srcLabel = dataMeta.source === "bundled"
+    ? "번들 근사 데이터"
+    : `실데이터(${dataMeta.source})`;
+  const note = document.querySelector("#data-source-note");
+  if (note) note.textContent = `Provenance · ${srcLabel} · as of ${dataMeta.asOf}`;
+  const meta = document.querySelector(".topbar-meta");
+  if (meta) meta.textContent = `Data wall · ${dataMeta.asOf}`;
+  const code = document.querySelector(".hero-code");
+  if (code) code.textContent = `Exhibition Archive · 1980 — ${dataMeta.asOf}`;
+}
+
+function rebuildChart() {
+  renderChart();
+  applyFilter(currentFilter);
+  resetChartToStart();
+  applyHashFromLocation();
+  updateChartScrollbar();
+}
+
+// 폴백 우선: 번들 데이터로 먼저 렌더한 뒤, 라이브가 도착하면 보강.
+async function enhanceWithLiveData() {
+  let data;
+  try {
+    const res = await fetch("/api/kospi", { headers: { Accept: "application/json" } });
+    if (!res.ok) return;
+    data = await res.json();
+  } catch (err) {
+    return;
+  }
+  if (!data || !Array.isArray(data.monthly) || data.monthly.length < 12) return;
+
+  const pts = data.monthly
+    .map((m) => ({ year: decimalYearFromDate(m.date), index: m.close }))
+    .filter((p) => p.year && Number.isFinite(p.index) && p.index > 0)
+    .sort((a, b) => a.year - b.year);
+  if (pts.length < 12) return;
+
+  liveLine = pts;
+  liveStartYear = pts[0].year;
+  dataMeta.source = data.source || "live";
+  dataMeta.asOf = toDottedDate(data.asOf) || dataMeta.asOf;
+
+  // 라이브 구간에 들어오는 큐레이션 사건의 수치를 실데이터로 스냅 (라인과 일치).
+  const liveEndYear = pts[pts.length - 1].year;
+  events.forEach((ev) => {
+    if (ev.year >= liveStartYear && ev.year <= liveEndYear) {
+      const sampled = sampleLine(ev.year);
+      if (sampled && Number.isFinite(sampled)) ev.index = Math.round(sampled * 100) / 100;
+    }
+  });
+
+  addSyntheticEvents(pts, data);
+  rebuildChart();
+  updateProvenance();
+}
+
 document.body.dataset.phase = "growth";
 renderChart();
 observeChapters();
@@ -1277,5 +1466,7 @@ if (!applyHashFromLocation()) {
 }
 updateProgress();
 updateChartScrollbar();
+updateProvenance();
 watchChartPosition();
 runLoader();
+enhanceWithLiveData();

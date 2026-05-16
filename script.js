@@ -191,78 +191,6 @@ const events = [
     summary: "2024년 말 정치 불확실성이 커지며 코스피는 2399.49로 한 해를 마쳤습니다.",
     detail: "비상계엄 선포와 탄핵 정국 등 정치 리스크가 위험회피를 키웠습니다. 이 낮은 출발선이 2025년 강한 반등의 토대가 됐습니다."
   },
-  {
-    id: "rebound-2025",
-    year: 2025.45,
-    date: "2025.06",
-    index: 3129,
-    phase: "recovery",
-    phaseLabel: "밸류업 반등",
-    signal: "낮은 곳에서 다시",
-    title: "2025년 밸류업·AI 반등",
-    summary: "2025년 들어 코스피는 빠르게 반등하며 다시 3000선을 회복했습니다.",
-    detail: "기업 밸류업 프로그램과 반도체·AI 기대가 맞물리며 시장은 2024년 말의 공포를 빠르게 되돌렸습니다."
-  },
-  {
-    id: "four-thousand",
-    year: 2025.82,
-    date: "2025.10.27",
-    index: 4042.83,
-    phase: "growth",
-    phaseLabel: "첫 4000",
-    signal: "숫자의 체급이 바뀐다",
-    title: "처음 열린 4000선",
-    summary: "2025년 10월 코스피는 처음으로 4000선을 넘어 장기 박스권의 기억을 밀어냈습니다.",
-    detail: "새로운 고점은 단순한 회복이 아니라 시장의 체급 변화처럼 읽혔습니다. 3000선 이후 긴 조정이 끝났다는 기대가 강해진 구간입니다."
-  },
-  {
-    id: "year-end-2025",
-    year: 2025.99,
-    date: "2025.12.30",
-    index: 4214.17,
-    phase: "growth",
-    phaseLabel: "2025 종가",
-    signal: "랠리가 연말을 닫다",
-    title: "2025년 4214.17 마감",
-    summary: "2025년 마지막 거래일 코스피는 4214.17로 마감하며 전년 대비 큰 폭 상승을 기록했습니다.",
-    detail: "2024년 말 2,399.49에서 2025년 말 4,214.17까지의 이동은 차트의 기울기를 완전히 바꿔놓았습니다. 2026년 변동성 큰 상승장의 출발선이 됐습니다."
-  },
-  {
-    id: "ai-2026",
-    year: 2026.08,
-    date: "2026.02",
-    index: 4720,
-    phase: "growth",
-    phaseLabel: "AI 슈퍼사이클",
-    signal: "올해를 연 엔진",
-    title: "AI·반도체가 끈 연초 강세",
-    summary: "2026년 초 코스피는 AI·반도체 슈퍼사이클 기대와 실적 개선으로 가파르게 올랐습니다.",
-    detail: "HBM·파운드리 등 한국 반도체의 구조적 수요가 지수 상승을 이끌었습니다. ※ 2026 수치는 근사값이며, 라이브 연결 시 외부 소스의 실데이터로 자동 갱신됩니다."
-  },
-  {
-    id: "valueup-2026",
-    year: 2026.24,
-    date: "2026.04",
-    index: 5180,
-    phase: "growth",
-    phaseLabel: "밸류업·외국인",
-    signal: "할인의 해소",
-    title: "밸류업과 외국인 복귀",
-    summary: "기업 밸류업과 코리아 디스카운트 해소 기대가 외국인 순매수를 부르며 상승이 넓어졌습니다.",
-    detail: "주주환원 확대와 지배구조 개선 기대가 재평가를 가속했습니다. ※ 근사값이며 라이브 연결 시 실데이터로 갱신됩니다."
-  },
-  {
-    id: "rally-2026",
-    year: 2026.37,
-    date: "2026.05",
-    index: 5760,
-    phase: "growth",
-    phaseLabel: "버라이어티 랠리",
-    signal: "여러 동력이 겹친 상승",
-    title: "금리·정책이 더한 버라이어티 상승장",
-    summary: "금리 인하 전환과 정책 모멘텀까지 겹치며 2026년 코스피는 폭넓은 동력의 상승장을 이어갑니다.",
-    detail: "반도체·밸류업·수급·금리·정책이 동시에 작동한, 한 가지 이유로 설명되지 않는 상승 국면입니다. ※ 근사값 — 라이브 데이터가 연결되면 최신 종가로 자동 갱신됩니다."
-  }
 ];
 
 // 영문 서사 (id 매핑). 없으면 한국어로 폴백.
@@ -283,12 +211,6 @@ const eventsEn = {
   "rate-shock": { phaseLabel: "Rate shock", signal: "Where liquidity drained", title: "2022 bear-market low", summary: "Surging rates and a growth repricing pushed KOSPI below 2,200 in autumn 2022.", detail: "When the post-pandemic liquidity rally ended, the market returned to the language of earnings and rates — optimism turned defensive in a year." },
   "rate-cut-hope": { phaseLabel: "Rate-cut hope", signal: "The year hope rose first", title: "2023 recovery", summary: "Rate-cut hopes and a large-cap rebound lifted KOSPI to 2,655.28 by end-2023.", detail: "A strong recovery, but not yet a new high; the market began pricing rates and flows ahead of the economy." },
   "policy-drag": { phaseLabel: "Political shock", signal: "A shock that closed the year", title: "2024 political-risk plunge", summary: "Rising political uncertainty late in 2024 ended the year at 2,399.49.", detail: "A martial-law declaration and impeachment turmoil amplified risk aversion. This low base set up the strong 2025 rebound." },
-  "rebound-2025": { phaseLabel: "Value-up rebound", signal: "From the low, again", title: "2025 value-up & AI rebound", summary: "KOSPI rebounded fast through 2025, reclaiming 3,000.", detail: "A corporate value-up program and chip/AI hopes quickly reversed the fear of late 2024." },
-  "four-thousand": { phaseLabel: "First 4000", signal: "The weight class changes", title: "First break above 4000", summary: "In October 2025 KOSPI crossed 4,000 for the first time, pushing aside the long box-range memory.", detail: "The new high read less like a recovery than a change in the market's weight class; the long post-3,000 correction felt over." },
-  "year-end-2025": { phaseLabel: "2025 close", signal: "A rally closes the year", title: "2025 close at 4,214.17", summary: "On the last trading day of 2025 KOSPI closed at 4,214.17, a large year-on-year gain.", detail: "The move from 2,399.49 at end-2024 to 4,214.17 reshaped the chart's slope entirely — the launch point for a volatile 2026 rally." },
-  "ai-2026": { phaseLabel: "AI supercycle", signal: "The engine that opened the year", title: "AI & chips drove an early-2026 surge", summary: "In early 2026 KOSPI rose sharply on AI/semiconductor supercycle hopes and earnings upgrades.", detail: "Structural demand for Korean chips (HBM, foundry) led the advance. Note: 2026 figures are approximate and auto-refresh from live external data when connected." },
-  "valueup-2026": { phaseLabel: "Value-up & foreigners", signal: "The discount unwinds", title: "Value-up and foreign buyers return", summary: "Value-up momentum and Korea-discount unwind hopes pulled in foreign net buying, broadening the rally.", detail: "Bigger shareholder returns and governance-reform hopes accelerated the re-rating. Note: approximate, refined by live data when connected." },
-  "rally-2026": { phaseLabel: "Variety rally", signal: "Many drivers at once", title: "Rates and policy add to a variety rally", summary: "A rate-cut turn and policy momentum stacked onto the move, sustaining a broad-driver 2026 rally.", detail: "Chips, value-up, flows, rates and policy worked at once — an advance no single reason explains. Note: approximate; auto-updates to the latest close once live data is connected." }
 };
 
 const I18N = {
@@ -302,7 +224,7 @@ const I18N = {
     "stat.years": "년",
     "tour.play": "가이드 투어",
     "tour.stop": "투어 정지",
-    "prov.bundled": "번들 근사 데이터",
+    "prov.bundled": "번들 폴백 데이터",
     "prov.live": "실데이터",
     "prov.label": "Provenance",
     "prov.asof": "as of",
@@ -328,7 +250,7 @@ const I18N = {
     "panel.kicker": "코스피 실록",
     "panel.h2": "핀조명 아래 드러나는 코스피의 결정적 장면",
     "hint.text": "좌우로 끌어 보세요 · ← → 키 이동 · 아래 미니맵으로 점프",
-    "sources.rest": "수치는 근사·실측 혼합값이며 한국장 마감(15:45 KST) 기준으로 자동 갱신됩니다. 데이터 출처:",
+    "sources.rest": "최신 구간은 한국장 마감(15:45 KST) 기준 실데이터로 자동 반영되며, 라이브 미연결 시 번들 폴백(1980–2024 실측)을 사용합니다. 데이터 출처:",
     "sources.refs": " · 참고",
     "credit.by": "제작",
     "aria.modalClose": "상세 닫기",
@@ -343,8 +265,8 @@ const I18N = {
     "aria.pulse": "요약 지표",
     "pulse.note1": "1980.01.04 기준 100",
     "pulse.note2": "2024.12 정치 충격",
-    "pulse.note3": "2025.10.27 사상 첫 4000",
-    "pulse.note4": "2026.05 근사 · 라이브 시 갱신",
+    "pulse.note3": "2021.06 사상 최고 3,316",
+    "pulse.note4": "한국장 마감(15:45 KST) 자동 갱신",
     "hero.figcaption": "어둠의 벽 · 움직이는 빛 아래의 가격 기억.",
     "hero.figcaptionEm": "탭/클릭하면 해당 시대로 이동합니다.",
     "live.latestLabel": "현재 기준",
@@ -378,7 +300,7 @@ const I18N = {
     "stat.years": "y",
     "tour.play": "Guided tour",
     "tour.stop": "Stop tour",
-    "prov.bundled": "bundled approximation",
+    "prov.bundled": "bundled fallback",
     "prov.live": "live data",
     "prov.label": "Provenance",
     "prov.asof": "as of",
@@ -404,7 +326,7 @@ const I18N = {
     "panel.kicker": "KOSPI Veritable Records",
     "panel.h2": "KOSPI's decisive scenes, revealed under a pin light",
     "hint.text": "Drag left/right · ← → keys · jump via the minimap below",
-    "sources.rest": "Figures are an approximation/observed blend, auto-refreshed at the Korean market close (15:45 KST). Data sources:",
+    "sources.rest": "The latest range auto-updates with real data at the Korean market close (15:45 KST); a bundled fallback (1980–2024 actuals) is used when live is unavailable. Data sources:",
     "sources.refs": " · ref",
     "credit.by": "by",
     "aria.modalClose": "Close detail",
@@ -419,8 +341,8 @@ const I18N = {
     "aria.pulse": "Summary metrics",
     "pulse.note1": "Base 100 · 4 Jan 1980",
     "pulse.note2": "Dec 2024 political shock",
-    "pulse.note3": "27 Oct 2025 · first 4000",
-    "pulse.note4": "approx May 2026 · live updates",
+    "pulse.note3": "Jun 2021 · all-time high 3,316",
+    "pulse.note4": "Auto-updates at 15:45 KST close",
     "hero.figcaption": "Dark wall · price memory under a moving light.",
     "hero.figcaptionEm": "Tap/click to jump to that era.",
     "live.latestLabel": "Current",
@@ -472,7 +394,7 @@ const STATIC_EN = {
   "recover.h2": "Recovery always starts slowly, then suddenly accelerates.",
   "recover.p": "Restructuring, liquidity, an export rebound, retail inflows — the reasons differed each time, but the rhythm rhymed. Once fear was fully priced in, the market looked for its next narrative.",
   "reprice.h2": "When a new industry arrives, the index speaks a new language.",
-  "reprice.p": "Shipbuilding and steel, chips and batteries, platforms and AI hopes, and the 2025 value-up & AI rally — KOSPI's highs were never just numbers but a collective bet on which future Korean firms represent."
+  "reprice.p": "Shipbuilding and steel, chips and batteries, platforms and AI hopes, and the recent value-up & AI cycle — KOSPI's highs were never just numbers but a collective bet on which future Korean firms represent."
 };
 
 const origText = new WeakMap();
@@ -527,7 +449,7 @@ function applyLang(next) {
   refreshDynamicI18n();
 }
 
-// 연도별 종가(근사값). 사건 사이를 메워 실제 코스피 곡선 모양에 가깝게 그립니다.
+// 연도별 종가(1980–2024 실측 연말 종가). 사건 사이를 메워 곡선 모양을 만든다.
 const yearlyCloses = {
   1980: 106.87, 1981: 131.3, 1982: 127.31, 1983: 121.21, 1984: 142.46,
   1985: 163.37, 1986: 272.61, 1987: 525.11, 1988: 907.2, 1989: 909.72,
@@ -537,8 +459,7 @@ const yearlyCloses = {
   2005: 1379.37, 2006: 1434.46, 2007: 1897.13, 2008: 1124.47, 2009: 1682.77,
   2010: 2051, 2011: 1825.74, 2012: 1997.05, 2013: 2011.34, 2014: 1915.59,
   2015: 1961.31, 2016: 2026.46, 2017: 2467.49, 2018: 2041.04, 2019: 2197.67,
-  2020: 2873.47, 2021: 2977.65, 2022: 2236.4, 2023: 2655.28, 2024: 2399.49,
-  2025: 4214.17
+  2020: 2873.47, 2021: 2977.65, 2022: 2236.4, 2023: 2655.28, 2024: 2399.49
 };
 
 // 위기 구간 월 단위 근사값 — 급락/회복 곡선의 결을 살립니다.
@@ -626,15 +547,15 @@ const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
 const modeTargets = {
   all: "base",
   crisis: "covid",
-  recovery: "rebound-2025",
-  growth: "rally-2026"
+  recovery: "rate-cut-hope",
+  growth: "peak"
 };
 
 
-// 라이브 데이터(외부 소스). 미연결/실패 시 null → 번들 근사 데이터로 폴백.
+// 라이브 데이터(외부 소스). 미연결/실패 시 null → 번들 폴백 데이터 사용.
 let liveLine = null;
 let liveStartYear = Infinity;
-const dataMeta = { asOf: "2026.05 (근사)", source: "bundled", intraday: false };
+const dataMeta = { asOf: "2024.12.30", source: "bundled", intraday: false };
 
 function decimalYearFromDate(dateStr) {
   const [y, m, d] = String(dateStr).split("-").map(Number);
@@ -926,7 +847,7 @@ function createSvgElement(name, attrs = {}) {
 }
 
 // 연도별 + 위기 월별 + (가능하면 라이브) + 사건 포인트를 합쳐 실제 코스피 라인을 만듭니다.
-// 라이브 데이터가 있으면 그 시작 연도 이전만 번들 근사로 채워 깊은 역사 모양을 유지합니다.
+// 라이브 데이터가 있으면 그 시작 연도 이전만 번들 폴백으로 채워 깊은 역사 모양을 유지합니다.
 function buildLinePoints() {
   const merged = [];
   const cut = liveLine ? liveStartYear : Infinity;

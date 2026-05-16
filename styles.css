@@ -1994,6 +1994,16 @@ h1 {
     max-height: none;
   }
 
+  /* readout를 일반 흐름으로 — figcaption과 겹치던 버그 제거, 캡션은 숨김 */
+  .hero-readout {
+    position: static;
+    margin-top: 12px;
+  }
+
+  .hero-visual figcaption {
+    display: none;
+  }
+
   .market-pulse {
     grid-template-columns: 1fr;
   }
@@ -2015,27 +2025,79 @@ h1 {
     padding-top: 24px;
   }
 
-  /* 차트가 화면을 독점하지 않도록 높이 상한 — 아래 콘텐츠 접근 용이 */
+  /* 컴팩트 차트 — 라인+점만, 바로 아래 월 라벨이 한 화면에 함께 */
   .chart-scroll {
-    height: clamp(300px, 58svh, 520px);
+    height: clamp(180px, 34svh, 300px);
     min-height: 0;
+    margin-top: 14px;
   }
 
   .chart-wrap {
-    min-height: clamp(300px, 58svh, 520px);
+    min-height: clamp(180px, 34svh, 300px);
   }
 
   #kospi-chart {
-    height: clamp(300px, 58svh, 520px);
+    height: clamp(180px, 34svh, 300px);
   }
 
   .chart-yaxis {
-    height: clamp(300px, 58svh, 520px);
-    width: 42px;
+    height: clamp(180px, 34svh, 300px);
+    width: 38px;
   }
 
   .yaxis-tick {
-    font-size: 0.66rem;
+    font-size: 0.6rem;
+    opacity: 0.85;
+  }
+
+  .grid-line.level-line {
+    opacity: 0.5;
+  }
+
+  .panel-heading h2 {
+    font-size: 1.15rem;
+  }
+
+  .chart-panel .section-kicker {
+    font-size: 0.68rem;
+  }
+
+  /* 라벨(시그널 콘솔) 컴팩트화 — 작은 차트 바로 아래 한 화면에 */
+  .signal-console {
+    margin-top: 14px;
+    padding: 14px 0 0;
+    gap: 8px;
+  }
+
+  .signal-console .signal-console-head {
+    font-size: 0.72rem;
+  }
+
+  .signal-console .detail-signal {
+    font-size: clamp(1.35rem, 6.5vw, 1.9rem);
+  }
+
+  .signal-console #detail-title {
+    font-size: 1.05rem;
+  }
+
+  .signal-console #detail-copy {
+    font-size: 0.85rem;
+    line-height: 1.62;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .signal-console .detail-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px 14px;
+    margin-top: 10px;
+  }
+
+  .signal-console .detail-stats dd {
+    font-size: 1.05rem;
   }
 
   /* 아래 콘텐츠가 이어진다는 신호 */
@@ -2048,10 +2110,6 @@ h1 {
     pointer-events: none;
     content: "↓";
     animation: cueBob 1.6s ease-in-out infinite;
-  }
-
-  .signal-console .detail-signal {
-    font-size: clamp(1.6rem, 8vw, 2.3rem);
   }
 
   .modal-stats {

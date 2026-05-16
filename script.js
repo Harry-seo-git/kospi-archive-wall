@@ -404,8 +404,8 @@ function flashPhaseWash(phase) {
 function pulseSelectedPoint(point, phase) {
   const pulse = chart.querySelector(".chart-pulse");
   if (!pulse || !point) return;
-  pulse.setAttribute("cx", point.x);
-  pulse.setAttribute("cy", point.y);
+  pulse.setAttribute("x", point.x - 9);
+  pulse.setAttribute("y", point.y - 9);
   pulse.style.color = phase === "crisis" ? "var(--red)" : phase === "recovery" ? "var(--green)" : "var(--blue)";
   if (prefersReducedMotion) return;
   pulse.classList.remove("is-on");
@@ -715,9 +715,33 @@ function renderChart() {
     y1: "0",
     y2: "1"
   });
-  gradient.appendChild(createSvgElement("stop", { offset: "0%", "stop-color": "#49a6ff", "stop-opacity": "0.28" }));
-  gradient.appendChild(createSvgElement("stop", { offset: "100%", "stop-color": "#49a6ff", "stop-opacity": "0" }));
+  gradient.appendChild(createSvgElement("stop", { offset: "0%", "stop-color": "#b98e44", "stop-opacity": "0.26" }));
+  gradient.appendChild(createSvgElement("stop", { offset: "100%", "stop-color": "#b98e44", "stop-opacity": "0" }));
   defs.appendChild(gradient);
+
+  // 수묵 붓 획 — feTurbulence + feDisplacementMap으로 갈필/먹 번짐 결을 얹습니다.
+  const inkFilter = createSvgElement("filter", {
+    id: "inkBrush",
+    x: "-4%",
+    y: "-30%",
+    width: "108%",
+    height: "160%"
+  });
+  inkFilter.appendChild(createSvgElement("feTurbulence", {
+    type: "fractalNoise",
+    baseFrequency: "0.012 0.045",
+    numOctaves: "2",
+    seed: "7",
+    result: "noise"
+  }));
+  inkFilter.appendChild(createSvgElement("feDisplacementMap", {
+    in: "SourceGraphic",
+    in2: "noise",
+    scale: "7",
+    xChannelSelector: "R",
+    yChannelSelector: "G"
+  }));
+  defs.appendChild(inkFilter);
   chart.append(title, desc, defs);
 
   // 국면 음영 밴드 (필터 모드에 따라 강조)
@@ -764,8 +788,16 @@ function renderChart() {
   const pathData = linePoints.map((point, index) => `${index === 0 ? "M" : "L"} ${point.x.toFixed(1)} ${point.y.toFixed(1)}`).join(" ");
   const areaData = `${pathData} L ${linePoints.at(-1).x.toFixed(1)} ${baseline} L ${linePoints[0].x.toFixed(1)} ${baseline} Z`;
   chart.appendChild(createSvgElement("path", { class: "area-fill", d: areaData }));
-  chart.appendChild(createSvgElement("path", { class: "path-shadow", d: pathData }));
-  chart.appendChild(createSvgElement("path", { class: "path-line", d: pathData }));
+  chart.appendChild(createSvgElement("path", {
+    class: "path-shadow",
+    d: pathData,
+    filter: (prefersReducedMotion || coarsePointer) ? "" : "url(#inkBrush)"
+  }));
+  chart.appendChild(createSvgElement("path", {
+    class: "path-line",
+    d: pathData,
+    filter: (prefersReducedMotion || coarsePointer) ? "" : "url(#inkBrush)"
+  }));
   chart.appendChild(createSvgElement("path", { class: "path-glow", d: pathData }));
   chart.appendChild(createSvgElement("line", {
     class: "chart-cursor-line",
@@ -774,11 +806,13 @@ function renderChart() {
     y1: pad.top,
     y2: baseline
   }));
-  chart.appendChild(createSvgElement("circle", {
+  chart.appendChild(createSvgElement("rect", {
     class: "chart-pulse",
-    cx: points[0].x,
-    cy: points[0].y,
-    r: 7
+    x: points[0].x - 9,
+    y: points[0].y - 9,
+    width: 18,
+    height: 18,
+    rx: 1.5
   }));
 
   points.forEach((point) => {
@@ -792,13 +826,15 @@ function renderChart() {
     label.textContent = `${formatIndex(point.index)}`;
     chart.appendChild(label);
 
-    const dot = createSvgElement("circle", {
+    const dot = createSvgElement("rect", {
       class: `chart-point ${point.phase}`,
       "data-id": point.id,
       "data-phase": point.phase,
-      cx: point.x,
-      cy: point.y,
-      r: 3.2,
+      x: point.x - 4,
+      y: point.y - 4,
+      width: 8,
+      height: 8,
+      rx: 1.2,
       tabindex: 0,
       role: "button",
       "aria-label": `${point.title} ${point.date} ${formatIndex(point.index)}`
@@ -1180,7 +1216,7 @@ function initParticles() {
   if (!canvas || prefersReducedMotion || coarsePointer) return;
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
-  const colors = { crisis: "#ff5d6c", recovery: "#39d08e", growth: "#49a6ff", default: "#49a6ff" };
+  const colors = { crisis: "#c0473a", recovery: "#3f8a86", growth: "#b98e44", default: "#b98e44" };
   let w = 0;
   let h = 0;
   let running = true;

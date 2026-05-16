@@ -1,15 +1,20 @@
 :root {
   color-scheme: dark;
-  --bg: #05070b;
-  --paper: #080d14;
-  --surface: #0d1420;
-  --ink: #edf5ff;
-  --muted: #7f8ca3;
-  --line: rgba(93, 129, 180, 0.24);
-  --blue: #49a6ff;
-  --green: #39d08e;
-  --red: #ff5d6c;
-  --gold: #f2c85b;
+  --bg: #08060a;
+  --paper: #0c0a0c;
+  --surface: #16120f;
+  --ink: #f0e9da;
+  --muted: #968a76;
+  --line: rgba(199, 154, 75, 0.22);
+  /* 오방색 — 미술관급 절제: 황(성장·구조), 청(회복), 주(위기) */
+  --hwang: #b98e44;
+  --cheong: #3f8a86;
+  --ju: #c0473a;
+  --baek: #f0e9da;
+  --blue: var(--hwang);
+  --green: var(--cheong);
+  --red: var(--ju);
+  --gold: #c79a4b;
   --shadow: 0 30px 100px rgba(0, 0, 0, 0.42);
   --serif: "Cormorant Garamond", "Times New Roman", serif;
   --hangul-serif: "Nanum Myeongjo", "Cormorant Garamond", serif;
@@ -30,7 +35,7 @@ html {
 body {
   margin: 0;
   background:
-    linear-gradient(90deg, rgba(73, 166, 255, 0.09), rgba(5, 7, 11, 0) 28%, rgba(57, 208, 142, 0.05)),
+    linear-gradient(90deg, rgba(199, 154, 75, 0.09), rgba(5, 7, 11, 0) 28%, rgba(63, 138, 134, 0.05)),
     linear-gradient(180deg, #030508 0%, var(--bg) 42%, #080d14 100%);
   color: var(--ink);
   font-family: var(--sans);
@@ -46,7 +51,7 @@ body::before {
   left: var(--cursor-x);
   z-index: 4;
   width: 1px;
-  background: linear-gradient(180deg, transparent, rgba(225, 241, 255, 0.22), transparent);
+  background: linear-gradient(180deg, transparent, rgba(232, 222, 202, 0.22), transparent);
   pointer-events: none;
   opacity: 0;
   transition: opacity 180ms ease;
@@ -62,7 +67,7 @@ body::after {
   inset: 0;
   z-index: 2;
   background:
-    radial-gradient(circle at var(--cursor-x) var(--cursor-y), rgba(226, 241, 255, 0.1), rgba(73, 166, 255, 0.035) 11rem, transparent 25rem);
+    radial-gradient(circle at var(--cursor-x) var(--cursor-y), rgba(232, 222, 202, 0.1), rgba(199, 154, 75, 0.035) 11rem, transparent 25rem);
   opacity: 0;
   pointer-events: none;
   transition: opacity 180ms ease;
@@ -97,8 +102,8 @@ a {
     radial-gradient(circle at 18% 12%, rgba(242, 200, 91, 0.035), transparent 38%),
     radial-gradient(circle at 84% 82%, rgba(242, 200, 91, 0.028), transparent 42%),
     repeating-linear-gradient(94deg, rgba(244, 232, 208, 0.022) 0 1px, transparent 1px 6px),
-    repeating-linear-gradient(0deg, rgba(73, 166, 255, 0.045) 0 1px, transparent 1px 5px),
-    repeating-linear-gradient(90deg, rgba(237, 245, 255, 0.02) 0 1px, transparent 1px 7px);
+    repeating-linear-gradient(0deg, rgba(199, 154, 75, 0.045) 0 1px, transparent 1px 5px),
+    repeating-linear-gradient(90deg, rgba(240, 233, 218, 0.02) 0 1px, transparent 1px 7px);
   opacity: 0.34;
   pointer-events: none;
 }
@@ -112,7 +117,7 @@ a {
   justify-items: center;
   gap: 26px;
   background:
-    radial-gradient(circle at 50% 42%, rgba(73, 166, 255, 0.08), transparent 60%),
+    radial-gradient(circle at 50% 42%, rgba(199, 154, 75, 0.08), transparent 60%),
     #030508;
   color: var(--ink);
   text-align: center;
@@ -131,7 +136,7 @@ a {
   width: min(340px, 70vw);
   height: 2px;
   overflow: hidden;
-  background: rgba(73, 166, 255, 0.16);
+  background: rgba(199, 154, 75, 0.16);
 }
 
 .loader-line span {
@@ -180,7 +185,7 @@ body.is-ready .loader {
   justify-content: flex-start;
   gap: 24px;
   padding: 18px clamp(18px, 4vw, 56px);
-  border-bottom: 1px solid rgba(226, 241, 255, 0.08);
+  border-bottom: 1px solid rgba(232, 222, 202, 0.08);
   background: rgba(3, 5, 8, 0.62);
   backdrop-filter: blur(22px);
 }
@@ -190,7 +195,7 @@ body.is-ready .loader {
   align-items: center;
   gap: 10px;
   color: var(--ink);
-  color: rgba(237, 245, 255, 0.84);
+  color: rgba(240, 233, 218, 0.84);
   font-size: 0.9rem;
   font-weight: 700;
   letter-spacing: 0;
@@ -199,21 +204,47 @@ body.is-ready .loader {
 
 .topbar-meta {
   margin-left: auto;
-  border-left: 1px solid rgba(226, 241, 255, 0.12);
+  border-left: 1px solid rgba(232, 222, 202, 0.12);
   padding-left: 18px;
   color: rgba(127, 140, 163, 0.82);
   font-size: 0.78rem;
   font-weight: 800;
 }
 
-.brand-mark {
-  width: 24px;
-  height: 24px;
-  border: 1px solid rgba(237, 245, 255, 0.62);
-  border-radius: 50%;
-  background:
-    linear-gradient(135deg, transparent 45%, var(--green) 46% 55%, transparent 56%),
-    linear-gradient(45deg, transparent 44%, var(--blue) 45% 54%, transparent 55%);
+/* 낙관(落款) 도장형 마크 — 사건 인장 마커와 같은 시각 언어 */
+.brand-seal {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1.5px solid var(--ju);
+  border-radius: 2px;
+  background: rgba(192, 71, 58, 0.16);
+  color: var(--ju);
+  font-family: var(--hangul-serif);
+  font-size: 0.92rem;
+  font-weight: 800;
+  transform: rotate(-3deg);
+}
+
+.brand-word {
+  display: inline-grid;
+  line-height: 1.18;
+}
+
+.brand-word b {
+  font-family: var(--hangul-serif);
+  font-size: 0.96rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.brand-word i {
+  color: rgba(150, 138, 118, 0.92);
+  font-size: 0.62rem;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.22em;
 }
 
 main {
@@ -237,7 +268,7 @@ main {
   right: clamp(4px, 5vw, 82px);
   width: 1px;
   height: clamp(180px, 28vw, 360px);
-  background: linear-gradient(180deg, transparent, rgba(237, 245, 255, 0.26), transparent);
+  background: linear-gradient(180deg, transparent, rgba(240, 233, 218, 0.26), transparent);
   opacity: 0.76;
   content: "";
 }
@@ -284,9 +315,9 @@ main {
 
 .hero-code {
   display: inline-flex;
-  border-bottom: 1px solid rgba(226, 241, 255, 0.18);
+  border-bottom: 1px solid rgba(232, 222, 202, 0.18);
   padding-bottom: 8px;
-  color: rgba(237, 245, 255, 0.72);
+  color: rgba(240, 233, 218, 0.72);
 }
 
 h1,
@@ -313,9 +344,9 @@ h1 span {
 .hero-subline {
   width: min(760px, 100%);
   margin-top: 28px;
-  border-top: 1px solid rgba(226, 241, 255, 0.16);
+  border-top: 1px solid rgba(232, 222, 202, 0.16);
   padding-top: 16px;
-  color: rgba(237, 245, 255, 0.78);
+  color: rgba(240, 233, 218, 0.78);
   font-family: var(--sans);
   font-size: clamp(1rem, 1.35vw, 1.22rem);
   line-height: 1.8;
@@ -332,10 +363,10 @@ h1 span {
   display: block;
   width: 100%;
   max-height: 46svh;
-  border-top: 1px solid rgba(226, 241, 255, 0.1);
-  border-bottom: 1px solid rgba(226, 241, 255, 0.08);
+  border-top: 1px solid rgba(232, 222, 202, 0.1);
+  border-bottom: 1px solid rgba(232, 222, 202, 0.08);
   background:
-    radial-gradient(circle at 82% 30%, rgba(226, 241, 255, 0.08), transparent 24%),
+    radial-gradient(circle at 82% 30%, rgba(232, 222, 202, 0.08), transparent 24%),
     rgba(8, 13, 20, 0.28);
 }
 
@@ -354,7 +385,7 @@ h1 span {
 }
 
 .hero-signal-shadow {
-  stroke: rgba(73, 166, 255, 0.09);
+  stroke: rgba(199, 154, 75, 0.09);
   stroke-width: 8;
 }
 
@@ -405,13 +436,13 @@ h1 span {
 .market-pulse {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  border-top: 1px solid rgba(226, 241, 255, 0.18);
-  border-bottom: 1px solid rgba(226, 241, 255, 0.08);
+  border-top: 1px solid rgba(232, 222, 202, 0.18);
+  border-bottom: 1px solid rgba(232, 222, 202, 0.08);
 }
 
 .market-pulse > div {
   min-height: 128px;
-  border-right: 1px solid rgba(226, 241, 255, 0.08);
+  border-right: 1px solid rgba(232, 222, 202, 0.08);
   padding: 20px 18px 22px;
 }
 
@@ -446,10 +477,10 @@ h1 span {
   position: relative;
   width: 100vw;
   margin-left: calc(50% - 50vw);
-  border-top: 1px solid rgba(226, 241, 255, 0.1);
-  border-bottom: 1px solid rgba(226, 241, 255, 0.08);
+  border-top: 1px solid rgba(232, 222, 202, 0.1);
+  border-bottom: 1px solid rgba(232, 222, 202, 0.08);
   background:
-    linear-gradient(90deg, rgba(73, 166, 255, 0.035), transparent 36%, rgba(57, 208, 142, 0.022)),
+    linear-gradient(90deg, rgba(199, 154, 75, 0.035), transparent 36%, rgba(63, 138, 134, 0.022)),
     rgba(3, 5, 8, 0.45);
 }
 
@@ -467,7 +498,7 @@ h1 span {
 
 .chapter-index span {
   border: 0;
-  border-top: 1px solid rgba(226, 241, 255, 0.14);
+  border-top: 1px solid rgba(232, 222, 202, 0.14);
   border-radius: 0;
   padding: 8px 0 0;
   background: transparent;
@@ -485,7 +516,7 @@ h1 span {
   width: min(1480px, calc(100% - 32px));
   min-height: 72svh;
   margin: 0 auto;
-  border-bottom: 1px solid rgba(226, 241, 255, 0.08);
+  border-bottom: 1px solid rgba(232, 222, 202, 0.08);
   padding: clamp(72px, 10vw, 132px) 0;
   opacity: 0.34;
   transition: opacity 360ms ease;
@@ -505,8 +536,8 @@ h1 span {
   font-size: clamp(4rem, 11vw, 12rem);
   font-weight: 700;
   line-height: 0.92;
-  -webkit-text-stroke: 1px rgba(226, 241, 255, 0.18);
-  text-stroke: 1px rgba(226, 241, 255, 0.18);
+  -webkit-text-stroke: 1px rgba(232, 222, 202, 0.18);
+  text-stroke: 1px rgba(232, 222, 202, 0.18);
 }
 
 .story-chapter h2 {
@@ -551,13 +582,13 @@ h1 span {
   min-width: 0;
   overflow: hidden;
   min-height: calc(100svh - 40px);
-  border-top: 1px solid rgba(73, 166, 255, 0.38);
-  border-bottom: 1px solid rgba(73, 166, 255, 0.16);
+  border-top: 1px solid rgba(199, 154, 75, 0.38);
+  border-bottom: 1px solid rgba(199, 154, 75, 0.16);
   background:
-    radial-gradient(circle at 74% 28%, rgba(73, 166, 255, 0.075), transparent 34%),
-    radial-gradient(circle at 23% 58%, rgba(57, 208, 142, 0.055), transparent 28%),
+    radial-gradient(circle at 74% 28%, rgba(199, 154, 75, 0.075), transparent 34%),
+    radial-gradient(circle at 23% 58%, rgba(63, 138, 134, 0.055), transparent 28%),
     linear-gradient(180deg, rgba(11, 17, 27, 0.88), rgba(5, 7, 11, 0.96)),
-    repeating-linear-gradient(90deg, rgba(73, 166, 255, 0.026) 0 1px, transparent 1px 72px);
+    repeating-linear-gradient(90deg, rgba(199, 154, 75, 0.026) 0 1px, transparent 1px 72px);
   padding: clamp(26px, 3.2vw, 46px) 0 12px;
 }
 
@@ -615,7 +646,7 @@ h1 span {
 }
 
 .data-note {
-  border-left: 1px solid rgba(73, 166, 255, 0.38);
+  border-left: 1px solid rgba(199, 154, 75, 0.38);
   padding: 4px 0 4px 12px;
 }
 
@@ -633,8 +664,8 @@ h1 span {
   margin-top: 28px;
   height: clamp(760px, calc(100svh - 158px), 960px);
   min-height: 760px;
-  border-top: 1px solid rgba(73, 166, 255, 0.1);
-  border-bottom: 1px solid rgba(73, 166, 255, 0.1);
+  border-top: 1px solid rgba(199, 154, 75, 0.1);
+  border-bottom: 1px solid rgba(199, 154, 75, 0.1);
   padding: 4px 0 0;
   cursor: grab;
   mask-image: linear-gradient(90deg, transparent, black 4%, black 96%, transparent);
@@ -651,8 +682,8 @@ h1 span {
   background:
     linear-gradient(90deg, rgba(242, 200, 91, 0.05) 0 1.4px, transparent 1.4px 100%),
     linear-gradient(180deg, rgba(242, 200, 91, 0.035) 0 1.4px, transparent 1.4px 100%),
-    linear-gradient(90deg, rgba(237, 245, 255, 0.045) 0 1px, transparent 1px 100%),
-    linear-gradient(180deg, rgba(237, 245, 255, 0.03) 0 1px, transparent 1px 100%);
+    linear-gradient(90deg, rgba(240, 233, 218, 0.045) 0 1px, transparent 1px 100%),
+    linear-gradient(180deg, rgba(240, 233, 218, 0.03) 0 1px, transparent 1px 100%);
   background-size: 360px 100%, 100% 276px, 120px 100%, 100% 92px;
   opacity: 0.5;
   pointer-events: none;
@@ -678,13 +709,13 @@ h1 span {
   gap: 12px;
   width: min(520px, calc(100% - 32px));
   max-height: none;
-  border-top: 1px solid rgba(73, 166, 255, 0.24);
-  border-bottom: 1px solid rgba(73, 166, 255, 0.12);
-  border-left: 1px solid rgba(73, 166, 255, 0.28);
+  border-top: 1px solid rgba(199, 154, 75, 0.24);
+  border-bottom: 1px solid rgba(199, 154, 75, 0.12);
+  border-left: 1px solid rgba(199, 154, 75, 0.28);
   padding: 18px 0 18px 22px;
   background:
     linear-gradient(90deg, rgba(3, 5, 8, 0.96), rgba(3, 5, 8, 0.58)),
-    linear-gradient(180deg, rgba(73, 166, 255, 0.055), rgba(73, 166, 255, 0));
+    linear-gradient(180deg, rgba(199, 154, 75, 0.055), rgba(199, 154, 75, 0));
   box-shadow: none;
   backdrop-filter: blur(18px);
   pointer-events: none;
@@ -693,13 +724,13 @@ h1 span {
 .signal-console.is-left {
   right: auto;
   left: clamp(16px, 4vw, 64px);
-  border-right: 1px solid rgba(73, 166, 255, 0.28);
+  border-right: 1px solid rgba(199, 154, 75, 0.28);
   border-left: 0;
   padding-right: 22px;
   padding-left: 0;
   background:
     linear-gradient(270deg, rgba(3, 5, 8, 0.96), rgba(3, 5, 8, 0.58)),
-    linear-gradient(180deg, rgba(73, 166, 255, 0.055), rgba(73, 166, 255, 0));
+    linear-gradient(180deg, rgba(199, 154, 75, 0.055), rgba(199, 154, 75, 0));
 }
 
 .signal-console[hidden] {
@@ -758,7 +789,7 @@ h1 span {
   gap: 7px;
   width: 100%;
   border: 0;
-  border-top: 1px solid rgba(73, 166, 255, 0.22);
+  border-top: 1px solid rgba(199, 154, 75, 0.22);
   border-radius: 0;
   padding: 14px 0 0;
   background: transparent;
@@ -819,7 +850,7 @@ h1 span {
   display: none;
   gap: 12px;
   overflow: hidden;
-  border-top: 1px solid rgba(73, 166, 255, 0.18);
+  border-top: 1px solid rgba(199, 154, 75, 0.18);
   padding-top: 14px;
   color: var(--muted);
   font-family: var(--serif);
@@ -843,7 +874,7 @@ h1 span {
   top: auto;
   display: block;
   min-height: auto;
-  border-right: 1px solid rgba(73, 166, 255, 0.22);
+  border-right: 1px solid rgba(199, 154, 75, 0.22);
   padding: 6px clamp(22px, 3vw, 42px) 10px 0;
 }
 
@@ -877,7 +908,7 @@ h1 span {
 }
 
 .detail-stats div {
-  border-top: 1px solid rgba(73, 166, 255, 0.22);
+  border-top: 1px solid rgba(199, 154, 75, 0.22);
   padding-top: 14px;
 }
 
@@ -899,7 +930,7 @@ h1 span {
 .sources {
   width: 100vw;
   margin-left: calc(50% - 50vw);
-  border-top: 1px solid rgba(226, 241, 255, 0.08);
+  border-top: 1px solid rgba(232, 222, 202, 0.08);
   padding: 24px clamp(18px, 4vw, 56px) 56px;
   background: rgba(3, 5, 8, 0.72);
 }
@@ -933,16 +964,26 @@ h1 span {
   cursor: pointer;
 }
 
+/* 사주단변(四周單邊) — 전통 기록물의 사면 테두리 프레임 */
 .modal-sheet {
   position: relative;
   z-index: 1;
   width: min(720px, 100%);
-  border: 1px solid rgba(73, 166, 255, 0.26);
-  border-radius: 8px;
-  padding: clamp(24px, 5vw, 42px);
+  border: 1px solid rgba(199, 154, 75, 0.42);
+  border-radius: 2px;
+  padding: clamp(28px, 5vw, 46px);
   background:
-    linear-gradient(180deg, rgba(13, 20, 32, 0.97), rgba(5, 7, 11, 0.97));
+    linear-gradient(180deg, rgba(22, 18, 15, 0.98), rgba(10, 8, 8, 0.98));
   box-shadow: 0 30px 110px rgba(0, 0, 0, 0.64);
+}
+
+.modal-sheet::before {
+  position: absolute;
+  inset: 7px;
+  border: 1px solid rgba(199, 154, 75, 0.2);
+  border-radius: 1px;
+  pointer-events: none;
+  content: "";
 }
 
 .modal-close {
@@ -1006,7 +1047,7 @@ h1 span {
 }
 
 .grid-line {
-  stroke: rgba(73, 166, 255, 0.085);
+  stroke: rgba(199, 154, 75, 0.085);
   stroke-width: 0.62;
 }
 
@@ -1027,7 +1068,7 @@ body:not([data-filter-mode="all"]) .area-fill {
 
 .path-shadow {
   fill: none;
-  stroke: rgba(73, 166, 255, 0.075);
+  stroke: rgba(199, 154, 75, 0.075);
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-width: 4;
@@ -1048,17 +1089,21 @@ body:not([data-filter-mode="all"]) .path-line {
   opacity: 0.48;
 }
 
+/* 낙관(印章) 사건 마커 — 비어 있는 주(朱) 사각, 선택 시 "찍히는" 도장 */
 .chart-point {
-  fill: #05070b;
+  fill: transparent;
   stroke: var(--blue);
-  stroke-width: 1.6;
+  stroke-width: 1.4;
   cursor: pointer;
-  transition: r 160ms ease, stroke 160ms ease, fill 160ms ease, opacity 160ms ease, filter 160ms ease;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: fill 160ms ease, stroke 160ms ease, opacity 160ms ease,
+    filter 160ms ease, transform 160ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .chart-cursor-line {
   opacity: 0;
-  stroke: rgba(237, 245, 255, 0.32);
+  stroke: rgba(240, 233, 218, 0.32);
   stroke-dasharray: 3 8;
   stroke-width: 0.8;
   transition: opacity 140ms ease;
@@ -1084,20 +1129,21 @@ body:not([data-filter-mode="all"]) .path-line {
 .chart-point.is-selected,
 .chart-point:hover {
   fill: currentColor;
+  stroke: currentColor;
   filter: drop-shadow(0 0 6px currentColor);
-  r: 4.4;
+  transform: scale(1.75) rotate(-4deg);
 }
 
 .chart-point.is-filter-match {
   fill: currentColor;
   opacity: 1;
   filter: drop-shadow(0 0 7px currentColor);
-  r: 4.4;
+  transform: scale(1.5);
 }
 
 .chart-point.is-filtered-out {
-  opacity: 0.12;
-  r: 3.2;
+  opacity: 0.14;
+  transform: scale(0.88);
 }
 
 .event-label {
@@ -1151,11 +1197,11 @@ body:not([data-filter-mode="all"]) .path-line {
 }
 
 .nav-chip {
-  border: 1px solid rgba(73, 166, 255, 0.28);
+  border: 1px solid rgba(199, 154, 75, 0.28);
   border-radius: 999px;
   padding: 7px 15px;
   background: rgba(8, 13, 20, 0.6);
-  color: rgba(237, 245, 255, 0.74);
+  color: rgba(240, 233, 218, 0.74);
   font-size: 0.78rem;
   font-weight: 800;
   letter-spacing: 0.02em;
@@ -1165,12 +1211,12 @@ body:not([data-filter-mode="all"]) .path-line {
 
 .nav-chip:hover {
   color: var(--ink);
-  border-color: rgba(73, 166, 255, 0.55);
+  border-color: rgba(199, 154, 75, 0.55);
 }
 
 .nav-chip.is-active {
   border-color: var(--blue);
-  background: rgba(73, 166, 255, 0.16);
+  background: rgba(199, 154, 75, 0.16);
   color: var(--ink);
 }
 
@@ -1178,11 +1224,11 @@ body:not([data-filter-mode="all"]) .path-line {
   display: inline-flex;
   align-items: center;
   gap: 9px;
-  border: 1px solid rgba(57, 208, 142, 0.4);
+  border: 1px solid rgba(63, 138, 134, 0.4);
   border-radius: 999px;
   padding: 7px 16px;
   background: rgba(8, 13, 20, 0.6);
-  color: rgba(237, 245, 255, 0.84);
+  color: rgba(240, 233, 218, 0.84);
   font-size: 0.78rem;
   font-weight: 800;
   cursor: pointer;
@@ -1204,7 +1250,7 @@ body:not([data-filter-mode="all"]) .path-line {
 
 .tour-btn.is-playing {
   border-color: var(--green);
-  background: rgba(57, 208, 142, 0.16);
+  background: rgba(63, 138, 134, 0.16);
   color: var(--ink);
 }
 
@@ -1230,7 +1276,7 @@ body:not([data-filter-mode="all"]) .path-line {
   z-index: 4;
   width: min(1480px, calc(100% - 32px));
   margin: 14px auto 0;
-  border-top: 1px solid rgba(73, 166, 255, 0.16);
+  border-top: 1px solid rgba(199, 154, 75, 0.16);
   padding-top: 12px;
 }
 
@@ -1243,20 +1289,20 @@ body:not([data-filter-mode="all"]) .path-line {
 }
 
 .minimap-area {
-  fill: rgba(73, 166, 255, 0.1);
+  fill: rgba(199, 154, 75, 0.1);
 }
 
 .minimap-line {
   fill: none;
-  stroke: rgba(73, 166, 255, 0.62);
+  stroke: rgba(199, 154, 75, 0.62);
   stroke-width: 1.4;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
 }
 
 .minimap-window {
-  fill: rgba(237, 245, 255, 0.12);
-  stroke: rgba(237, 245, 255, 0.5);
+  fill: rgba(240, 233, 218, 0.12);
+  stroke: rgba(240, 233, 218, 0.5);
   stroke-width: 1;
   vector-effect: non-scaling-stroke;
 }
@@ -1292,12 +1338,12 @@ body[data-filter-mode="growth"] .phase-band-growth {
 }
 
 .level-line {
-  stroke: rgba(73, 166, 255, 0.07);
+  stroke: rgba(199, 154, 75, 0.07);
   stroke-dasharray: 2 10;
 }
 
 .grid-line.baseline {
-  stroke: rgba(73, 166, 255, 0.16);
+  stroke: rgba(199, 154, 75, 0.16);
 }
 
 .detail-stats .stat-up,
@@ -1399,21 +1445,21 @@ body.is-touring .cinema-bars::after {
 }
 
 body.is-touring .chart-panel {
-  box-shadow: inset 0 0 180px rgba(73, 166, 255, 0.16);
+  box-shadow: inset 0 0 180px rgba(199, 154, 75, 0.16);
 }
 
 body.is-touring .signal-console {
-  box-shadow: 0 0 60px rgba(73, 166, 255, 0.22);
+  box-shadow: 0 0 60px rgba(199, 154, 75, 0.22);
 }
 
 /* 라인을 따라 흐르는 빛 */
 .path-glow {
   fill: none;
-  stroke: rgba(237, 245, 255, 0.9);
+  stroke: rgba(240, 233, 218, 0.9);
   stroke-width: 2.4;
   stroke-linecap: round;
   stroke-dasharray: 34 9000;
-  filter: drop-shadow(0 0 7px rgba(73, 166, 255, 0.85));
+  filter: drop-shadow(0 0 7px rgba(199, 154, 75, 0.85));
   opacity: 0.85;
   pointer-events: none;
   animation: glowTravel 7.5s linear infinite;
@@ -1465,7 +1511,7 @@ body:not([data-filter-mode="all"]) .path-glow {
 .modal-stats dd.is-counting,
 .market-pulse strong.is-counting {
   color: #ffffff;
-  text-shadow: 0 0 16px rgba(73, 166, 255, 0.55);
+  text-shadow: 0 0 16px rgba(199, 154, 75, 0.55);
 }
 
 /* 스크롤 속도 반응 타이포 (히어로 제목 한정) */
@@ -1481,20 +1527,20 @@ h1 {
 }
 
 .story-chapter.is-current .chapter-word {
-  -webkit-text-stroke-color: rgba(237, 245, 255, 0.32);
-  text-stroke-color: rgba(237, 245, 255, 0.32);
+  -webkit-text-stroke-color: rgba(240, 233, 218, 0.32);
+  text-stroke-color: rgba(240, 233, 218, 0.32);
 }
 
-/* 과장된 포인트 강조 */
+/* 과장된 인장 강조 — 도장이 깊게 찍힌 듯 */
 .chart-point.is-selected,
 .chart-point:hover {
-  r: 6.6;
   filter: drop-shadow(0 0 13px currentColor);
+  transform: scale(2) rotate(-5deg);
 }
 
 .chart-point.is-filter-match {
-  r: 6;
   filter: drop-shadow(0 0 12px currentColor);
+  transform: scale(1.7);
 }
 
 .event-label.is-selected {
@@ -1601,7 +1647,7 @@ h1 {
     display: block;
     min-height: auto;
     border-right: 0;
-    border-bottom: 1px solid rgba(73, 166, 255, 0.22);
+    border-bottom: 1px solid rgba(199, 154, 75, 0.22);
     padding-right: 0;
     padding-bottom: 24px;
   }
@@ -1624,7 +1670,7 @@ h1 {
     margin: 22px auto 0;
     padding-left: 0;
     border-left: 0;
-    border-top: 1px solid rgba(73, 166, 255, 0.22);
+    border-top: 1px solid rgba(199, 154, 75, 0.22);
   }
 
   .signal-console.is-left {

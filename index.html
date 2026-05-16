@@ -30,6 +30,7 @@
         <span class="brand-word"><b>코스피 기록벽</b><i>KOSPI 實錄</i></span>
       </a>
       <span class="topbar-meta">Data wall · 2025.12.30</span>
+      <button class="lang-toggle" id="lang-toggle" type="button" aria-label="View in English">EN</button>
     </header>
 
     <main id="top">
@@ -62,7 +63,7 @@
         </figure>
 
         <div class="hero-bottom">
-          <p class="lead">
+          <p class="lead" data-i18n-prose="lead">
             코스피 45년을 한 폭의 긴 수묵처럼 벽에 겁니다. 모든 시세는 먹의 어둠
             속에 잠겨 있고, 시선이 머무는 자리에만 핀조명이 떨어져 그날의 사건과
             숫자가 낙관처럼 떠오릅니다. 데이터는 기록이 되고, 기록은 풍경이 됩니다.
@@ -101,15 +102,15 @@
             <span class="chapter-word">CRASH</span>
             <svg class="era-chart" viewBox="0 0 900 520" preserveAspectRatio="none"></svg>
             <div class="era-stats">
-              <div><span>구간 수익률</span><strong data-era-stat="return">—</strong></div>
-              <div><span>최대 낙폭</span><strong data-era-stat="drawdown">—</strong></div>
-              <div><span>구간</span><strong data-era-stat="span">—</strong></div>
+              <div><span data-i18n="era.return">구간 수익률</span><strong data-era-stat="return">—</strong></div>
+              <div><span data-i18n="era.drawdown">최대 낙폭</span><strong data-era-stat="drawdown">—</strong></div>
+              <div><span data-i18n="era.span">구간</span><strong data-era-stat="span">—</strong></div>
             </div>
           </figure>
           <div class="chapter-copy">
             <p class="section-kicker">Gallery 01 · Crash</p>
-            <h2>무너지는 순간, 시장은 기억을 만든다.</h2>
-            <p>
+            <h2 data-i18n-prose="crash.h2">무너지는 순간, 시장은 기억을 만든다.</h2>
+            <p data-i18n-prose="crash.p">
               외환위기와 글로벌 금융위기는 코스피의 가격만 낮춘 사건이 아니었습니다.
               위험을 바라보는 한국 시장의 감각을 바꾼 장면들이었습니다.
             </p>
@@ -120,15 +121,15 @@
             <span class="chapter-word">RECOVER</span>
             <svg class="era-chart" viewBox="0 0 900 520" preserveAspectRatio="none"></svg>
             <div class="era-stats">
-              <div><span>구간 수익률</span><strong data-era-stat="return">—</strong></div>
-              <div><span>최대 낙폭</span><strong data-era-stat="drawdown">—</strong></div>
-              <div><span>구간</span><strong data-era-stat="span">—</strong></div>
+              <div><span data-i18n="era.return">구간 수익률</span><strong data-era-stat="return">—</strong></div>
+              <div><span data-i18n="era.drawdown">최대 낙폭</span><strong data-era-stat="drawdown">—</strong></div>
+              <div><span data-i18n="era.span">구간</span><strong data-era-stat="span">—</strong></div>
             </div>
           </figure>
           <div class="chapter-copy">
             <p class="section-kicker">Gallery 02 · Recover</p>
-            <h2>회복은 언제나 느리게 시작해 갑자기 빨라진다.</h2>
-            <p>
+            <h2 data-i18n-prose="recover.h2">회복은 언제나 느리게 시작해 갑자기 빨라진다.</h2>
+            <p data-i18n-prose="recover.p">
               구조조정, 유동성, 수출 회복, 개인투자자 유입. 회복의 이유는 매번
               달랐지만 리듬은 비슷했습니다. 공포가 가격에 다 반영된 뒤, 시장은
               다음 서사를 찾았습니다.
@@ -140,15 +141,15 @@
             <span class="chapter-word">REPRICE</span>
             <svg class="era-chart" viewBox="0 0 900 520" preserveAspectRatio="none"></svg>
             <div class="era-stats">
-              <div><span>구간 수익률</span><strong data-era-stat="return">—</strong></div>
-              <div><span>최대 낙폭</span><strong data-era-stat="drawdown">—</strong></div>
-              <div><span>구간</span><strong data-era-stat="span">—</strong></div>
+              <div><span data-i18n="era.return">구간 수익률</span><strong data-era-stat="return">—</strong></div>
+              <div><span data-i18n="era.drawdown">최대 낙폭</span><strong data-era-stat="drawdown">—</strong></div>
+              <div><span data-i18n="era.span">구간</span><strong data-era-stat="span">—</strong></div>
             </div>
           </figure>
           <div class="chapter-copy">
             <p class="section-kicker">Gallery 03 · Reprice</p>
-            <h2>새 산업이 등장하면 지수의 언어도 바뀐다.</h2>
-            <p>
+            <h2 data-i18n-prose="reprice.h2">새 산업이 등장하면 지수의 언어도 바뀐다.</h2>
+            <p data-i18n-prose="reprice.p">
               조선과 철강, 반도체와 배터리, 플랫폼과 AI 기대, 그리고 2025년의
               밸류업·AI 랠리까지. 코스피의 고점은 단순한 숫자가 아니라 한국
               기업이 어떤 미래를 대표하는지에 대한 집단적 베팅이었습니다.
@@ -162,38 +163,38 @@
           <div class="panel-heading">
             <div>
               <p class="section-kicker">Main Gallery · Interactive Wall</p>
-              <h2>핀조명 아래 드러나는 코스피의 결정적 장면</h2>
+              <h2 data-i18n="panel.h2">핀조명 아래 드러나는 코스피의 결정적 장면</h2>
             </div>
             <div class="chart-meta">
               <span class="data-note">벽면을 따라 움직이면 가장 가까운 사건이 조명 아래 나타납니다.</span>
               <div class="chart-tools">
                 <div class="filter-chips" role="group" aria-label="국면 필터">
-                  <button class="nav-chip is-active" type="button" data-filter="all" aria-pressed="true">전체</button>
-                  <button class="nav-chip" type="button" data-filter="crisis" aria-pressed="false">위기</button>
-                  <button class="nav-chip" type="button" data-filter="recovery" aria-pressed="false">회복</button>
-                  <button class="nav-chip" type="button" data-filter="growth" aria-pressed="false">성장</button>
+                  <button class="nav-chip is-active" type="button" data-filter="all" aria-pressed="true" data-i18n="filter.all">전체</button>
+                  <button class="nav-chip" type="button" data-filter="crisis" aria-pressed="false" data-i18n="filter.crisis">위기</button>
+                  <button class="nav-chip" type="button" data-filter="recovery" aria-pressed="false" data-i18n="filter.recovery">회복</button>
+                  <button class="nav-chip" type="button" data-filter="growth" aria-pressed="false" data-i18n="filter.growth">성장</button>
                 </div>
                 <button class="tour-btn" id="tour-btn" type="button" aria-pressed="false">
                   <span class="tour-icon" aria-hidden="true"></span>
-                  <span class="tour-label">가이드 투어</span>
+                  <span class="tour-label" data-i18n="tour.play">가이드 투어</span>
                 </button>
-                <button class="mode-btn" id="data-mode-btn" type="button" aria-pressed="false">데이터 모드</button>
+                <button class="mode-btn" id="data-mode-btn" type="button" aria-pressed="false" data-i18n="mode.data" data-i18n-aria="mode.dataAria">데이터 모드</button>
               </div>
               <div class="phase-legend" aria-hidden="true">
-                <span class="legend-item legend-crisis">위기</span>
-                <span class="legend-item legend-recovery">회복</span>
-                <span class="legend-item legend-growth">성장</span>
+                <span class="legend-item legend-crisis" data-i18n="filter.crisis">위기</span>
+                <span class="legend-item legend-recovery" data-i18n="filter.recovery">회복</span>
+                <span class="legend-item legend-growth" data-i18n="filter.growth">성장</span>
               </div>
             </div>
           </div>
           <div class="chart-stage">
             <div class="chart-yaxis" id="chart-yaxis" aria-hidden="true"></div>
-            <div class="chart-scroll" id="chart-scroll" tabindex="0" aria-label="1980년부터 최신까지 코스피 장기 차트 가로 스크롤 영역">
+            <div class="chart-scroll" id="chart-scroll" tabindex="0" aria-label="1980년부터 최신까지 코스피 장기 차트 가로 스크롤 영역" data-i18n-aria="aria.chartScroll">
               <div class="chart-wrap">
                 <svg id="kospi-chart" viewBox="0 0 3600 860" role="img" aria-labelledby="chart-title chart-desc"></svg>
                 <div class="chart-tooltip" id="chart-tooltip" hidden></div>
               </div>
-              <p class="chart-hint" id="chart-hint" aria-hidden="true">좌우로 끌어 보세요 · ← → 키 이동 · 아래 미니맵으로 점프 · 데이터 모드로 명료하게</p>
+              <p class="chart-hint" id="chart-hint" aria-hidden="true" data-i18n="hint.text">좌우로 끌어 보세요 · ← → 키 이동 · 아래 미니맵으로 점프 · 데이터 모드로 명료하게</p>
             </div>
           </div>
           <div class="chart-minimap" aria-hidden="true">
@@ -217,19 +218,19 @@
             </p>
             <dl class="detail-stats">
               <div>
-                <dt>지수</dt>
+                <dt data-i18n="label.index">지수</dt>
                 <dd id="detail-index">100</dd>
               </div>
               <div>
-                <dt>국면</dt>
+                <dt data-i18n="label.phase">국면</dt>
                 <dd id="detail-phase">기준 100</dd>
               </div>
               <div>
-                <dt>직전 대비</dt>
+                <dt data-i18n="label.changeVsPrev">직전 대비</dt>
                 <dd id="detail-change">—</dd>
               </div>
               <div>
-                <dt>전고점 대비</dt>
+                <dt data-i18n="label.drawdown">전고점 대비</dt>
                 <dd id="detail-drawdown">—</dd>
               </div>
             </dl>
@@ -240,7 +241,7 @@
       <section class="sources">
         <p>
           <span id="data-source-note">Provenance · 번들 근사 데이터 · as of 2025.12.30</span> ·
-          수치는 실제 코스피 흐름을 따른 근사·실측 혼합값입니다. 라이브 연결 시 외부 소스에서 자동 갱신되며, 위기 구간(1997–98, 2008, 2020, 2022)은 월 단위로 보강했습니다. 참고:
+          <span data-i18n="sources.rest">수치는 실제 코스피 흐름을 따른 근사·실측 혼합값입니다. 라이브 연결 시 외부 소스에서 자동 갱신되며, 위기 구간(1997–98, 2008, 2020, 2022)은 월 단위로 보강했습니다. 참고:</span>
           <a href="https://en.wikipedia.org/wiki/KOSPI" target="_blank" rel="noreferrer">KOSPI annual returns and milestones</a>,
           <a href="https://en.fnnews.com/news/202512301614331303" target="_blank" rel="noreferrer">2025 close 4,214.17</a>.
         </p>
@@ -248,36 +249,36 @@
     </main>
 
     <div class="moment-modal" id="moment-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
-      <button class="modal-scrim" id="modal-scrim" type="button" aria-label="상세 닫기"></button>
+      <button class="modal-scrim" id="modal-scrim" type="button" aria-label="상세 닫기" data-i18n-aria="aria.modalClose"></button>
       <article class="modal-sheet">
-        <button class="modal-close" id="modal-close" type="button" aria-label="상세 닫기">×</button>
+        <button class="modal-close" id="modal-close" type="button" aria-label="상세 닫기" data-i18n-aria="aria.modalClose">×</button>
         <p class="section-kicker" id="modal-date">1980.01.04</p>
         <p class="modal-signal" id="modal-signal">모든 파형의 원점</p>
         <h2 id="modal-title">기준 지수 100</h2>
         <p id="modal-copy">오늘의 4,000선도 이 숫자에서 출발합니다.</p>
         <dl class="modal-stats">
           <div>
-            <dt>지수</dt>
+            <dt data-i18n="label.index">지수</dt>
             <dd id="modal-index">100</dd>
           </div>
           <div>
-            <dt>국면</dt>
+            <dt data-i18n="label.phase">국면</dt>
             <dd id="modal-phase">기준 100</dd>
           </div>
           <div>
-            <dt>직전 대비</dt>
+            <dt data-i18n="label.changeVsPrev">직전 대비</dt>
             <dd id="modal-change">—</dd>
           </div>
           <div>
-            <dt>전고점 대비</dt>
+            <dt data-i18n="label.drawdown">전고점 대비</dt>
             <dd id="modal-drawdown">—</dd>
           </div>
           <div>
-            <dt>구간 CAGR</dt>
+            <dt data-i18n="label.cagr">구간 CAGR</dt>
             <dd id="modal-cagr">—</dd>
           </div>
           <div>
-            <dt>회복 소요</dt>
+            <dt data-i18n="label.recovery">회복 소요</dt>
             <dd id="modal-recovery">—</dd>
           </div>
         </dl>

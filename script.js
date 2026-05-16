@@ -229,6 +229,237 @@ const events = [
   }
 ];
 
+// 영문 서사 (id 매핑). 없으면 한국어로 폴백.
+const eventsEn = {
+  base: { phaseLabel: "Base 100", signal: "Origin of every wave", title: "Base index 100", summary: "On 4 Jan 1980 KOSPI was set to a base of 100 — the starting point for all long-term comparison.", detail: "Today's 4,000 line begins from this number. The first dot is tiny, yet it already holds 45 years of the market's repeated fear and recovery." },
+  launch: { phaseLabel: "Growth base", signal: "The day a baseline was born", title: "Official launch", summary: "Anchored to 100 on 4 Jan 1980, KOSPI became Korea's benchmark index.", detail: "The market was still small, but a stage was set to price in the growth of Korean manufacturing and exporters." },
+  "first-thousand": { phaseLabel: "First 1000", signal: "Birth of the first ceiling", title: "Three-low boom, first 1000", summary: "Low oil, low rates and a weak dollar lifted KOSPI past 1,000 for the first time.", detail: "High-growth confidence condensed into prices. A long correction followed, and 1,000 acted as resistance for years." },
+  imf: { phaseLabel: "FX crisis", signal: "The night fear became a number", title: "The IMF-shock low", summary: "Credit crunch and restructuring fear after the currency crisis dragged the market to a deep low.", detail: "Uncertainty lingered even after the late-1997 bailout. This mid-1998 low is one of Korea's most intense crash memories." },
+  dotcom: { phaseLabel: "Recovery rally", signal: "Breath drawn again", title: "Back to 1000 after the crisis", summary: "Restructuring and the IT boom pulled the market back near 1,000.", detail: "The rebound was fast but fragile; the dot-com bust and a global slowdown soon revived volatility." },
+  "two-thousand": { phaseLabel: "Level up", signal: "Threshold of a new level", title: "The 2000 era opens", summary: "China growth and strong cyclicals — shipbuilding, steel, chemicals — pushed KOSPI past 2,000.", detail: "Korean firms' global competitiveness was repriced, just before the global financial crisis tested the optimism." },
+  gfc: { phaseLabel: "Financial crisis", signal: "The day the world shook together", title: "Global financial crisis", summary: "After Lehman, risk-off spread worldwide and KOSPI fell back below 1,000.", detail: "An open economy's fragility showed — yet the energy for a liquidity-driven recovery and an export rebound was also building." },
+  "post-gfc": { phaseLabel: "Post-crisis recovery", signal: "Above 2000 again", title: "Recovery after the crisis", summary: "Global liquidity and an export rebound carried KOSPI back above 2,000.", detail: "The recovery showed how quickly Korea reprices after external shocks, even while shaken by them." },
+  "first-2500": { phaseLabel: "First 2500", signal: "A crack in the box", title: "First break above 2500", summary: "A chip-earnings cycle and global recovery lifted KOSPI past 2,500 for the first time.", detail: "The long-'boxed' market tested a new level; with the correction that followed, the era showed both hope and limits." },
+  boxpi: { phaseLabel: "Box-breakout attempt", signal: "Knocking on the ceiling", title: "Testing the box ceiling", summary: "A semiconductor boom approached record highs, but trade conflict and earnings worries capped the advance.", detail: "After years near 2,000, the market faced the puzzle that high profits alone didn't expand its valuation." },
+  covid: { phaseLabel: "Pandemic crash", signal: "A short, deep rupture", title: "COVID-19 shock", summary: "Pandemic fear shook global markets at once and KOSPI fell sharply.", detail: "A short, violent shock — then retail inflows, ultra-low rates and digital demand drove a fast recovery." },
+  "three-thousand": { phaseLabel: "The 3000 era", signal: "A wave the retail made", title: "First step on 3000", summary: "Thirteen and a half years after 2,000, KOSPI crossed 3,000 and opened a new chapter.", detail: "Hopes for chips, batteries and platforms met a wave of retail participation; the market's protagonists changed too." },
+  peak: { phaseLabel: "Pandemic-era peak", signal: "The highest breath", title: "2021 peak", summary: "KOSPI reached an intraday 3,316 in June 2021, the apex of the post-pandemic rally.", detail: "Rate hikes and a growth-stock repricing began; until the 2025 rally this peak stood as a long memory." },
+  "rate-shock": { phaseLabel: "Rate shock", signal: "Where liquidity drained", title: "2022 bear-market low", summary: "Surging rates and a growth repricing pushed KOSPI below 2,200 in autumn 2022.", detail: "When the post-pandemic liquidity rally ended, the market returned to the language of earnings and rates — optimism turned defensive in a year." },
+  "rate-cut-hope": { phaseLabel: "Rate-cut hope", signal: "The year hope rose first", title: "2023 recovery", summary: "Rate-cut hopes and a large-cap rebound lifted KOSPI to 2,655.28 by end-2023.", detail: "A strong recovery, but not yet a new high; the market began pricing rates and flows ahead of the economy." },
+  "policy-drag": { phaseLabel: "Political shock", signal: "A shock that closed the year", title: "2024 political-risk plunge", summary: "Rising political uncertainty late in 2024 ended the year at 2,399.49.", detail: "A martial-law declaration and impeachment turmoil amplified risk aversion. This low base set up the strong 2025 rebound." },
+  "rebound-2025": { phaseLabel: "Value-up rebound", signal: "From the low, again", title: "2025 value-up & AI rebound", summary: "KOSPI rebounded fast through 2025, reclaiming 3,000.", detail: "A corporate value-up program and chip/AI hopes quickly reversed the fear of late 2024." },
+  "four-thousand": { phaseLabel: "First 4000", signal: "The weight class changes", title: "First break above 4000", summary: "In October 2025 KOSPI crossed 4,000 for the first time, pushing aside the long box-range memory.", detail: "The new high read less like a recovery than a change in the market's weight class; the long post-3,000 correction felt over." },
+  "year-end-2025": { phaseLabel: "2025 close", signal: "A rally closes the year", title: "2025 close at 4,214.17", summary: "On the last trading day of 2025 KOSPI closed at 4,214.17, a large year-on-year gain.", detail: "The move from 2,399.49 at end-2024 to 4,214.17 reshaped the chart's slope entirely. This is the site's data reference point." }
+};
+
+const I18N = {
+  ko: {
+    "ui.lang": "EN",
+    "ui.langAria": "View in English",
+    "stat.base": "기준점",
+    "stat.ath": "사상 최고권",
+    "stat.norecover": "기록상 미회복",
+    "stat.dash": "—",
+    "stat.years": "년",
+    "tour.play": "가이드 투어",
+    "tour.stop": "투어 정지",
+    "mode.data": "데이터 모드",
+    "mode.dataAria": "데이터 모드 — 잉크를 걷어 수치를 또렷하게",
+    "mode.crisis": "위기 구간 · 급락 신호 강조",
+    "mode.recovery": "회복 구간 · 반등 신호 강조",
+    "mode.growth": "성장 구간 · 랠리 신호 강조",
+    "mode.all": "벽면을 따라 움직이면 가장 가까운 사건이 조명 아래 나타납니다",
+    "prov.bundled": "번들 근사 데이터",
+    "prov.live": "실데이터",
+    "prov.label": "Provenance",
+    "prov.asof": "as of",
+    "pulse.latestLabel": "Object 04 · Latest",
+    "pulse.latestNote": "종가",
+    "hero.readoutTitle": "코스피",
+    "hero.readoutHint": "핀조명을 곡선 위로 옮겨 보세요",
+    "chart.title": "코스피 1980년부터 {asOf}까지 장기 라인 차트",
+    "chart.desc": "1980년 기준 100에서 {asOf} 기준까지 연·월별 종가와 주요 위기·회복 지점을 연결한 차트",
+    "filter.all": "전체",
+    "filter.crisis": "위기",
+    "filter.recovery": "회복",
+    "filter.growth": "성장",
+    "label.index": "지수",
+    "label.phase": "국면",
+    "label.changeVsPrev": "직전 대비",
+    "label.drawdown": "전고점 대비",
+    "label.cagr": "구간 CAGR",
+    "label.recovery": "회복 소요",
+    "era.return": "구간 수익률",
+    "era.drawdown": "최대 낙폭",
+    "era.span": "구간",
+    "panel.h2": "핀조명 아래 드러나는 코스피의 결정적 장면",
+    "hint.text": "좌우로 끌어 보세요 · ← → 키 이동 · 아래 미니맵으로 점프 · 데이터 모드로 명료하게",
+    "sources.rest": "수치는 실제 코스피 흐름을 따른 근사·실측 혼합값입니다. 라이브 연결 시 외부 소스에서 자동 갱신되며, 위기 구간(1997–98, 2008, 2020, 2022)은 월 단위로 보강했습니다. 참고:",
+    "aria.modalClose": "상세 닫기",
+    "aria.chartScroll": "1980년부터 최신까지 코스피 장기 차트 가로 스크롤 영역",
+    "live.latestLabel": "현재 기준",
+    "live.latestSignal": "오늘의 벽",
+    "live.latestTitle": "{asOf} 코스피 {idx}",
+    "live.latestSummary": "{asOf} 기준 최신 종가입니다. 방문할 때마다 외부 소스에서 자동 갱신됩니다.",
+    "live.latestDetail": "이 지점은 큐레이션된 과거 서사가 아니라, 외부 데이터에서 받아온 가장 최근 값입니다. 데이터 소스가 갱신되면 자동으로 따라 움직입니다.",
+    "live.swingPeakLabel": "자동 검출 고점",
+    "live.swingTroughLabel": "자동 검출 저점",
+    "live.swingSignal": "데이터가 표시한 변곡",
+    "live.swingTitle": "{idx} 변곡",
+    "live.swingSummaryUp": "외부 데이터에서 자동 검출한 고점형 변곡점입니다.",
+    "live.swingSummaryDown": "외부 데이터에서 자동 검출한 저점형 변곡점입니다.",
+    "live.swingDetail": "큐레이션된 서사 없이, 불러온 시계열에서 임계 등락폭 이상으로 반전한 지점을 표시합니다."
+  },
+  en: {
+    "ui.lang": "한국어",
+    "ui.langAria": "한국어로 보기",
+    "stat.base": "Base",
+    "stat.ath": "All-time high",
+    "stat.norecover": "Not recovered on record",
+    "stat.dash": "—",
+    "stat.years": "y",
+    "tour.play": "Guided tour",
+    "tour.stop": "Stop tour",
+    "mode.data": "Data mode",
+    "mode.dataAria": "Data mode — strip the ink for sharp figures",
+    "mode.crisis": "Crisis · crash signals emphasized",
+    "mode.recovery": "Recovery · rebound signals emphasized",
+    "mode.growth": "Growth · rally signals emphasized",
+    "mode.all": "Move along the wall; the nearest event rises under the light",
+    "prov.bundled": "bundled approximation",
+    "prov.live": "live data",
+    "prov.label": "Provenance",
+    "prov.asof": "as of",
+    "pulse.latestLabel": "Object 04 · Latest",
+    "pulse.latestNote": "close",
+    "hero.readoutTitle": "KOSPI",
+    "hero.readoutHint": "Move the pin light over the curve",
+    "chart.title": "KOSPI long-term line chart, 1980 to {asOf}",
+    "chart.desc": "From base 100 in 1980 to the {asOf} reference, linking annual/monthly closes and major crisis and recovery points",
+    "filter.all": "All",
+    "filter.crisis": "Crisis",
+    "filter.recovery": "Recovery",
+    "filter.growth": "Growth",
+    "label.index": "Index",
+    "label.phase": "Phase",
+    "label.changeVsPrev": "vs prev",
+    "label.drawdown": "vs peak",
+    "label.cagr": "Period CAGR",
+    "label.recovery": "Recovery time",
+    "era.return": "Period return",
+    "era.drawdown": "Max drawdown",
+    "era.span": "Span",
+    "panel.h2": "KOSPI's decisive scenes, revealed under a pin light",
+    "hint.text": "Drag left/right · ← → keys · jump via the minimap below · Data mode for clarity",
+    "sources.rest": "Figures are an approximation/observed blend that follows the real KOSPI path. When live, they auto-refresh from an external source; crisis windows (1997–98, 2008, 2020, 2022) are filled monthly. Refs:",
+    "aria.modalClose": "Close detail",
+    "aria.chartScroll": "KOSPI long-term chart, horizontal scroll area, 1980 to latest",
+    "live.latestLabel": "Current",
+    "live.latestSignal": "Today's wall",
+    "live.latestTitle": "KOSPI {idx} on {asOf}",
+    "live.latestSummary": "Latest close as of {asOf}. It auto-refreshes from an external source on each visit.",
+    "live.latestDetail": "This point is not a curated past narrative but the most recent value pulled from external data; it follows the source as it updates.",
+    "live.swingPeakLabel": "Auto-detected peak",
+    "live.swingTroughLabel": "Auto-detected trough",
+    "live.swingSignal": "An inflection the data marked",
+    "live.swingTitle": "Inflection at {idx}",
+    "live.swingSummaryUp": "A peak-type inflection auto-detected from external data.",
+    "live.swingSummaryDown": "A trough-type inflection auto-detected from external data.",
+    "live.swingDetail": "With no curated narrative, it marks where the fetched series reversed beyond a threshold move."
+  }
+};
+
+let lang = "ko";
+
+function t(key, vars) {
+  let s = (I18N[lang] && I18N[lang][key]) || (I18N.ko[key]) || key;
+  if (vars) Object.keys(vars).forEach((k) => { s = s.replace(`{${k}}`, vars[k]); });
+  return s;
+}
+
+function tEv(ev, field) {
+  if (!ev) return "";
+  if (lang === "en") {
+    if (ev._en && ev._en[field] != null) return ev._en[field];
+    const o = eventsEn[ev.id];
+    if (o && o[field] != null) return o[field];
+  }
+  return ev[field];
+}
+
+// 정적 산문 영문 (Korean stays in HTML as default; key via data-i18n-prose).
+const STATIC_EN = {
+  "hero.subline": "A pin-light study of crash, recovery, reprice, and rally.",
+  lead: "We hang 45 years of KOSPI on the wall like one long ink scroll. Every quote stays sunk in the dark; only where your gaze rests does a pin light fall, and that day's events and numbers rise like a seal. Data becomes record, and record becomes landscape.",
+  "crash.h2": "When it breaks, the market makes a memory.",
+  "crash.p": "The currency crisis and the global financial crisis didn't merely lower KOSPI's price — they reshaped how the Korean market senses risk.",
+  "recover.h2": "Recovery always starts slowly, then suddenly accelerates.",
+  "recover.p": "Restructuring, liquidity, an export rebound, retail inflows — the reasons differed each time, but the rhythm rhymed. Once fear was fully priced in, the market looked for its next narrative.",
+  "reprice.h2": "When a new industry arrives, the index speaks a new language.",
+  "reprice.p": "Shipbuilding and steel, chips and batteries, platforms and AI hopes, and the 2025 value-up & AI rally — KOSPI's highs were never just numbers but a collective bet on which future Korean firms represent.",
+  "hero.figcaption": "Dark gallery wall · price memory under a moving light.",
+  "hero.figcaptionEm": "Tap/click to jump to that era.",
+  "brand.sub": "KOSPI Records",
+  "kicker.crash": "Gallery 01 · Crash",
+  "kicker.recover": "Gallery 02 · Recover",
+  "kicker.reprice": "Gallery 03 · Reprice",
+  "kicker.main": "Main Gallery · Interactive Wall",
+  "kicker.signal": "Wall Label · Current Signal"
+};
+
+const origText = new WeakMap();
+
+function applyStaticI18n() {
+  document.querySelectorAll("[data-i18n]").forEach((el) => {
+    el.textContent = t(el.getAttribute("data-i18n"));
+  });
+  document.querySelectorAll("[data-i18n-prose]").forEach((el) => {
+    const key = el.getAttribute("data-i18n-prose");
+    if (!origText.has(el)) origText.set(el, el.textContent);
+    el.textContent = lang === "en" ? (STATIC_EN[key] || origText.get(el)) : origText.get(el);
+  });
+  document.querySelectorAll("[data-i18n-aria]").forEach((el) => {
+    el.setAttribute("aria-label", t(el.getAttribute("data-i18n-aria")));
+  });
+}
+
+function refreshDynamicI18n() {
+  setSelected(selectedId, false);
+  if (dataNote) dataNote.textContent = t(`mode.${currentFilter}`) || t("mode.all");
+  updateProvenance();
+  updateLatestUI();
+  renderHero();
+  renderEraPanels();
+  const ct = document.querySelector("#chart-title");
+  const cd = document.querySelector("#chart-desc");
+  if (ct) ct.textContent = t("chart.title", { asOf: dataMeta.asOf });
+  if (cd) cd.textContent = `${t("chart.desc", { asOf: dataMeta.asOf })} (${dataMeta.source})`;
+  if (momentModal && !momentModal.hidden) {
+    updateModal(getEventById(lastModalId) || getSelectedEvent());
+  }
+}
+
+function detectLang() {
+  try {
+    const saved = window.localStorage.getItem("kaw-lang");
+    if (saved === "ko" || saved === "en") return saved;
+  } catch (e) { /* ignore */ }
+  return /^en/i.test(navigator.language || "") ? "en" : "ko";
+}
+
+function applyLang(next) {
+  lang = next === "en" ? "en" : "ko";
+  try { window.localStorage.setItem("kaw-lang", lang); } catch (e) { /* ignore */ }
+  document.documentElement.lang = lang;
+  const btn = document.querySelector("#lang-toggle");
+  if (btn) {
+    btn.textContent = t("ui.lang");
+    btn.setAttribute("aria-label", t("ui.langAria"));
+  }
+  applyStaticI18n();
+  refreshDynamicI18n();
+}
+
 // 연도별 종가(근사값). 사건 사이를 메워 실제 코스피 곡선 모양에 가깝게 그립니다.
 const yearlyCloses = {
   1980: 106.87, 1981: 131.3, 1982: 127.31, 1983: 121.21, 1984: 142.46,
@@ -308,6 +539,7 @@ let heroSweep = 0;
 let heroPointerAt = 0;
 
 let selectedId = "base";
+let lastModalId = "base";
 let currentFilter = "all";
 let lastPhase = "";
 let pointPositions = new Map();
@@ -338,12 +570,6 @@ const modeTargets = {
   growth: "year-end-2025"
 };
 
-const modeLabels = {
-  all: "전체 흐름 · 2025.12.30 기준",
-  crisis: "위기 구간 · 급락 신호 강조",
-  recovery: "회복 구간 · 반등 신호 강조",
-  growth: "성장 구간 · 랠리 신호 강조"
-};
 
 // 라이브 데이터(외부 소스). 미연결/실패 시 null → 번들 근사 데이터로 폴백.
 let liveLine = null;
@@ -465,14 +691,14 @@ function setSelected(id, shouldChartScroll = true) {
   const selected = getSelectedEvent();
   const metrics = getEventMetrics(selected);
 
-  detailSignal.textContent = selected.signal;
-  detailTitle.textContent = selected.title;
+  detailSignal.textContent = tEv(selected, "signal");
+  detailTitle.textContent = tEv(selected, "title");
   detailDate.textContent = selected.date;
-  detailCopy.textContent = selected.detail;
+  detailCopy.textContent = tEv(selected, "detail");
   animateCount(detailIndex, Math.round(selected.index));
-  detailPhase.textContent = selected.phaseLabel;
-  detailChange.textContent = metrics.change === null ? "기준점" : formatSignedPct(metrics.change);
-  detailDrawdown.textContent = metrics.drawdown >= -0.05 ? "사상 최고권" : `${metrics.drawdown.toFixed(1)}%`;
+  detailPhase.textContent = tEv(selected, "phaseLabel");
+  detailChange.textContent = metrics.change === null ? t("stat.base") : formatSignedPct(metrics.change);
+  detailDrawdown.textContent = metrics.drawdown >= -0.05 ? t("stat.ath") : `${metrics.drawdown.toFixed(1)}%`;
   applyStatTone(detailChange, metrics.change);
   applyStatTone(detailDrawdown, metrics.drawdown);
 
@@ -551,25 +777,25 @@ function positionSignalConsole(point) {
 
 function updateChartMoment(event) {
   chartMomentDate.textContent = event.date;
-  chartMomentTitle.textContent = event.title;
-  chartMomentIndex.textContent = `${formatIndex(event.index)} · ${event.phaseLabel}`;
-  chartMomentSummary.textContent = event.summary;
+  chartMomentTitle.textContent = tEv(event, "title");
+  chartMomentIndex.textContent = `${formatIndex(event.index)} · ${tEv(event, "phaseLabel")}`;
+  chartMomentSummary.textContent = tEv(event, "summary");
 }
 
 function updateModal(event) {
   const metrics = getEventMetrics(event);
   modalDate.textContent = event.date;
-  modalSignal.textContent = event.signal;
-  modalTitle.textContent = event.title;
-  modalCopy.textContent = event.detail;
+  modalSignal.textContent = tEv(event, "signal");
+  modalTitle.textContent = tEv(event, "title");
+  modalCopy.textContent = tEv(event, "detail");
   animateCount(modalIndex, Math.round(event.index), { duration: 900 });
-  modalPhase.textContent = event.phaseLabel;
-  modalChange.textContent = metrics.change === null ? "기준점" : formatSignedPct(metrics.change);
-  modalDrawdown.textContent = metrics.drawdown >= -0.05 ? "사상 최고권" : `${metrics.drawdown.toFixed(1)}%`;
-  modalCagr.textContent = metrics.cagr === null ? "—" : formatSignedPct(metrics.cagr);
+  modalPhase.textContent = tEv(event, "phaseLabel");
+  modalChange.textContent = metrics.change === null ? t("stat.base") : formatSignedPct(metrics.change);
+  modalDrawdown.textContent = metrics.drawdown >= -0.05 ? t("stat.ath") : `${metrics.drawdown.toFixed(1)}%`;
+  modalCagr.textContent = metrics.cagr === null ? t("stat.dash") : formatSignedPct(metrics.cagr);
   modalRecovery.textContent = metrics.recovery === null
-    ? (event.phase === "crisis" ? "기록상 미회복" : "—")
-    : `${metrics.recovery.toFixed(1)}년`;
+    ? (event.phase === "crisis" ? t("stat.norecover") : t("stat.dash"))
+    : `${metrics.recovery.toFixed(1)}${t("stat.years")}`;
   applyStatTone(modalChange, metrics.change);
   applyStatTone(modalDrawdown, metrics.drawdown);
   applyStatTone(modalCagr, metrics.cagr);
@@ -577,6 +803,7 @@ function updateModal(event) {
 
 function openMomentModal(id = selectedId) {
   const event = events.find((item) => item.id === id) || getSelectedEvent();
+  lastModalId = event.id;
   updateModal(event);
   momentModal.hidden = false;
   modalClose.focus();
@@ -615,7 +842,7 @@ function resetChartToStart() {
 function applyFilter(filter) {
   currentFilter = filter;
   document.body.dataset.filterMode = filter;
-  if (dataNote) dataNote.textContent = modeLabels[filter] || modeLabels.all;
+  if (dataNote) dataNote.textContent = t(`mode.${filter}`) || t("mode.all");
   hideSignalConsole();
 
   filterButtons.forEach((button) => {
@@ -713,9 +940,9 @@ function renderChart() {
   chart.setAttribute("viewBox", `0 0 ${width} ${height}`);
 
   const title = createSvgElement("title", { id: "chart-title" });
-  title.textContent = `코스피 1980년부터 ${dataMeta.asOf}까지 장기 라인 차트`;
+  title.textContent = t("chart.title", { asOf: dataMeta.asOf });
   const desc = createSvgElement("desc", { id: "chart-desc" });
-  desc.textContent = `1980년 기준 100에서 ${dataMeta.asOf} 기준까지 연·월별 종가와 주요 위기·회복 지점을 연결한 차트 (소스: ${dataMeta.source})`;
+  desc.textContent = `${t("chart.desc", { asOf: dataMeta.asOf })} (${dataMeta.source})`;
   const defs = createSvgElement("defs");
   const gradient = createSvgElement("linearGradient", {
     id: "chartFill",
@@ -853,7 +1080,7 @@ function renderChart() {
       rx: 1.2,
       tabindex: 0,
       role: "button",
-      "aria-label": `${point.title} ${point.date} ${formatIndex(point.index)}`
+      "aria-label": `${tEv(point, "title")} ${point.date} ${formatIndex(point.index)}`
     });
     dot.style.color = point.phase === "crisis" ? "var(--red)" : point.phase === "recovery" ? "var(--green)" : "var(--blue)";
     dot.addEventListener("click", () => {
@@ -1042,7 +1269,7 @@ function startTour() {
   document.body.classList.add("is-touring");
   tourButton?.classList.add("is-playing");
   tourButton?.setAttribute("aria-pressed", "true");
-  if (tourLabel) tourLabel.textContent = "투어 정지";
+  if (tourLabel) tourLabel.textContent = t("tour.stop");
   const idx = list.findIndex((event) => event.id === selectedId);
   tourIndex = idx >= 0 && idx < list.length - 1 ? idx : 0;
 
@@ -1068,7 +1295,7 @@ function stopTour() {
   window.clearTimeout(tourTimer);
   tourButton?.classList.remove("is-playing");
   tourButton?.setAttribute("aria-pressed", "false");
-  if (tourLabel) tourLabel.textContent = "가이드 투어";
+  if (tourLabel) tourLabel.textContent = t("tour.play");
 }
 
 function toggleTour() {
@@ -1438,38 +1665,62 @@ function addSyntheticEvents(series, data) {
   const curatedMaxYear = Math.max(...events.map((e) => e.year));
   const asOf = toDottedDate(data.asOf);
 
+  const tl = (lng, key, vars) => {
+    let s = (I18N[lng] && I18N[lng][key]) || I18N.ko[key] || key;
+    if (vars) Object.keys(vars).forEach((k) => { s = s.replace(`{${k}}`, vars[k]); });
+    return s;
+  };
+
   detectSwings(series, 15, curatedMaxYear + 0.01)
     .slice(-2)
     .forEach((sw, n) => {
       const up = sw.kind === "peak";
+      const idx = formatIndex(sw.point.index);
+      const sum = up ? "live.swingSummaryUp" : "live.swingSummaryDown";
+      const lbl = up ? "live.swingPeakLabel" : "live.swingTroughLabel";
       events.push({
         id: `live-swing-${n}`,
         year: sw.point.year,
         date: toDottedDate(data.monthly.find((m) => m.close === sw.point.index)?.date) || asOf,
         index: sw.point.index,
         phase: up ? "growth" : "crisis",
-        phaseLabel: up ? "자동 검출 고점" : "자동 검출 저점",
-        signal: "데이터가 표시한 변곡",
-        title: `${formatIndex(sw.point.index)} 변곡`,
-        summary: `외부 데이터에서 자동 검출한 ${up ? "고점" : "저점"}형 변곡점입니다.`,
-        detail: "큐레이션된 서사 없이, 불러온 시계열에서 임계 등락폭 이상으로 반전한 지점을 표시합니다."
+        phaseLabel: tl("ko", lbl),
+        signal: tl("ko", "live.swingSignal"),
+        title: tl("ko", "live.swingTitle", { idx }),
+        summary: tl("ko", sum),
+        detail: tl("ko", "live.swingDetail"),
+        _en: {
+          phaseLabel: tl("en", lbl),
+          signal: tl("en", "live.swingSignal"),
+          title: tl("en", "live.swingTitle", { idx }),
+          summary: tl("en", sum),
+          detail: tl("en", "live.swingDetail")
+        }
       });
     });
 
   const last = series[series.length - 1];
   if (last && last.year > curatedMaxYear) {
     const phase = recentSlopePhase(series);
+    const idx = formatIndex(last.index);
     events.push({
       id: "live-latest",
       year: last.year,
       date: asOf,
       index: last.index,
       phase,
-      phaseLabel: "현재 기준",
-      signal: "오늘의 벽",
-      title: `${asOf} 코스피 ${formatIndex(last.index)}`,
-      summary: `${asOf} 기준 최신 종가입니다. 방문할 때마다 외부 소스에서 자동 갱신됩니다.`,
-      detail: "이 지점은 큐레이션된 과거 서사가 아니라, 외부 데이터에서 받아온 가장 최근 값입니다. 데이터 소스가 갱신되면 자동으로 따라 움직입니다."
+      phaseLabel: tl("ko", "live.latestLabel"),
+      signal: tl("ko", "live.latestSignal"),
+      title: tl("ko", "live.latestTitle", { asOf, idx }),
+      summary: tl("ko", "live.latestSummary", { asOf }),
+      detail: tl("ko", "live.latestDetail"),
+      _en: {
+        phaseLabel: tl("en", "live.latestLabel"),
+        signal: tl("en", "live.latestSignal"),
+        title: tl("en", "live.latestTitle", { asOf, idx }),
+        summary: tl("en", "live.latestSummary", { asOf }),
+        detail: tl("en", "live.latestDetail")
+      }
     });
   }
 
@@ -1478,10 +1729,10 @@ function addSyntheticEvents(series, data) {
 
 function updateProvenance() {
   const srcLabel = dataMeta.source === "bundled"
-    ? "번들 근사 데이터"
-    : `실데이터(${dataMeta.source})`;
+    ? t("prov.bundled")
+    : `${t("prov.live")}(${dataMeta.source})`;
   const note = document.querySelector("#data-source-note");
-  if (note) note.textContent = `Provenance · ${srcLabel} · as of ${dataMeta.asOf}`;
+  if (note) note.textContent = `${t("prov.label")} · ${srcLabel} · ${t("prov.asof")} ${dataMeta.asOf}`;
   const meta = document.querySelector(".topbar-meta");
   if (meta) meta.textContent = `Data wall · ${dataMeta.asOf}`;
   const code = document.querySelector(".hero-code");
@@ -1496,10 +1747,10 @@ function updateLatestUI() {
   if (!value) return;
   if (liveLine && liveLine.length) {
     const last = liveLine[liveLine.length - 1];
-    if (label) label.textContent = "Object 04 · Latest";
+    if (label) label.textContent = t("pulse.latestLabel");
     value.dataset.count = String(last.index);
     value.textContent = formatIndex(last.index);
-    if (note) note.textContent = `${dataMeta.asOf} 종가 · ${dataMeta.source}`;
+    if (note) note.textContent = `${dataMeta.asOf} ${t("pulse.latestNote")} · ${dataMeta.source}`;
     if (!prefersReducedMotion) {
       value.textContent = "0";
       animateCount(value, Math.round(last.index), { duration: 1100 });
@@ -1625,9 +1876,9 @@ function renderHero() {
   heroSvg.innerHTML = "";
   heroSvg.setAttribute("viewBox", `0 0 ${W} ${H}`);
   const title = createSvgElement("title", { id: "hero-chart-title" });
-  title.textContent = `코스피 1980 — ${dataMeta.asOf}`;
+  title.textContent = `KOSPI 1980 — ${dataMeta.asOf}`;
   const desc = createSvgElement("desc", { id: "hero-chart-desc" });
-  desc.textContent = "핀조명을 따라 드러나는 실데이터 코스피 곡선";
+  desc.textContent = t("chart.desc", { asOf: dataMeta.asOf });
   const defs = createSvgElement("defs");
   const grad = createSvgElement("radialGradient", { id: "heroPinGrad" });
   grad.appendChild(createSvgElement("stop", { offset: "0%", "stop-color": "#fff" }));
@@ -1671,7 +1922,7 @@ function renderHero() {
   const setReadout = (svgX) => {
     const ev = nearestEventToX(svgX);
     if (ev && heroReadout) {
-      heroReadout.innerHTML = `<b>${formatIndex(ev.index)}</b><span>${ev.date} · ${ev.title}</span>`;
+      heroReadout.innerHTML = `<b>${formatIndex(ev.index)}</b><span>${ev.date} · ${tEv(ev, "title")}</span>`;
     }
     return ev;
   };
@@ -1813,10 +2064,14 @@ updateProvenance();
 updateLatestUI();
 watchChartPosition();
 heroAutoSweep();
+applyLang(detectLang());
 runLoader();
 enhanceWithLiveData();
 
 dataModeBtn?.addEventListener("click", toggleDataMode);
+document.querySelector("#lang-toggle")?.addEventListener("click", () => {
+  applyLang(lang === "ko" ? "en" : "ko");
+});
 window.addEventListener("resize", () => {
   renderHero();
   renderEraPanels();

@@ -2193,3 +2193,99 @@ h1 {
   0%, 100% { transform: translate(-50%, 0); }
   50% { transform: translate(-50%, 5px); }
 }
+
+/* ===== 모바일 디자인 정돈 — 일관 타입·간격·탭타깃·오버플로우 (최종 권위 레이어) ===== */
+@media (max-width: 620px) {
+  html,
+  body {
+    overflow-x: hidden;
+  }
+
+  main {
+    width: min(100% - 28px, 1480px);
+  }
+
+  .section-kicker {
+    font-size: 0.66rem;
+    letter-spacing: 0.06em;
+  }
+
+  .hero-subline {
+    font-size: 0.92rem;
+    line-height: 1.7;
+  }
+
+  .lead {
+    font-size: 0.98rem;
+    line-height: 1.78;
+  }
+
+  .story-chapter h2 {
+    font-size: clamp(1.5rem, 7.5vw, 2.1rem);
+    margin: 8px 0 14px;
+  }
+
+  .story-chapter p:not(.section-kicker) {
+    font-size: 0.95rem;
+    line-height: 1.74;
+  }
+
+  .modal-sheet h2 {
+    font-size: 1.4rem;
+  }
+
+  .modal-signal {
+    font-size: clamp(1.5rem, 7vw, 2.1rem);
+  }
+
+  #modal-copy {
+    font-size: 0.92rem;
+    line-height: 1.7;
+  }
+
+  .market-pulse strong {
+    font-size: clamp(1.5rem, 7vw, 2rem);
+  }
+
+  .metric-label {
+    margin-bottom: 10px;
+    font-size: 0.66rem;
+  }
+
+  .market-pulse small {
+    font-size: 0.74rem;
+  }
+
+  .nav-chip,
+  .tour-btn,
+  .lang-toggle {
+    min-height: 44px;
+  }
+
+  .modal-close {
+    width: 44px;
+    height: 44px;
+  }
+
+  .topbar {
+    gap: 14px;
+  }
+
+  .brand-word b {
+    font-size: 0.92rem;
+  }
+
+  .brand-word i {
+    font-size: 0.58rem;
+  }
+
+  .sources {
+    padding: 26px 16px 48px;
+  }
+
+  .sources p,
+  .site-credit {
+    font-size: 0.78rem;
+    line-height: 1.85;
+  }
+}

@@ -31,6 +31,8 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-snap-type: y proximity;
+  scroll-padding-top: 72px;
 }
 
 body {
@@ -536,8 +538,10 @@ h1 span {
   align-items: center;
   width: min(1480px, calc(100% - 32px));
   margin: 0 auto;
+  min-height: 100svh;
   padding: clamp(72px, 12vw, 168px) 0;
   border-bottom: 1px solid rgba(232, 222, 202, 0.08);
+  scroll-snap-align: start;
 }
 
 .story-chapter:last-child {
@@ -2350,4 +2354,15 @@ h1 {
   html.js-motion .market-pulse > div:nth-child(2) { transition-delay: 80ms; }
   html.js-motion .market-pulse > div:nth-child(3) { transition-delay: 160ms; }
   html.js-motion .market-pulse > div:nth-child(4) { transition-delay: 240ms; }
+}
+
+/* 풀페이지 갤러리 — 감속모션 사용자에겐 스냅 해제·높이 완화(접근성 우선) */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-snap-type: none;
+  }
+
+  .story-chapter {
+    min-height: 0;
+  }
 }

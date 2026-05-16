@@ -1742,10 +1742,11 @@ function addSyntheticEvents(series, data) {
   };
   const pushAuto = (ev) => { events.push(ev); takenYears.push(ev.year); };
 
-  // 1) 라운드 레벨 첫 돌파 — 큐레이션이 덮지 않는 5,000+ 신규 레벨만 (최대 4개).
+  // 1) 라운드 레벨 첫 돌파 — 큐레이션이 덮지 않는 5,000+ 신규 레벨만.
+  //    각 마커는 라이브 실데이터가 그 레벨을 실제로 넘었을 때만 생성된다(조작 없음).
   let levelCount = 0;
-  [5000, 6000, 7000, 8000, 9000].forEach((level) => {
-    if (levelCount >= 4) return;
+  [5000, 6000, 7000, 8000, 9000, 10000, 12000, 15000].forEach((level) => {
+    if (levelCount >= 8) return;
     const hit = series.find((p) => p.index >= level);
     if (!hit || near(hit.year)) return;
     levelCount += 1;

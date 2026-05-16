@@ -1,0 +1,23 @@
+{
+  "name": "kospi-archive-wall",
+  "version": "1.0.0",
+  "description": "KOSPI Archive Wall - 1980부터 현재까지 코스피 45년사 데이터 아카이브",
+  "type": "module",
+  "scripts": {
+    "dev": "npx serve .",
+    "build": "echo 'Static site - no build needed'",
+    "lint": "echo 'No linter configured for static site'"
+  },
+  "keywords": [
+    "kospi",
+    "korea",
+    "stock",
+    "market",
+    "visualization"
+  ],
+  "author": "Harry",
+  "license": "MIT",
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1"
+  }
+}

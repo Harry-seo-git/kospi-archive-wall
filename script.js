@@ -191,6 +191,66 @@ const events = [
     summary: "2024년 말 정치 불확실성이 커지며 코스피는 2399.49로 한 해를 마쳤습니다.",
     detail: "비상계엄 선포와 탄핵 정국 등 정치 리스크가 위험회피를 키웠습니다. 이 낮은 출발선이 2025년 강한 반등의 토대가 됐습니다."
   },
+  {
+    id: "first-5000",
+    year: 2026.07,
+    date: "2026.01.27",
+    index: 5000,
+    phase: "growth",
+    phaseLabel: "첫 5,000",
+    signal: "5천피의 문",
+    title: "사상 첫 5,000 돌파",
+    summary: "2026년 1월 27일 코스피가 종가 기준 사상 처음 5,000선을 넘었습니다.",
+    detail: "지난해 6·3 대선 이후 이어진 강세장이 사상 처음 5,000선을 돌파했습니다. (출처: 한겨레)"
+  },
+  {
+    id: "first-6000",
+    year: 2026.15,
+    date: "2026.02.25",
+    index: 6022.7,
+    phase: "growth",
+    phaseLabel: "첫 6,000",
+    signal: "한 달 만의 1,000p",
+    title: "사상 첫 6,000 돌파",
+    summary: "2026년 2월 25일 코스피가 사상 처음 6,000을 넘어 6,022.7로 출발했습니다.",
+    detail: "1월 27일 5,000 돌파 이후 불과 18거래일 만이며, 지난해 6·3 대선 이후 상승률은 122%에 달했습니다. (출처: 한겨레)"
+  },
+  {
+    id: "first-7000",
+    year: 2026.35,
+    date: "2026.05.06",
+    index: 7093.01,
+    phase: "growth",
+    phaseLabel: "꿈의 7천피",
+    signal: "단숨에 7,300까지",
+    title: "사상 첫 7,000 돌파",
+    summary: "2026년 5월 6일 코스피가 급등 출발해 사상 처음 7,000선을 넘어 장중 7,300까지 올랐습니다.",
+    detail: "미국·이란이 산발적 교전 속에도 휴전 기조를 유지하며 국제유가가 급락하고, 간밤 미 증시 기술주 강세가 이어지며 지수를 밀어 올렸습니다. 개장 직후 코스피200 선물 급등으로 사이드카가 발동됐습니다. (출처: 연합뉴스)"
+  },
+  {
+    id: "iran-war-shock",
+    year: 2026.36,
+    date: "2026.05.12",
+    index: 7642.15,
+    phase: "crisis",
+    phaseLabel: "전쟁 격화 충격",
+    signal: "랠리 속의 급반락",
+    title: "미·이스라엘–이란 전쟁 격화",
+    summary: "2026년 5월 12일 코스피는 장 초반 7,999.67까지 올랐다가 급반락해 2.29% 하락한 7,642.15로 마감했습니다.",
+    detail: "미국·이스라엘과 이란의 전쟁 상황 격화에 삼성전자 노사 협상 부진, ‘AI 국민배당금’ 논란 등 대내외 악재가 겹쳤습니다. 다만 다음 날 개인 매수세로 2.63% 반등했습니다. (출처: 한겨레)"
+  },
+  {
+    id: "first-8000",
+    year: 2026.37,
+    date: "2026.05.15",
+    index: 8000,
+    phase: "growth",
+    phaseLabel: "첫 8,000",
+    signal: "일주일 만에 또 1,000p",
+    title: "사상 첫 8,000 돌파(장중)",
+    summary: "2026년 5월 15일 코스피가 장중 사상 처음 8,000을 넘었습니다. 7,000 돌파 일주일 만입니다.",
+    detail: "올해 들어 약 85% 폭등하며 지수 앞자리를 네 번째 갈아치웠습니다. 삼성전자·SK하이닉스가 상승을 이끌었습니다. (출처: 한겨레)"
+  }
 ];
 
 // 영문 서사 (id 매핑). 없으면 한국어로 폴백.
@@ -211,6 +271,11 @@ const eventsEn = {
   "rate-shock": { phaseLabel: "Rate shock", signal: "Where liquidity drained", title: "2022 bear-market low", summary: "Surging rates and a growth repricing pushed KOSPI below 2,200 in autumn 2022.", detail: "When the post-pandemic liquidity rally ended, the market returned to the language of earnings and rates — optimism turned defensive in a year." },
   "rate-cut-hope": { phaseLabel: "Rate-cut hope", signal: "The year hope rose first", title: "2023 recovery", summary: "Rate-cut hopes and a large-cap rebound lifted KOSPI to 2,655.28 by end-2023.", detail: "A strong recovery, but not yet a new high; the market began pricing rates and flows ahead of the economy." },
   "policy-drag": { phaseLabel: "Political shock", signal: "A shock that closed the year", title: "2024 political-risk plunge", summary: "Rising political uncertainty late in 2024 ended the year at 2,399.49.", detail: "A martial-law declaration and impeachment turmoil amplified risk aversion. This low base set up the strong 2025 rebound." },
+  "first-5000": { phaseLabel: "First 5,000", signal: "The 5,000 gate", title: "First close above 5,000", summary: "On 27 Jan 2026 KOSPI closed above 5,000 for the first time.", detail: "The bull run that began after the 3 June presidential election pushed the index past 5,000 for the first time. (Source: Hankyoreh)" },
+  "first-6000": { phaseLabel: "First 6,000", signal: "1,000 points in a month", title: "First break above 6,000", summary: "On 25 Feb 2026 KOSPI opened at 6,022.7, crossing 6,000 for the first time.", detail: "Just 18 trading days after the 5,000 break on 27 Jan; the gain since the 3 June election reached 122%. (Source: Hankyoreh)" },
+  "first-7000": { phaseLabel: "Dream 7,000", signal: "Straight to 7,300", title: "First break above 7,000", summary: "On 6 May 2026 KOSPI gapped up through 7,000 for the first time, reaching 7,300 intraday.", detail: "A US-Iran ceasefire tone amid sporadic clashes sank oil prices while overnight US tech strength carried over; an index-futures surge triggered a sidecar at the open. (Source: Yonhap)" },
+  "iran-war-shock": { phaseLabel: "War-escalation shock", signal: "A sharp drop inside the rally", title: "US/Israel-Iran war escalates", summary: "On 12 May 2026 KOSPI rose to 7,999.67 early then reversed to close down 2.29% at 7,642.15.", detail: "Escalation of the US/Israel-Iran war, stalled Samsung labor talks and an 'AI citizens dividend' controversy weighed on the market; it rebounded 2.63% the next day on retail buying. (Source: Hankyoreh)" },
+  "first-8000": { phaseLabel: "First 8,000", signal: "Another 1,000 in a week", title: "First break above 8,000 (intraday)", summary: "On 15 May 2026 KOSPI crossed 8,000 intraday for the first time - a week after 7,000.", detail: "Up about 85% year-to-date, changing its leading digit for the fourth time, led by Samsung Electronics and SK hynix. (Source: Hankyoreh)" }
 };
 
 const I18N = {
@@ -548,7 +613,7 @@ const modeTargets = {
   all: "base",
   crisis: "covid",
   recovery: "rate-cut-hope",
-  growth: "peak"
+  growth: "first-8000"
 };
 
 

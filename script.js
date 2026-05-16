@@ -297,6 +297,20 @@ const I18N = {
     "sources.rest": "수치는 실제 코스피 흐름을 따른 근사·실측 혼합값입니다. 라이브 연결 시 외부 소스에서 자동 갱신되며, 위기 구간(1997–98, 2008, 2020, 2022)은 월 단위로 보강했습니다. 참고:",
     "aria.modalClose": "상세 닫기",
     "aria.chartScroll": "1980년부터 최신까지 코스피 장기 차트 가로 스크롤 영역",
+    "aria.dashboard": "코스피 타임라인 대시보드",
+    "aria.filterChips": "국면 필터",
+    "aria.momentCard": "현재 선택된 장면 요약",
+    "aria.heroVisual": "코스피 1980년부터 최신까지의 붓 획 곡선",
+    "aria.brand": "코스피 기록벽 KOSPI 實錄",
+    "aria.chapterWrap": "코스피 서사 챕터",
+    "aria.flag": "대한민국 국기",
+    "aria.pulse": "요약 지표",
+    "pulse.note1": "1980.01.04 기준 100",
+    "pulse.note2": "2024.12 정치 충격",
+    "pulse.note3": "2025.10.27 사상 첫 4000",
+    "pulse.note4": "2025.12.30 종가",
+    "hero.figcaption": "어둠의 벽 · 움직이는 빛 아래의 가격 기억.",
+    "hero.figcaptionEm": "탭/클릭하면 해당 시대로 이동합니다.",
     "live.latestLabel": "현재 기준",
     "live.latestSignal": "오늘의 벽",
     "live.latestTitle": "{asOf} 코스피 {idx}",
@@ -354,6 +368,20 @@ const I18N = {
     "sources.rest": "Figures are an approximation/observed blend that follows the real KOSPI path. When live, they auto-refresh from an external source; crisis windows (1997–98, 2008, 2020, 2022) are filled monthly. Refs:",
     "aria.modalClose": "Close detail",
     "aria.chartScroll": "KOSPI long-term chart, horizontal scroll area, 1980 to latest",
+    "aria.dashboard": "KOSPI timeline dashboard",
+    "aria.filterChips": "Phase filter",
+    "aria.momentCard": "Summary of the selected scene",
+    "aria.heroVisual": "Brush-stroke KOSPI curve, 1980 to latest",
+    "aria.brand": "KOSPI Archive Wall",
+    "aria.chapterWrap": "KOSPI narrative chapters",
+    "aria.flag": "Flag of South Korea",
+    "aria.pulse": "Summary metrics",
+    "pulse.note1": "Base 100 · 4 Jan 1980",
+    "pulse.note2": "Dec 2024 political shock",
+    "pulse.note3": "27 Oct 2025 · first 4000",
+    "pulse.note4": "30 Dec 2025 close",
+    "hero.figcaption": "Dark wall · price memory under a moving light.",
+    "hero.figcaptionEm": "Tap/click to jump to that era.",
     "live.latestLabel": "Current",
     "live.latestSignal": "Today's wall",
     "live.latestTitle": "KOSPI {idx} on {asOf}",
@@ -389,22 +417,13 @@ function tEv(ev, field) {
 
 // 정적 산문 영문 (Korean stays in HTML as default; key via data-i18n-prose).
 const STATIC_EN = {
-  "hero.subline": "A pin-light study of crash, recovery, reprice, and rally.",
   lead: "We hang 45 years of KOSPI on the wall like one long ink scroll. Every quote stays sunk in the dark; only where your gaze rests does a pin light fall, and that day's events and numbers rise like a seal. Data becomes record, and record becomes landscape.",
   "crash.h2": "When it breaks, the market makes a memory.",
   "crash.p": "The currency crisis and the global financial crisis didn't merely lower KOSPI's price — they reshaped how the Korean market senses risk.",
   "recover.h2": "Recovery always starts slowly, then suddenly accelerates.",
   "recover.p": "Restructuring, liquidity, an export rebound, retail inflows — the reasons differed each time, but the rhythm rhymed. Once fear was fully priced in, the market looked for its next narrative.",
   "reprice.h2": "When a new industry arrives, the index speaks a new language.",
-  "reprice.p": "Shipbuilding and steel, chips and batteries, platforms and AI hopes, and the 2025 value-up & AI rally — KOSPI's highs were never just numbers but a collective bet on which future Korean firms represent.",
-  "hero.figcaption": "Dark gallery wall · price memory under a moving light.",
-  "hero.figcaptionEm": "Tap/click to jump to that era.",
-  "brand.sub": "KOSPI Records",
-  "kicker.crash": "Gallery 01 · Crash",
-  "kicker.recover": "Gallery 02 · Recover",
-  "kicker.reprice": "Gallery 03 · Reprice",
-  "kicker.main": "Main Gallery · Interactive Wall",
-  "kicker.signal": "Wall Label · Current Signal"
+  "reprice.p": "Shipbuilding and steel, chips and batteries, platforms and AI hopes, and the 2025 value-up & AI rally — KOSPI's highs were never just numbers but a collective bet on which future Korean firms represent."
 };
 
 const origText = new WeakMap();
@@ -1476,7 +1495,7 @@ function observeChapters() {
         if (item !== entry.target) item.classList.remove("is-current");
       });
     });
-  }, { threshold: 0.42 });
+  }, { rootMargin: "-45% 0px -45% 0px", threshold: 0 });
 
   chapters.forEach((chapter) => observer.observe(chapter));
 }
@@ -2040,7 +2059,7 @@ function observeEraPanels() {
     entries.forEach((entry) => {
       if (entry.isIntersecting) playEraStats(entry.target);
     });
-  }, { threshold: 0.35 });
+  }, { rootMargin: "-20% 0px -20% 0px", threshold: 0 });
   document.querySelectorAll(".story-chapter[data-era]").forEach((a) => observer.observe(a));
 }
 

@@ -361,7 +361,15 @@ const I18N = {
     "live.swingTitle": "{idx} 변곡",
     "live.swingSummaryUp": "외부 데이터에서 자동 검출한 고점형 변곡점입니다.",
     "live.swingSummaryDown": "외부 데이터에서 자동 검출한 저점형 변곡점입니다.",
-    "live.swingDetail": "큐레이션된 서사 없이, 불러온 시계열에서 임계 등락폭 이상으로 반전한 지점을 표시합니다."
+    "live.swingDetail": "큐레이션된 서사 없이, 불러온 시계열에서 임계 등락폭 이상으로 반전한 지점을 표시합니다.",
+    "live.levelLabel": "첫 {n} 돌파",
+    "live.levelSignal": "새 레벨의 문턱",
+    "live.levelTitle": "{n}선 최초 돌파",
+    "live.levelSummary": "코스피가 데이터상 처음으로 {n}선을 종가 돌파한 지점입니다.",
+    "live.levelDetail": "라운드 레벨 첫 돌파를 외부 데이터에서 자동 검출했습니다. 새 레벨을 넘으면 이슈가 자동으로 추가됩니다.",
+    "live.intraday": "장중(잠정)",
+    "live.settled": "종가",
+    "prov.intraday": "· 장중 잠정"
   },
   en: {
     "ui.lang": "한국어",
@@ -432,7 +440,15 @@ const I18N = {
     "live.swingTitle": "Inflection at {idx}",
     "live.swingSummaryUp": "A peak-type inflection auto-detected from external data.",
     "live.swingSummaryDown": "A trough-type inflection auto-detected from external data.",
-    "live.swingDetail": "With no curated narrative, it marks where the fetched series reversed beyond a threshold move."
+    "live.swingDetail": "With no curated narrative, it marks where the fetched series reversed beyond a threshold move.",
+    "live.levelLabel": "First {n}",
+    "live.levelSignal": "Threshold of a new level",
+    "live.levelTitle": "First break above {n}",
+    "live.levelSummary": "The first point where KOSPI closed above {n} in the data.",
+    "live.levelDetail": "First round-level breach auto-detected from external data. When a new level is crossed, the issue is added automatically.",
+    "live.intraday": "Intraday (provisional)",
+    "live.settled": "Close",
+    "prov.intraday": "· intraday provisional"
   }
 };
 
@@ -625,7 +641,7 @@ const modeTargets = {
 // 라이브 데이터(외부 소스). 미연결/실패 시 null → 번들 근사 데이터로 폴백.
 let liveLine = null;
 let liveStartYear = Infinity;
-const dataMeta = { asOf: "2026.05 (근사)", source: "bundled" };
+const dataMeta = { asOf: "2026.05 (근사)", source: "bundled", intraday: false };
 
 function decimalYearFromDate(dateStr) {
   const [y, m, d] = String(dateStr).split("-").map(Number);
@@ -1715,17 +1731,59 @@ function addSyntheticEvents(series, data) {
     return s;
   };
 
-  detectSwings(series, 15, curatedMaxYear + 0.01)
-    .slice(-2)
+  // 큐레이션/이미 추가된 이벤트와 근접하면 중복으로 보고 건너뜀.
+  const takenYears = events.map((e) => e.year);
+  const near = (y) => takenYears.some((t) => Math.abs(t - y) < 0.7);
+  const dateFor = (idx) => {
+    const hit =
+      (data.daily || []).find((m) => m.close === idx) ||
+      (data.monthly || []).find((m) => m.close === idx);
+    return toDottedDate(hit && hit.date) || asOf;
+  };
+  const pushAuto = (ev) => { events.push(ev); takenYears.push(ev.year); };
+
+  // 1) 라운드 레벨 첫 돌파 — 큐레이션이 덮지 않는 5,000+ 신규 레벨만 (최대 4개).
+  let levelCount = 0;
+  [5000, 6000, 7000, 8000, 9000].forEach((level) => {
+    if (levelCount >= 4) return;
+    const hit = series.find((p) => p.index >= level);
+    if (!hit || near(hit.year)) return;
+    levelCount += 1;
+    const n = level.toLocaleString("en-US");
+    pushAuto({
+      id: `live-lvl-${level}`,
+      year: hit.year,
+      date: dateFor(hit.index),
+      index: level,
+      phase: "growth",
+      phaseLabel: tl("ko", "live.levelLabel", { n }),
+      signal: tl("ko", "live.levelSignal"),
+      title: tl("ko", "live.levelTitle", { n }),
+      summary: tl("ko", "live.levelSummary", { n }),
+      detail: tl("ko", "live.levelDetail"),
+      _en: {
+        phaseLabel: tl("en", "live.levelLabel", { n }),
+        signal: tl("en", "live.levelSignal"),
+        title: tl("en", "live.levelTitle", { n }),
+        summary: tl("en", "live.levelSummary", { n }),
+        detail: tl("en", "live.levelDetail")
+      }
+    });
+  });
+
+  // 2) 큰 변곡(ZigZag) — 큐레이션 이후 구간, 근접 중복 제거, 최대 3개.
+  detectSwings(series, 16, curatedMaxYear + 0.01)
+    .slice(-3)
     .forEach((sw, n) => {
+      if (near(sw.point.year)) return;
       const up = sw.kind === "peak";
       const idx = formatIndex(sw.point.index);
       const sum = up ? "live.swingSummaryUp" : "live.swingSummaryDown";
       const lbl = up ? "live.swingPeakLabel" : "live.swingTroughLabel";
-      events.push({
+      pushAuto({
         id: `live-swing-${n}`,
         year: sw.point.year,
-        date: toDottedDate(data.monthly.find((m) => m.close === sw.point.index)?.date) || asOf,
+        date: dateFor(sw.point.index),
         index: sw.point.index,
         phase: up ? "growth" : "crisis",
         phaseLabel: tl("ko", lbl),
@@ -1743,25 +1801,28 @@ function addSyntheticEvents(series, data) {
       });
     });
 
+  // 3) 최신 종가 — 장중이면 잠정 표기.
   const last = series[series.length - 1];
   if (last && last.year > curatedMaxYear) {
     const phase = recentSlopePhase(series);
     const idx = formatIndex(last.index);
+    const stKo = data.intraday ? I18N.ko["live.intraday"] : I18N.ko["live.settled"];
+    const stEn = data.intraday ? I18N.en["live.intraday"] : I18N.en["live.settled"];
     events.push({
       id: "live-latest",
       year: last.year,
-      date: asOf,
+      date: `${asOf} ${stKo}`,
       index: last.index,
       phase,
-      phaseLabel: tl("ko", "live.latestLabel"),
+      phaseLabel: stKo,
       signal: tl("ko", "live.latestSignal"),
-      title: tl("ko", "live.latestTitle", { asOf, idx }),
+      title: `${tl("ko", "live.latestTitle", { asOf, idx })} · ${stKo}`,
       summary: tl("ko", "live.latestSummary", { asOf }),
       detail: tl("ko", "live.latestDetail"),
       _en: {
-        phaseLabel: tl("en", "live.latestLabel"),
+        phaseLabel: stEn,
         signal: tl("en", "live.latestSignal"),
-        title: tl("en", "live.latestTitle", { asOf, idx }),
+        title: `${tl("en", "live.latestTitle", { asOf, idx })} · ${stEn}`,
         summary: tl("en", "live.latestSummary", { asOf }),
         detail: tl("en", "live.latestDetail")
       }
@@ -1775,8 +1836,9 @@ function updateProvenance() {
   const srcLabel = dataMeta.source === "bundled"
     ? t("prov.bundled")
     : `${t("prov.live")}(${dataMeta.source})`;
+  const intra = dataMeta.intraday ? ` ${t("prov.intraday")}` : "";
   const note = document.querySelector("#data-source-note");
-  if (note) note.textContent = `${t("prov.label")} · ${srcLabel} · ${t("prov.asof")} ${dataMeta.asOf}`;
+  if (note) note.textContent = `${t("prov.label")} · ${srcLabel} · ${t("prov.asof")} ${dataMeta.asOf}${intra}`;
   const meta = document.querySelector(".topbar-meta");
   if (meta) meta.textContent = `Data wall · ${dataMeta.asOf}`;
   const code = document.querySelector(".hero-code");
@@ -2042,10 +2104,24 @@ function rebuildChart() {
 }
 
 // 폴백 우선: 번들 데이터로 먼저 렌더한 뒤, 라이브가 도착하면 보강.
+// KRX 거래일/세션에 맞춘 캐시 버스트 키 (KST 기준).
+function kstCacheKey() {
+  const k = new Date(Date.now() + 9 * 3600 * 1000);
+  const ymd = k.toISOString().slice(0, 10).replace(/-/g, "");
+  const day = k.getUTCDay();
+  const min = k.getUTCHours() * 60 + k.getUTCMinutes();
+  const session = day >= 1 && day <= 5 && min >= 540 && min < 945
+    ? `i${k.getUTCHours()}`
+    : "c";
+  return `${ymd}-${session}`;
+}
+
 async function enhanceWithLiveData() {
   let data;
   try {
-    const res = await fetch("/api/kospi", { headers: { Accept: "application/json" } });
+    const res = await fetch(`/api/kospi?d=${kstCacheKey()}`, {
+      headers: { Accept: "application/json" }
+    });
     if (!res.ok) return;
     data = await res.json();
   } catch (err) {
@@ -2053,15 +2129,20 @@ async function enhanceWithLiveData() {
   }
   if (!data || !Array.isArray(data.monthly) || data.monthly.length < 12) return;
 
-  const pts = data.monthly
+  const toPts = (arr) => (arr || [])
     .map((m) => ({ year: decimalYearFromDate(m.date), index: m.close }))
-    .filter((p) => p.year && Number.isFinite(p.index) && p.index > 0)
-    .sort((a, b) => a.year - b.year);
+    .filter((p) => p.year && Number.isFinite(p.index) && p.index > 0);
+  const monthlyPts = toPts(data.monthly).sort((a, b) => a.year - b.year);
+  const dailyPts = toPts(data.daily).sort((a, b) => a.year - b.year);
+  // 오래된 구간은 월봉, 최근 구간은 일봉(정확한 최신 종가)으로 합침.
+  const dailyStart = dailyPts.length ? dailyPts[0].year : Infinity;
+  const pts = monthlyPts.filter((p) => p.year < dailyStart).concat(dailyPts);
   if (pts.length < 12) return;
 
   liveLine = pts;
   liveStartYear = pts[0].year;
   dataMeta.source = data.source || "live";
+  dataMeta.intraday = !!data.intraday;
   dataMeta.asOf = toDottedDate(data.asOf) || dataMeta.asOf;
 
   // 라이브 구간에 들어오는 큐레이션 사건의 수치를 실데이터로 스냅 (라인과 일치).

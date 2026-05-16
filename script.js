@@ -302,12 +302,6 @@ const I18N = {
     "stat.years": "년",
     "tour.play": "가이드 투어",
     "tour.stop": "투어 정지",
-    "mode.data": "데이터 모드",
-    "mode.dataAria": "데이터 모드 — 잉크를 걷어 수치를 또렷하게",
-    "mode.crisis": "위기 구간 · 급락 신호 강조",
-    "mode.recovery": "회복 구간 · 반등 신호 강조",
-    "mode.growth": "성장 구간 · 랠리 신호 강조",
-    "mode.all": "벽면을 따라 움직이면 가장 가까운 사건이 조명 아래 나타납니다",
     "prov.bundled": "번들 근사 데이터",
     "prov.live": "실데이터",
     "prov.label": "Provenance",
@@ -332,7 +326,7 @@ const I18N = {
     "era.drawdown": "최대 낙폭",
     "era.span": "구간",
     "panel.h2": "핀조명 아래 드러나는 코스피의 결정적 장면",
-    "hint.text": "좌우로 끌어 보세요 · ← → 키 이동 · 아래 미니맵으로 점프 · 데이터 모드로 명료하게",
+    "hint.text": "좌우로 끌어 보세요 · ← → 키 이동 · 아래 미니맵으로 점프",
     "sources.rest": "수치는 실제 코스피 흐름을 따른 근사·실측 혼합값입니다. 라이브 연결 시 외부 소스에서 자동 갱신되며, 위기 구간(1997–98, 2008, 2020, 2022)은 월 단위로 보강했습니다. 참고:",
     "aria.modalClose": "상세 닫기",
     "aria.chartScroll": "1980년부터 최신까지 코스피 장기 차트 가로 스크롤 영역",
@@ -381,12 +375,6 @@ const I18N = {
     "stat.years": "y",
     "tour.play": "Guided tour",
     "tour.stop": "Stop tour",
-    "mode.data": "Data mode",
-    "mode.dataAria": "Data mode — strip the ink for sharp figures",
-    "mode.crisis": "Crisis · crash signals emphasized",
-    "mode.recovery": "Recovery · rebound signals emphasized",
-    "mode.growth": "Growth · rally signals emphasized",
-    "mode.all": "Move along the wall; the nearest event rises under the light",
     "prov.bundled": "bundled approximation",
     "prov.live": "live data",
     "prov.label": "Provenance",
@@ -411,7 +399,7 @@ const I18N = {
     "era.drawdown": "Max drawdown",
     "era.span": "Span",
     "panel.h2": "KOSPI's decisive scenes, revealed under a pin light",
-    "hint.text": "Drag left/right · ← → keys · jump via the minimap below · Data mode for clarity",
+    "hint.text": "Drag left/right · ← → keys · jump via the minimap below",
     "sources.rest": "Figures are an approximation/observed blend that follows the real KOSPI path. When live, they auto-refresh from an external source; crisis windows (1997–98, 2008, 2020, 2022) are filled monthly. Refs:",
     "aria.modalClose": "Close detail",
     "aria.chartScroll": "KOSPI long-term chart, horizontal scroll area, 1980 to latest",
@@ -599,7 +587,6 @@ const heroSvg = document.querySelector("#hero-chart");
 const heroVisual = document.querySelector("#hero-visual");
 const heroReadout = document.querySelector("#hero-readout");
 const chartYaxis = document.querySelector("#chart-yaxis");
-const dataModeBtn = document.querySelector("#data-mode-btn");
 
 let chartGeo = null;
 let heroSweep = 0;
@@ -1091,6 +1078,7 @@ function renderChart() {
   chart.appendChild(createSvgElement("path", {
     class: "path-line",
     d: pathData,
+    pathLength: "1",
     filter: (prefersReducedMotion || coarsePointer) ? "" : "url(#inkBrush)"
   }));
   chart.appendChild(createSvgElement("path", { class: "path-glow", d: pathData }));
@@ -1648,6 +1636,7 @@ window.addEventListener("keydown", (event) => {
 window.addEventListener("scroll", () => {
   updateProgress();
   updateScrollVelocity();
+  updateEraProgress();
 }, { passive: true });
 chartScroll?.addEventListener("scroll", updateChartScrollbar, { passive: true });
 window.addEventListener("hashchange", () => {
@@ -2085,14 +2074,6 @@ function heroAutoSweep() {
   window.requestAnimationFrame(heroAutoSweep);
 }
 
-function toggleDataMode() {
-  const on = document.body.classList.toggle("is-data-mode");
-  if (dataModeBtn) {
-    dataModeBtn.classList.toggle("is-active", on);
-    dataModeBtn.setAttribute("aria-pressed", String(on));
-  }
-}
-
 function rebuildChart() {
   renderChart();
   applyFilter(currentFilter);
@@ -2169,12 +2150,45 @@ function observeEraPanels() {
   document.querySelectorAll(".story-chapter[data-era]").forEach((a) => observer.observe(a));
 }
 
+// 갤러리 스크롤 진행도(0..1) — 패널 내부 모션에만 쓰여 절대 다른 섹션을 침범하지 않음.
+function updateEraProgress() {
+  if (prefersReducedMotion) return;
+  const vh = window.innerHeight || 1;
+  document.querySelectorAll(".story-chapter[data-era]").forEach((a) => {
+    const r = a.getBoundingClientRect();
+    const span = r.height + vh;
+    const p = Math.min(1, Math.max(0, (vh - r.top) / span));
+    a.style.setProperty("--era-p", p.toFixed(3));
+  });
+}
+
+// 패널 위 포인터 패럴럭스 — overflow:hidden 패널 안에서만 미세 이동.
+function enableEraParallax() {
+  if (prefersReducedMotion || coarsePointer) return;
+  document.querySelectorAll(".story-chapter[data-era] .era-panel").forEach((panel) => {
+    const art = panel.closest(".story-chapter");
+    panel.addEventListener("pointermove", (e) => {
+      const b = panel.getBoundingClientRect();
+      const px = ((e.clientX - b.left) / b.width - 0.5) * 2;
+      const py = ((e.clientY - b.top) / b.height - 0.5) * 2;
+      art.style.setProperty("--px", px.toFixed(3));
+      art.style.setProperty("--py", py.toFixed(3));
+    });
+    panel.addEventListener("pointerleave", () => {
+      art.style.setProperty("--px", "0");
+      art.style.setProperty("--py", "0");
+    });
+  });
+}
+
 document.body.dataset.phase = "growth";
 renderChart();
 renderHero();
 renderEraPanels();
 observeChapters();
 observeEraPanels();
+enableEraParallax();
+updateEraProgress();
 enableChartGestures();
 enableMinimap();
 initParticles();
@@ -2193,11 +2207,11 @@ applyLang(detectLang());
 runLoader();
 enhanceWithLiveData();
 
-dataModeBtn?.addEventListener("click", toggleDataMode);
 document.querySelector("#lang-toggle")?.addEventListener("click", () => {
   applyLang(lang === "ko" ? "en" : "ko");
 });
 window.addEventListener("resize", () => {
   renderHero();
   renderEraPanels();
+  updateEraProgress();
 }, { passive: true });

@@ -2366,3 +2366,131 @@ h1 {
     min-height: 0;
   }
 }
+
+/* ===== 타이틀 옆 큰 종가 ===== */
+.hero-title-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: clamp(24px, 4vw, 72px);
+  flex-wrap: wrap;
+}
+
+.hero-title-row h1 {
+  flex: 1 1 auto;
+}
+
+.hero-quote {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+  gap: 6px;
+  padding-bottom: 10px;
+}
+
+.hero-quote-label {
+  color: rgba(199, 154, 75, 0.82);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+#hero-quote-value {
+  font-family: var(--display);
+  font-size: clamp(2.4rem, 5vw, 4.6rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.hero-quote-meta {
+  color: rgba(150, 138, 118, 0.9);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.hero-quote-meta .is-up {
+  color: var(--cheong);
+}
+
+.hero-quote-meta .is-down {
+  color: var(--ju);
+}
+
+#hero-quote-asof {
+  font-style: normal;
+  color: rgba(150, 138, 118, 0.7);
+  font-weight: 600;
+}
+
+#page-title i {
+  display: block;
+  font-style: normal;
+}
+
+@media (max-width: 620px) {
+  .hero-title-row {
+    gap: 16px;
+  }
+
+  .hero-quote {
+    align-items: flex-start;
+    text-align: left;
+    padding-bottom: 0;
+  }
+
+  #hero-quote-value {
+    font-size: clamp(2rem, 12vw, 3.1rem);
+  }
+}
+
+/* ===== 타이틀 클립 순차 상승 (1회성, 모션 허용 시) ===== */
+@media (prefers-reduced-motion: no-preference) {
+  #page-title span {
+    overflow: hidden;
+  }
+
+  #page-title span i {
+    transform: translateY(108%);
+    transition: transform 920ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  body.is-ready #page-title span:nth-child(1) i {
+    transition-delay: 120ms;
+  }
+
+  body.is-ready #page-title span:nth-child(2) i {
+    transition-delay: 240ms;
+  }
+
+  body.is-ready #page-title span i {
+    transform: translateY(0);
+  }
+}
+
+/* ===== 갤러리 챕터 등장·퇴장 (스크롤 연동, 모션 허용 시) ===== */
+@media (prefers-reduced-motion: no-preference) {
+  .story-chapter[data-era] .chapter-copy,
+  .story-chapter[data-era] .era-panel {
+    --era-vis: calc(var(--era-enter, 1) - var(--era-exit, 0));
+    opacity: var(--era-vis);
+    transform:
+      translateY(calc((1 - var(--era-enter, 1)) * 54px + var(--era-exit, 0) * -54px))
+      scale(calc(0.965 + var(--era-vis) * 0.035));
+    will-change: transform, opacity;
+  }
+}
+
+@media (max-width: 620px) and (prefers-reduced-motion: no-preference) {
+  .story-chapter[data-era] .chapter-copy,
+  .story-chapter[data-era] .era-panel {
+    transform:
+      translateY(calc((1 - var(--era-enter, 1)) * 34px + var(--era-exit, 0) * -34px))
+      scale(calc(0.985 + var(--era-vis) * 0.015));
+  }
+}

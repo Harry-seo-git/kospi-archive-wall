@@ -334,6 +334,8 @@ const I18N = {
     "pulse.note3": "2021.06 사상 최고 3,316",
     "pulse.note4": "한국장 마감(15:45 KST) 자동 갱신",
     "hero.figcaption": "어둠의 벽 · 움직이는 빛 아래의 가격 기억.",
+    "hero.quoteLabel": "코스피 종가",
+    "hero.quoteIntraday": "장중 잠정",
     "hero.figcaptionEm": "탭/클릭하면 해당 시대로 이동합니다.",
     "live.latestLabel": "현재 기준",
     "live.latestSignal": "오늘의 벽",
@@ -411,6 +413,8 @@ const I18N = {
     "pulse.note3": "Jun 2021 · all-time high 3,316",
     "pulse.note4": "Auto-updates at 15:45 KST close",
     "hero.figcaption": "Dark wall · price memory under a moving light.",
+    "hero.quoteLabel": "KOSPI close",
+    "hero.quoteIntraday": "intraday",
     "hero.figcaptionEm": "Tap/click to jump to that era.",
     "live.latestLabel": "Current",
     "live.latestSignal": "Today's wall",
@@ -1921,12 +1925,24 @@ function updateProvenance() {
 
 /* ===== 상단 최신 지표 ===== */
 function updateLatestUI() {
+  // 표시할 최신 지점: 라이브가 있으면 라이브 마지막, 없으면 번들 실측 마지막.
+  let series = null;
+  if (liveLine && liveLine.length) {
+    series = liveLine;
+  } else {
+    const bl = buildLinePoints();
+    series = bl && bl.length ? bl : null;
+  }
+  const last = series ? series[series.length - 1] : null;
+  const prev = series && series.length > 1 ? series[series.length - 2] : null;
+  const changePct = last && prev && prev.index
+    ? ((last.index - prev.index) / prev.index) * 100
+    : null;
+
   const label = document.querySelector("#pulse-latest-label");
   const value = document.querySelector("#pulse-latest");
   const note = document.querySelector("#pulse-latest-note");
-  if (!value) return;
-  if (liveLine && liveLine.length) {
-    const last = liveLine[liveLine.length - 1];
+  if (value && liveLine && liveLine.length && last) {
     if (label) label.textContent = t("pulse.latestLabel");
     value.dataset.count = String(last.index);
     value.textContent = formatIndex(last.index);
@@ -1935,6 +1951,33 @@ function updateLatestUI() {
       value.textContent = "0";
       animateCount(value, Math.round(last.index), { duration: 1100 });
     }
+  }
+
+  // 타이틀 옆 큰 종가 — 라이브면 실값, 미연결이면 마지막 실측 종가를 정직 표기.
+  const qVal = document.querySelector("#hero-quote-value");
+  const qChange = document.querySelector("#hero-quote-change");
+  const qAsof = document.querySelector("#hero-quote-asof");
+  const qLabel = document.querySelector(".hero-quote-label");
+  if (qVal && last) {
+    if (qLabel) {
+      qLabel.textContent = dataMeta.intraday
+        ? `${t("hero.quoteLabel")} · ${t("hero.quoteIntraday")}`
+        : t("hero.quoteLabel");
+    }
+    const target = Math.round(last.index);
+    if (prefersReducedMotion || qVal.dataset.shown === String(target)) {
+      qVal.textContent = formatIndex(last.index);
+    } else {
+      qVal.textContent = "0";
+      animateCount(qVal, target, { duration: 1100 });
+    }
+    qVal.dataset.shown = String(target);
+    if (qChange) {
+      qChange.textContent = changePct === null ? "—" : formatSignedPct(changePct);
+      qChange.classList.toggle("is-up", Number.isFinite(changePct) && changePct > 0);
+      qChange.classList.toggle("is-down", Number.isFinite(changePct) && changePct < 0);
+    }
+    if (qAsof) qAsof.textContent = ` · ${dataMeta.asOf}`;
   }
 }
 
@@ -2239,11 +2282,15 @@ function observeEraPanels() {
 function updateEraProgress() {
   if (prefersReducedMotion) return;
   const vh = window.innerHeight || 1;
+  const clamp01 = (x) => Math.min(1, Math.max(0, x));
   document.querySelectorAll(".story-chapter[data-era]").forEach((a) => {
     const r = a.getBoundingClientRect();
     const span = r.height + vh;
     const p = Math.min(1, Math.max(0, (vh - r.top) / span));
     a.style.setProperty("--era-p", p.toFixed(3));
+    // 등장(0.06→0.36) · 초점 유지 · 퇴장(0.64→0.94) 타임라인
+    a.style.setProperty("--era-enter", clamp01((p - 0.06) / 0.3).toFixed(3));
+    a.style.setProperty("--era-exit", clamp01((p - 0.64) / 0.3).toFixed(3));
   });
 }
 

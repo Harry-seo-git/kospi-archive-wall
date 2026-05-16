@@ -1965,11 +1965,27 @@ h1 {
   }
 
   h1 {
-    font-size: 5rem;
+    font-size: clamp(2.4rem, 12vw, 3.8rem);
+    line-height: 1.04;
+  }
+
+  h1 span {
+    word-break: keep-all;
   }
 
   .hero {
-    padding-top: 42px;
+    padding-top: 36px;
+  }
+
+  .hero-subline {
+    font-size: 0.96rem;
+    margin-top: 18px;
+    padding-top: 12px;
+  }
+
+  .hero-flag {
+    width: min(680px, 132%);
+    height: 60%;
   }
 
   .hero-visual svg {
@@ -1998,32 +2014,91 @@ h1 {
   }
 
   .chart-scroll {
-    height: min(760px, calc(100svh - 118px));
-    min-height: 720px;
+    height: min(600px, calc(100svh - 150px));
+    min-height: 460px;
   }
 
   .chart-wrap {
-    min-height: 760px;
+    min-height: 600px;
   }
 
   #kospi-chart {
-    height: 760px;
+    height: 600px;
   }
 
   .chart-yaxis {
-    height: 760px;
-    width: 46px;
+    height: 600px;
+    width: 42px;
+  }
+
+  .yaxis-tick {
+    font-size: 0.66rem;
   }
 
   .signal-console .detail-signal {
-    font-size: clamp(1.65rem, 8vw, 2.4rem);
+    font-size: clamp(1.6rem, 8vw, 2.3rem);
   }
 
   .modal-stats {
     grid-template-columns: 1fr;
   }
 
+  .modal-sheet {
+    padding: clamp(20px, 6vw, 32px);
+  }
+
+  .era-stats {
+    gap: 12px 22px;
+  }
+
+  .era-stats strong {
+    font-size: clamp(1.3rem, 6vw, 1.9rem);
+  }
+
   .chapter-word {
-    font-size: clamp(3.6rem, 26vw, 7rem);
+    font-size: clamp(3.4rem, 27vw, 6.4rem);
+  }
+
+  .sources p,
+  .site-credit {
+    font-size: 0.78rem;
+  }
+}
+
+/* 터치 기기 — 탭 타깃 ≥ 44px, 손가락에 맞춘 여백 */
+@media (pointer: coarse) {
+  .nav-chip,
+  .tour-btn,
+  .mode-btn,
+  .lang-toggle {
+    min-height: 42px;
+    padding-top: 9px;
+    padding-bottom: 9px;
+  }
+
+  .modal-close {
+    width: 42px;
+    height: 42px;
+  }
+}
+
+/* 초소형 화면 추가 정리 */
+@media (max-width: 400px) {
+  h1 {
+    font-size: clamp(2.1rem, 13vw, 3rem);
+  }
+
+  .market-pulse > div {
+    min-height: 104px;
+    padding: 16px 14px 18px;
+  }
+
+  .era-stats {
+    flex-wrap: wrap;
+    gap: 10px 18px;
+  }
+
+  .chapter-copy h2 {
+    font-size: clamp(1.7rem, 8.5vw, 2.4rem);
   }
 }

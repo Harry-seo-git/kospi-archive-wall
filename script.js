@@ -2165,19 +2165,31 @@ function updateEraProgress() {
 // 패널 위 포인터 패럴럭스 — overflow:hidden 패널 안에서만 미세 이동.
 function enableEraParallax() {
   if (prefersReducedMotion || coarsePointer) return;
-  document.querySelectorAll(".story-chapter[data-era] .era-panel").forEach((panel) => {
-    const art = panel.closest(".story-chapter");
-    panel.addEventListener("pointermove", (e) => {
-      const b = panel.getBoundingClientRect();
+  document.querySelectorAll(".story-chapter[data-era]").forEach((art) => {
+    art.addEventListener("pointermove", (e) => {
+      const b = art.getBoundingClientRect();
       const px = ((e.clientX - b.left) / b.width - 0.5) * 2;
       const py = ((e.clientY - b.top) / b.height - 0.5) * 2;
       art.style.setProperty("--px", px.toFixed(3));
       art.style.setProperty("--py", py.toFixed(3));
     });
-    panel.addEventListener("pointerleave", () => {
+    art.addEventListener("pointerleave", () => {
       art.style.setProperty("--px", "0");
       art.style.setProperty("--py", "0");
     });
+  });
+}
+
+// 히어로 태극기 핀조명 — 커서 위치(히어로 기준 %)로 마스크 중심 이동.
+function enableHeroFlag() {
+  const hero = document.querySelector(".hero");
+  if (!hero || prefersReducedMotion || coarsePointer) return;
+  hero.addEventListener("pointermove", (e) => {
+    const b = hero.getBoundingClientRect();
+    const cx = ((e.clientX - b.left) / b.width) * 100;
+    const cy = ((e.clientY - b.top) / b.height) * 100;
+    hero.style.setProperty("--hero-cx", `${cx.toFixed(1)}%`);
+    hero.style.setProperty("--hero-cy", `${cy.toFixed(1)}%`);
   });
 }
 
@@ -2188,6 +2200,7 @@ renderEraPanels();
 observeChapters();
 observeEraPanels();
 enableEraParallax();
+enableHeroFlag();
 updateEraProgress();
 enableChartGestures();
 enableMinimap();

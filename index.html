@@ -35,22 +35,22 @@
 
     <main id="top">
       <section class="hero" aria-labelledby="page-title">
+        <svg class="hero-flag" id="hero-flag" viewBox="0 0 60 40" aria-hidden="true" preserveAspectRatio="xMidYMid slice">
+          <g transform="rotate(-90 30 20)">
+            <circle cx="30" cy="20" r="8.4" fill="#1f4fa0" />
+            <path d="M30 11.6 A8.4 8.4 0 0 1 30 28.4 A4.2 4.2 0 0 0 30 20 A4.2 4.2 0 0 1 30 11.6 Z" fill="#d0414a" />
+          </g>
+          <g fill="#f0e9da">
+            <rect x="7" y="5.2" width="11" height="1.6" /><rect x="7" y="8.2" width="11" height="1.6" /><rect x="7" y="11.2" width="11" height="1.6" />
+            <rect x="42" y="5.2" width="4.6" height="1.6" /><rect x="48.4" y="5.2" width="4.6" height="1.6" /><rect x="42" y="8.2" width="11" height="1.6" /><rect x="42" y="11.2" width="4.6" height="1.6" /><rect x="48.4" y="11.2" width="4.6" height="1.6" />
+            <rect x="7" y="27.2" width="11" height="1.6" /><rect x="7" y="30.2" width="4.6" height="1.6" /><rect x="13.4" y="30.2" width="4.6" height="1.6" /><rect x="7" y="33.2" width="11" height="1.6" />
+            <rect x="42" y="27.2" width="4.6" height="1.6" /><rect x="48.4" y="27.2" width="4.6" height="1.6" /><rect x="42" y="30.2" width="4.6" height="1.6" /><rect x="48.4" y="30.2" width="4.6" height="1.6" /><rect x="42" y="33.2" width="4.6" height="1.6" /><rect x="48.4" y="33.2" width="4.6" height="1.6" />
+          </g>
+        </svg>
         <div class="hero-mast">
           <p class="hero-code">Exhibition Archive · 1980 — 2025.12.30</p>
           <h1 id="page-title">
-            <span class="hero-kospi">KOSPI<svg class="kr-flag" viewBox="0 0 60 40" role="img" aria-label="대한민국 국기" data-i18n-aria="aria.flag">
-              <rect width="60" height="40" fill="#fff" stroke="rgba(240,233,218,0.35)" stroke-width="0.8" />
-              <g transform="rotate(-90 30 20)">
-                <circle cx="30" cy="20" r="8" fill="#003478" />
-                <path d="M30 12 A8 8 0 0 1 30 28 A4 4 0 0 0 30 20 A4 4 0 0 1 30 12 Z" fill="#C60C30" />
-              </g>
-              <g fill="#111">
-                <rect x="7" y="5.2" width="11" height="1.6" /><rect x="7" y="8.2" width="11" height="1.6" /><rect x="7" y="11.2" width="11" height="1.6" />
-                <rect x="42" y="5.2" width="4.6" height="1.6" /><rect x="48.4" y="5.2" width="4.6" height="1.6" /><rect x="42" y="8.2" width="11" height="1.6" /><rect x="42" y="11.2" width="4.6" height="1.6" /><rect x="48.4" y="11.2" width="4.6" height="1.6" />
-                <rect x="7" y="27.2" width="11" height="1.6" /><rect x="7" y="30.2" width="4.6" height="1.6" /><rect x="13.4" y="30.2" width="4.6" height="1.6" /><rect x="7" y="33.2" width="11" height="1.6" />
-                <rect x="42" y="27.2" width="4.6" height="1.6" /><rect x="48.4" y="27.2" width="4.6" height="1.6" /><rect x="42" y="30.2" width="4.6" height="1.6" /><rect x="48.4" y="30.2" width="4.6" height="1.6" /><rect x="42" y="33.2" width="4.6" height="1.6" /><rect x="48.4" y="33.2" width="4.6" height="1.6" />
-              </g>
-            </svg></span>
+            <span>KOSPI</span>
             <span>ARCHIVE WALL</span>
           </h1>
           <p class="hero-subline">A pin-light study of crash, recovery, reprice, and rally.</p>
@@ -98,8 +98,8 @@
           <span id="chapter-indicator">CRASH</span>
         </div>
         <article class="story-chapter" data-chapter="CRASH" data-era="crash">
+          <span class="chapter-word" aria-hidden="true">CRASH</span>
           <figure class="era-panel" aria-hidden="true">
-            <span class="chapter-word">CRASH</span>
             <svg class="era-chart" viewBox="0 0 900 520" preserveAspectRatio="none"></svg>
             <div class="era-stats">
               <div><span data-i18n="era.return">구간 수익률</span><strong data-era-stat="return">—</strong></div>
@@ -117,8 +117,8 @@
           </div>
         </article>
         <article class="story-chapter" data-chapter="RECOVER" data-era="recover">
+          <span class="chapter-word" aria-hidden="true">RECOVER</span>
           <figure class="era-panel" aria-hidden="true">
-            <span class="chapter-word">RECOVER</span>
             <svg class="era-chart" viewBox="0 0 900 520" preserveAspectRatio="none"></svg>
             <div class="era-stats">
               <div><span data-i18n="era.return">구간 수익률</span><strong data-era-stat="return">—</strong></div>
@@ -137,8 +137,8 @@
           </div>
         </article>
         <article class="story-chapter" data-chapter="REPRICE" data-era="reprice">
+          <span class="chapter-word" aria-hidden="true">REPRICE</span>
           <figure class="era-panel" aria-hidden="true">
-            <span class="chapter-word">REPRICE</span>
             <svg class="era-chart" viewBox="0 0 900 520" preserveAspectRatio="none"></svg>
             <div class="era-stats">
               <div><span data-i18n="era.return">구간 수익률</span><strong data-era-stat="return">—</strong></div>

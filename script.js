@@ -265,8 +265,23 @@ const events = [
   }
 ];
 
+// 연도별 종가(근사값). 사건 사이를 메워 실제 코스피 곡선 모양에 가깝게 그립니다.
+const yearlyCloses = {
+  1980: 106.87, 1981: 131.3, 1982: 127.31, 1983: 121.21, 1984: 142.46,
+  1985: 163.37, 1986: 272.61, 1987: 525.11, 1988: 907.2, 1989: 909.72,
+  1990: 696.11, 1991: 610.92, 1992: 678.44, 1993: 866.18, 1994: 1027.37,
+  1995: 882.94, 1996: 651.22, 1997: 376.31, 1998: 562.46, 1999: 1028.07,
+  2000: 504.62, 2001: 693.7, 2002: 627.55, 2003: 810.71, 2004: 895.9,
+  2005: 1379.37, 2006: 1434.46, 2007: 1897.13, 2008: 1124.47, 2009: 1682.77,
+  2010: 2051, 2011: 1825.74, 2012: 1997.05, 2013: 2011.34, 2014: 1915.59,
+  2015: 1961.31, 2016: 2026.46, 2017: 2467.49, 2018: 2041.04, 2019: 2197.67,
+  2020: 2873.47, 2021: 2977.65, 2022: 2236.4, 2023: 2655.28, 2024: 2399.49,
+  2025: 4214.17
+};
+
 const chart = document.querySelector("#kospi-chart");
 const chartScroll = document.querySelector("#chart-scroll");
+const minimap = document.querySelector("#kospi-minimap");
 const timeline = document.querySelector("#timeline");
 const tooltip = document.querySelector("#chart-tooltip");
 const signalConsole = document.querySelector(".signal-console");
@@ -276,6 +291,8 @@ const detailDate = document.querySelector("#detail-date");
 const detailCopy = document.querySelector("#detail-copy");
 const detailIndex = document.querySelector("#detail-index");
 const detailPhase = document.querySelector("#detail-phase");
+const detailChange = document.querySelector("#detail-change");
+const detailDrawdown = document.querySelector("#detail-drawdown");
 const chartMomentCard = document.querySelector("#chart-moment-card");
 const chartMomentDate = document.querySelector("#chart-moment-date");
 const chartMomentTitle = document.querySelector("#chart-moment-title");
@@ -290,7 +307,13 @@ const modalTitle = document.querySelector("#modal-title");
 const modalCopy = document.querySelector("#modal-copy");
 const modalIndex = document.querySelector("#modal-index");
 const modalPhase = document.querySelector("#modal-phase");
+const modalChange = document.querySelector("#modal-change");
+const modalDrawdown = document.querySelector("#modal-drawdown");
+const modalCagr = document.querySelector("#modal-cagr");
+const modalRecovery = document.querySelector("#modal-recovery");
 const filterButtons = document.querySelectorAll(".nav-chip");
+const tourButton = document.querySelector("#tour-btn");
+const tourLabel = tourButton?.querySelector(".tour-label");
 const progressBar = document.querySelector("#reading-progress");
 const loader = document.querySelector("#loader");
 const loaderCount = document.querySelector("#loader-count");
@@ -307,6 +330,11 @@ let chartDragStartX = 0;
 let chartDragStartLeft = 0;
 let suppressChartSyncUntil = 0;
 let lastChartScrollLeft = -1;
+let isTouring = false;
+let tourTimer = 0;
+let tourIndex = 0;
+let isMinimapDragging = false;
+const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 const modeTargets = {
   all: "base",
@@ -322,18 +350,61 @@ const modeLabels = {
   growth: "성장 구간 · 랠리 신호 강조"
 };
 
+const levelLines = [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000];
+
 function formatIndex(value) {
   return Math.round(value).toLocaleString("ko-KR");
+}
+
+function formatSignedPct(value) {
+  if (value === null || !Number.isFinite(value)) return "—";
+  const sign = value > 0 ? "+" : "";
+  return `${sign}${value.toFixed(1)}%`;
 }
 
 function getSelectedEvent() {
   return events.find((event) => event.id === selectedId) || events[0];
 }
 
+// 사건별 정량 지표: 직전 대비 등락, 전고점 대비 낙폭, 구간 CAGR, 회복 소요.
+function getEventMetrics(event) {
+  const idx = events.findIndex((item) => item.id === event.id);
+  const prev = idx > 0 ? events[idx - 1] : null;
+  const change = prev ? ((event.index - prev.index) / prev.index) * 100 : null;
+
+  let peak = events[0].index;
+  for (let i = 0; i <= idx; i += 1) peak = Math.max(peak, events[i].index);
+  const drawdown = ((event.index - peak) / peak) * 100;
+
+  let cagr = null;
+  if (prev) {
+    const span = Math.max(0.25, event.year - prev.year);
+    cagr = (Math.pow(event.index / prev.index, 1 / span) - 1) * 100;
+  }
+
+  let recovery = null;
+  if (event.phase === "crisis") {
+    const priorPeak = idx > 0 ? Math.max(...events.slice(0, idx).map((e) => e.index)) : event.index;
+    const back = events.slice(idx + 1).find((e) => e.index >= priorPeak);
+    if (back) recovery = Math.max(0.1, back.year - event.year);
+  }
+
+  return { change, drawdown, cagr, recovery };
+}
+
+function applyStatTone(node, value, { invert = false } = {}) {
+  if (!node) return;
+  node.classList.remove("stat-up", "stat-down");
+  if (value === null || !Number.isFinite(value) || value === 0) return;
+  const positive = invert ? value < 0 : value > 0;
+  node.classList.add(positive ? "stat-up" : "stat-down");
+}
+
 function setSelected(id, shouldScroll = false, shouldChartScroll = true) {
   if (selectedId === id && !shouldScroll && !shouldChartScroll) return;
   selectedId = id;
   const selected = getSelectedEvent();
+  const metrics = getEventMetrics(selected);
 
   detailSignal.textContent = selected.signal;
   detailTitle.textContent = selected.title;
@@ -341,6 +412,11 @@ function setSelected(id, shouldScroll = false, shouldChartScroll = true) {
   detailCopy.textContent = selected.detail;
   detailIndex.textContent = formatIndex(selected.index);
   detailPhase.textContent = selected.phaseLabel;
+  detailChange.textContent = metrics.change === null ? "기준점" : formatSignedPct(metrics.change);
+  detailDrawdown.textContent = metrics.drawdown >= -0.05 ? "사상 최고권" : `${metrics.drawdown.toFixed(1)}%`;
+  applyStatTone(detailChange, metrics.change);
+  applyStatTone(detailDrawdown, metrics.drawdown);
+
   updateChartMoment(selected);
   document.body.dataset.phase = selected.phase;
 
@@ -357,6 +433,7 @@ function setSelected(id, shouldScroll = false, shouldChartScroll = true) {
   });
 
   updateCursorLine(id);
+  updateMinimapMarker(id);
 
   if (shouldChartScroll) {
     scrollChartTo(id);
@@ -377,12 +454,12 @@ function hideSignalConsole() {
   chart.querySelector(".chart-cursor-line")?.classList.remove("is-visible");
 }
 
-function revealPoint(point, shouldScroll = false) {
+function revealPoint(point, shouldScroll = false, shouldChartScroll = false) {
   if (!point) return;
   if (currentFilter !== "all" && currentFilter !== point.phase) {
     applyFilter("all");
   }
-  setSelected(point.id, shouldScroll, false);
+  setSelected(point.id, shouldScroll, shouldChartScroll);
   showSignalConsole();
 }
 
@@ -422,12 +499,22 @@ function updateChartMoment(event) {
 }
 
 function updateModal(event) {
+  const metrics = getEventMetrics(event);
   modalDate.textContent = event.date;
   modalSignal.textContent = event.signal;
   modalTitle.textContent = event.title;
   modalCopy.textContent = event.detail;
   modalIndex.textContent = formatIndex(event.index);
   modalPhase.textContent = event.phaseLabel;
+  modalChange.textContent = metrics.change === null ? "기준점" : formatSignedPct(metrics.change);
+  modalDrawdown.textContent = metrics.drawdown >= -0.05 ? "사상 최고권" : `${metrics.drawdown.toFixed(1)}%`;
+  modalCagr.textContent = metrics.cagr === null ? "—" : formatSignedPct(metrics.cagr);
+  modalRecovery.textContent = metrics.recovery === null
+    ? (event.phase === "crisis" ? "기록상 미회복" : "—")
+    : `${metrics.recovery.toFixed(1)}년`;
+  applyStatTone(modalChange, metrics.change);
+  applyStatTone(modalDrawdown, metrics.drawdown);
+  applyStatTone(modalCagr, metrics.cagr);
 }
 
 function openMomentModal(id = selectedId) {
@@ -447,7 +534,7 @@ function scrollChartTo(id) {
   const nextLeft = Math.max(0, point.x - chartScroll.clientWidth * 0.5);
   suppressChartSyncUntil = performance.now() + 1400;
   if (typeof chartScroll.scrollTo === "function") {
-    chartScroll.scrollTo({ left: nextLeft, behavior: "smooth" });
+    chartScroll.scrollTo({ left: nextLeft, behavior: prefersReducedMotion ? "auto" : "smooth" });
   } else {
     chartScroll.scrollLeft = nextLeft;
   }
@@ -463,10 +550,10 @@ function resetChartToStart() {
 }
 
 function scrollTimelineTo(id) {
-  const card = document.querySelector(`[data-id="${id}"]`);
+  const card = document.querySelector(`.timeline-card[data-id="${id}"]`);
   if (!card || !timeline) return;
   const nextTop = Math.max(0, card.offsetTop - timeline.clientHeight * 0.5 + card.clientHeight * 0.5);
-  timeline.scrollTop = nextTop;
+  timeline.scrollTo({ top: nextTop, behavior: prefersReducedMotion ? "auto" : "smooth" });
 }
 
 function applyFilter(filter) {
@@ -500,20 +587,29 @@ function applyFilter(filter) {
 function renderTimeline() {
   if (!timeline) return;
 
-  timeline.innerHTML = events.map((event) => `
-    <button class="timeline-card" type="button" data-id="${event.id}" data-phase="${event.phase}">
+  timeline.innerHTML = events.map((event) => {
+    const metrics = getEventMetrics(event);
+    const move = metrics.change === null ? "기준점" : formatSignedPct(metrics.change);
+    return `
+    <button class="timeline-card" type="button" role="listitem" data-id="${event.id}" data-phase="${event.phase}">
       <span class="year">${Math.floor(event.year)}</span>
       <span class="card-body">
         <h3>${event.title}</h3>
         <p>${event.summary}</p>
       </span>
-      <span class="phase ${event.phase}">${event.phaseLabel}</span>
+      <span class="card-meta">
+        <span class="phase ${event.phase}">${event.phaseLabel}</span>
+        <span class="card-move">${formatIndex(event.index)} · ${move}</span>
+      </span>
     </button>
-  `).join("");
+  `;
+  }).join("");
 
   timeline.querySelectorAll(".timeline-card").forEach((card) => {
     card.addEventListener("click", () => {
+      stopTour();
       setSelected(card.dataset.id);
+      writeHash(card.dataset.id);
       openMomentModal(card.dataset.id);
     });
     card.addEventListener("pointermove", (event) => {
@@ -543,6 +639,17 @@ function createSvgElement(name, attrs = {}) {
   return element;
 }
 
+// 연도별 종가 + 사건 포인트를 합쳐 실제 코스피에 가까운 밀도 높은 라인을 만듭니다.
+function buildLinePoints() {
+  const merged = [];
+  Object.entries(yearlyCloses).forEach(([year, index]) => {
+    merged.push({ year: Number(year) + 0.96, index });
+  });
+  events.forEach((event) => merged.push({ year: event.year, index: event.index }));
+  merged.sort((a, b) => a.year - b.year);
+  return merged;
+}
+
 function renderChart() {
   const { width, height } = chartSize;
   const pad = { top: 28, right: 110, bottom: 42, left: 92 };
@@ -552,6 +659,7 @@ function renderChart() {
   const x = (year) => pad.left + ((year - minYear) / (maxYear - minYear)) * (width - pad.left - pad.right);
   const y = (value) => height - pad.bottom - (value / maxIndex) * (height - pad.top - pad.bottom);
   const points = events.map((event) => ({ ...event, x: x(event.year), y: y(event.index) }));
+  const linePoints = buildLinePoints().map((p) => ({ x: x(p.year), y: y(p.index) }));
   const baseline = height - pad.bottom;
 
   pointPositions = new Map(points.map((point) => [point.id, point]));
@@ -561,7 +669,7 @@ function renderChart() {
   const title = createSvgElement("title", { id: "chart-title" });
   title.textContent = "코스피 1980년부터 2026년 5월 15일까지 장기 라인 차트";
   const desc = createSvgElement("desc", { id: "chart-desc" });
-  desc.textContent = "1980년 기준 100에서 2026년 5월 15일 종가 7493.18까지 주요 위기와 회복 지점을 연결한 차트";
+  desc.textContent = "1980년 기준 100에서 2026년 5월 15일 종가 7493.18까지 연도별 종가와 주요 위기·회복 지점을 연결한 차트";
   const defs = createSvgElement("defs");
   const gradient = createSvgElement("linearGradient", {
     id: "chartFill",
@@ -575,9 +683,22 @@ function renderChart() {
   defs.appendChild(gradient);
   chart.append(title, desc, defs);
 
-  [0, 2000, 4000, 6000, 8000].forEach((tick) => {
+  // 국면 음영 밴드 (필터 모드에 따라 강조)
+  for (let i = 0; i < points.length - 1; i += 1) {
+    const start = points[i];
+    const end = points[i + 1];
+    chart.appendChild(createSvgElement("rect", {
+      class: `phase-band phase-band-${start.phase}`,
+      x: start.x,
+      y: pad.top,
+      width: Math.max(1, end.x - start.x),
+      height: baseline - pad.top
+    }));
+  }
+
+  [0, ...levelLines].forEach((tick) => {
     chart.appendChild(createSvgElement("line", {
-      class: "grid-line",
+      class: tick === 0 ? "grid-line baseline" : "grid-line level-line",
       x1: pad.left,
       x2: width - pad.right,
       y1: y(tick),
@@ -603,8 +724,8 @@ function renderChart() {
     chart.appendChild(label);
   });
 
-  const pathData = points.map((point, index) => `${index === 0 ? "M" : "L"} ${point.x} ${point.y}`).join(" ");
-  const areaData = `${pathData} L ${points.at(-1).x} ${baseline} L ${points[0].x} ${baseline} Z`;
+  const pathData = linePoints.map((point, index) => `${index === 0 ? "M" : "L"} ${point.x.toFixed(1)} ${point.y.toFixed(1)}`).join(" ");
+  const areaData = `${pathData} L ${linePoints.at(-1).x.toFixed(1)} ${baseline} L ${linePoints[0].x.toFixed(1)} ${baseline} Z`;
   chart.appendChild(createSvgElement("path", { class: "area-fill", d: areaData }));
   chart.appendChild(createSvgElement("path", { class: "path-shadow", d: pathData }));
   chart.appendChild(createSvgElement("path", { class: "path-line", d: pathData }));
@@ -624,7 +745,7 @@ function renderChart() {
       y: Math.max(18, point.y - 16),
       "text-anchor": "middle"
     });
-    label.textContent = Math.floor(point.year);
+    label.textContent = `${formatIndex(point.index)}`;
     chart.appendChild(label);
 
     const dot = createSvgElement("circle", {
@@ -640,7 +761,9 @@ function renderChart() {
     });
     dot.style.color = point.phase === "crisis" ? "var(--red)" : point.phase === "recovery" ? "var(--green)" : "var(--blue)";
     dot.addEventListener("click", () => {
+      stopTour();
       revealPoint(point, true);
+      writeHash(point.id);
     });
     dot.addEventListener("mouseenter", () => {
       revealPoint(point);
@@ -655,10 +778,101 @@ function renderChart() {
     dot.addEventListener("keydown", (event) => {
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
+        stopTour();
         revealPoint(point, true);
+        writeHash(point.id);
       }
     });
     chart.appendChild(dot);
+  });
+
+  renderMinimap(linePoints);
+}
+
+function renderMinimap(linePoints) {
+  if (!minimap) return;
+  const mw = 1200;
+  const mh = 96;
+  const ys = linePoints.map((p) => p.y);
+  const minY = Math.min(...ys);
+  const maxY = Math.max(...ys);
+  const sx = (v) => (v / chartSize.width) * mw;
+  const sy = (v) => 6 + ((v - minY) / (maxY - minY)) * (mh - 12);
+
+  minimap.innerHTML = "";
+  minimap.setAttribute("viewBox", `0 0 ${mw} ${mh}`);
+  const d = linePoints.map((p, i) => `${i === 0 ? "M" : "L"} ${sx(p.x).toFixed(1)} ${sy(p.y).toFixed(1)}`).join(" ");
+  minimap.appendChild(createSvgElement("path", { class: "minimap-area", d: `${d} L ${mw} ${mh} L 0 ${mh} Z` }));
+  minimap.appendChild(createSvgElement("path", { class: "minimap-line", d }));
+  minimap.appendChild(createSvgElement("line", {
+    class: "minimap-marker",
+    x1: 0,
+    x2: 0,
+    y1: 0,
+    y2: mh
+  }));
+  minimap.appendChild(createSvgElement("rect", {
+    class: "minimap-window",
+    x: 0,
+    y: 0,
+    width: 1,
+    height: mh
+  }));
+  updateMinimapWindow();
+  updateMinimapMarker(selectedId);
+}
+
+function updateMinimapWindow() {
+  if (!minimap || !chartScroll) return;
+  const win = minimap.querySelector(".minimap-window");
+  if (!win) return;
+  const total = chartScroll.scrollWidth || 1;
+  const ratio = chartScroll.scrollLeft / total;
+  const widthRatio = chartScroll.clientWidth / total;
+  win.setAttribute("x", (ratio * 1200).toFixed(1));
+  win.setAttribute("width", Math.max(12, widthRatio * 1200).toFixed(1));
+}
+
+function updateMinimapMarker(id) {
+  if (!minimap) return;
+  const marker = minimap.querySelector(".minimap-marker");
+  const point = pointPositions.get(id);
+  if (!marker || !point) return;
+  const mx = (point.x / chartSize.width) * 1200;
+  marker.setAttribute("x1", mx.toFixed(1));
+  marker.setAttribute("x2", mx.toFixed(1));
+}
+
+function scrollChartToRatio(ratio) {
+  if (!chartScroll) return;
+  const maxScroll = chartScroll.scrollWidth - chartScroll.clientWidth;
+  suppressChartSyncUntil = performance.now() + 200;
+  chartScroll.scrollLeft = Math.max(0, Math.min(maxScroll, ratio * maxScroll));
+}
+
+function enableMinimap() {
+  if (!minimap) return;
+  const seek = (clientX) => {
+    const rect = minimap.getBoundingClientRect();
+    const ratio = (clientX - rect.left) / rect.width;
+    scrollChartToRatio(ratio);
+  };
+  minimap.addEventListener("pointerdown", (event) => {
+    isMinimapDragging = true;
+    minimap.setPointerCapture(event.pointerId);
+    stopTour();
+    seek(event.clientX);
+  });
+  minimap.addEventListener("pointermove", (event) => {
+    if (!isMinimapDragging) return;
+    seek(event.clientX);
+  });
+  minimap.addEventListener("pointerup", (event) => {
+    isMinimapDragging = false;
+    minimap.releasePointerCapture(event.pointerId);
+  });
+  minimap.addEventListener("pointercancel", () => {
+    isMinimapDragging = false;
   });
 }
 
@@ -677,6 +891,83 @@ function hideTooltip() {
   tooltip.hidden = true;
 }
 
+function getFilteredEventsInOrder() {
+  return events.filter((event) => currentFilter === "all" || event.phase === currentFilter);
+}
+
+function stepSelection(direction) {
+  const list = getFilteredEventsInOrder();
+  if (!list.length) return;
+  const currentIdx = list.findIndex((event) => event.id === selectedId);
+  let nextIdx;
+  if (direction === "home") nextIdx = 0;
+  else if (direction === "end") nextIdx = list.length - 1;
+  else nextIdx = Math.min(list.length - 1, Math.max(0, (currentIdx === -1 ? 0 : currentIdx) + direction));
+  const next = list[nextIdx];
+  if (next) {
+    stopTour();
+    revealPoint(next, true, true);
+    writeHash(next.id);
+  }
+}
+
+function startTour() {
+  const list = getFilteredEventsInOrder();
+  if (!list.length) return;
+  isTouring = true;
+  tourButton?.classList.add("is-playing");
+  tourButton?.setAttribute("aria-pressed", "true");
+  if (tourLabel) tourLabel.textContent = "투어 정지";
+  let idx = list.findIndex((event) => event.id === selectedId);
+  tourIndex = idx >= 0 && idx < list.length - 1 ? idx : 0;
+
+  const advance = () => {
+    if (!isTouring) return;
+    const event = list[tourIndex];
+    revealPoint(event, true, true);
+    writeHash(event.id);
+    if (tourIndex >= list.length - 1) {
+      stopTour();
+      return;
+    }
+    tourIndex += 1;
+    tourTimer = window.setTimeout(advance, prefersReducedMotion ? 1200 : 2600);
+  };
+  advance();
+}
+
+function stopTour() {
+  if (!isTouring) return;
+  isTouring = false;
+  window.clearTimeout(tourTimer);
+  tourButton?.classList.remove("is-playing");
+  tourButton?.setAttribute("aria-pressed", "false");
+  if (tourLabel) tourLabel.textContent = "가이드 투어";
+}
+
+function toggleTour() {
+  if (isTouring) stopTour();
+  else startTour();
+}
+
+function getEventById(id) {
+  return events.find((event) => event.id === id) || null;
+}
+
+function writeHash(id) {
+  if (!id) return;
+  if (`#${id}` === window.location.hash) return;
+  window.history.replaceState(null, "", `#${id}`);
+}
+
+function applyHashFromLocation() {
+  const id = window.location.hash.replace("#", "");
+  const event = getEventById(id);
+  if (!event) return false;
+  revealPoint(event, true, true);
+  return true;
+}
+
 function updateProgress() {
   const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
   const scrollMax = document.documentElement.scrollHeight - window.innerHeight;
@@ -685,6 +976,7 @@ function updateProgress() {
 }
 
 function updateChartScrollbar() {
+  updateMinimapWindow();
   syncSelectionToChartCenter();
 }
 
@@ -751,6 +1043,22 @@ function enableChartGestures() {
     isChartDragging = false;
     chartScroll.classList.remove("is-dragging");
   });
+
+  chartScroll.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowRight") {
+      event.preventDefault();
+      stepSelection(1);
+    } else if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      stepSelection(-1);
+    } else if (event.key === "Home") {
+      event.preventDefault();
+      stepSelection("home");
+    } else if (event.key === "End") {
+      event.preventDefault();
+      stepSelection("end");
+    }
+  });
 }
 
 function watchChartPosition() {
@@ -796,8 +1104,12 @@ function runLoader() {
 }
 
 filterButtons.forEach((button) => {
-  button.addEventListener("click", () => applyFilter(button.dataset.filter));
+  button.addEventListener("click", () => {
+    stopTour();
+    applyFilter(button.dataset.filter);
+  });
 });
+tourButton?.addEventListener("click", toggleTour);
 modalClose.addEventListener("click", closeMomentModal);
 modalScrim.addEventListener("click", closeMomentModal);
 window.addEventListener("keydown", (event) => {
@@ -808,8 +1120,15 @@ window.addEventListener("keydown", (event) => {
 
 window.addEventListener("scroll", updateProgress, { passive: true });
 chartScroll?.addEventListener("scroll", updateChartScrollbar, { passive: true });
+window.addEventListener("hashchange", () => {
+  stopTour();
+  applyHashFromLocation();
+});
 window.addEventListener("pageshow", () => {
-  window.requestAnimationFrame(resetChartToStart);
+  window.requestAnimationFrame(() => {
+    resetChartToStart();
+    applyHashFromLocation();
+  });
 });
 window.addEventListener("resize", () => {
   updateProgress();
@@ -833,9 +1152,12 @@ renderTimeline();
 renderChart();
 observeChapters();
 enableChartGestures();
+enableMinimap();
 applyFilter("all");
 resetChartToStart();
-window.setTimeout(resetChartToStart, 120);
+if (!applyHashFromLocation()) {
+  window.setTimeout(resetChartToStart, 120);
+}
 updateProgress();
 updateChartScrollbar();
 watchChartPosition();

@@ -1856,12 +1856,11 @@ h1 {
     flex-wrap: wrap;
   }
 
-  #kospi-minimap {
-    height: 60px;
-  }
-
+  /* 모바일: 미니맵·힌트 제거 — 스와이프/탭으로 충분, 세로 공간 절약해
+     작은 차트와 월 라벨이 더 한눈에 들어오게 */
+  .chart-minimap,
   .chart-hint {
-    font-size: 0.74rem;
+    display: none;
   }
 }
 
@@ -2022,7 +2021,7 @@ h1 {
   }
 
   .chart-panel {
-    padding-top: 24px;
+    padding-top: 16px;
   }
 
   /* 컴팩트 차트 — 라인+점만, 바로 아래 월 라벨이 한 화면에 함께 */

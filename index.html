@@ -43,37 +43,10 @@
           <p class="hero-subline">A pin-light study of crash, recovery, reprice, and rally.</p>
         </div>
 
-        <figure class="hero-visual" aria-label="코스피 흐름을 추상화한 시장 파형">
-          <svg viewBox="0 0 1100 560" role="img" aria-labelledby="hero-chart-title hero-chart-desc">
-            <title id="hero-chart-title">코스피 시장 파형</title>
-            <desc id="hero-chart-desc">급락과 회복을 반복하는 코스피의 장기 흐름을 추상화한 선형 그래픽</desc>
-            <defs>
-              <linearGradient id="signalGradient" x1="0" x2="1" y1="0" y2="0">
-                <stop offset="0%" stop-color="#c0473a" />
-                <stop offset="45%" stop-color="#b98e44" />
-                <stop offset="100%" stop-color="#3f8a86" />
-              </linearGradient>
-              <pattern id="marketGrid" width="42" height="42" patternUnits="userSpaceOnUse">
-                <path d="M 42 0 L 0 0 0 42" fill="none" stroke="#3a2f1f" stroke-width="1" />
-              </pattern>
-            </defs>
-            <rect width="1100" height="560" fill="url(#marketGrid)" opacity="0.58" />
-            <path class="hero-signal-shadow" d="M58 392 C148 396 178 330 248 340 C326 352 330 448 412 448 C492 448 484 230 568 232 C666 234 654 386 746 384 C844 382 820 132 918 126 C994 122 1014 194 1042 178" />
-            <path class="hero-signal" d="M58 392 C148 396 178 330 248 340 C326 352 330 448 412 448 C492 448 484 230 568 232 C666 234 654 386 746 384 C844 382 820 132 918 126 C994 122 1014 194 1042 178" />
-            <g class="hero-event hero-event-crisis">
-              <circle cx="412" cy="448" r="10" />
-              <text x="412" y="486" text-anchor="middle">1998</text>
-            </g>
-            <g class="hero-event hero-event-crisis">
-              <circle cx="746" cy="384" r="10" />
-              <text x="746" y="424" text-anchor="middle">2008</text>
-            </g>
-            <g class="hero-event hero-event-growth">
-              <circle cx="918" cy="126" r="10" />
-              <text x="918" y="90" text-anchor="middle">2025</text>
-            </g>
-          </svg>
-          <figcaption>Dark gallery wall · 45 years of price memory under a moving light.</figcaption>
+        <figure class="hero-visual" id="hero-visual" aria-label="코스피 1980년부터 최신까지의 붓 획 곡선">
+          <svg id="hero-chart" viewBox="0 0 1100 460" role="img" aria-labelledby="hero-chart-title hero-chart-desc"></svg>
+          <p class="hero-readout" id="hero-readout" aria-hidden="true"><b>코스피</b><span>핀조명을 곡선 위로 옮겨 보세요</span></p>
+          <figcaption>Dark gallery wall · price memory under a moving light. <em>탭/클릭하면 해당 시대로 이동합니다.</em></figcaption>
         </figure>
 
         <div class="hero-bottom">
@@ -99,9 +72,9 @@
               <small>2025.10.27 사상 첫 4000</small>
             </div>
             <div>
-              <span class="metric-label">Object 04 · 2025 Close</span>
-              <strong data-count="4214.17">4,214.17</strong>
-              <small>2025.12.30 종가</small>
+              <span class="metric-label" id="pulse-latest-label">Object 04 · 2025 Close</span>
+              <strong id="pulse-latest" data-count="4214.17">4,214.17</strong>
+              <small id="pulse-latest-note">2025.12.30 종가</small>
             </div>
           </aside>
         </div>
@@ -111,9 +84,17 @@
         <div class="chapter-index" aria-hidden="true">
           <span id="chapter-indicator">CRASH</span>
         </div>
-        <article class="story-chapter" data-chapter="CRASH">
-          <span class="chapter-word">CRASH</span>
-          <div>
+        <article class="story-chapter" data-chapter="CRASH" data-era="crash">
+          <figure class="era-panel" aria-hidden="true">
+            <span class="chapter-word">CRASH</span>
+            <svg class="era-chart" viewBox="0 0 900 520" preserveAspectRatio="none"></svg>
+            <div class="era-stats">
+              <div><span>구간 수익률</span><strong data-era-stat="return">—</strong></div>
+              <div><span>최대 낙폭</span><strong data-era-stat="drawdown">—</strong></div>
+              <div><span>구간</span><strong data-era-stat="span">—</strong></div>
+            </div>
+          </figure>
+          <div class="chapter-copy">
             <p class="section-kicker">Gallery 01 · Crash</p>
             <h2>무너지는 순간, 시장은 기억을 만든다.</h2>
             <p>
@@ -122,9 +103,17 @@
             </p>
           </div>
         </article>
-        <article class="story-chapter" data-chapter="RECOVER">
-          <span class="chapter-word">RECOVER</span>
-          <div>
+        <article class="story-chapter" data-chapter="RECOVER" data-era="recover">
+          <figure class="era-panel" aria-hidden="true">
+            <span class="chapter-word">RECOVER</span>
+            <svg class="era-chart" viewBox="0 0 900 520" preserveAspectRatio="none"></svg>
+            <div class="era-stats">
+              <div><span>구간 수익률</span><strong data-era-stat="return">—</strong></div>
+              <div><span>최대 낙폭</span><strong data-era-stat="drawdown">—</strong></div>
+              <div><span>구간</span><strong data-era-stat="span">—</strong></div>
+            </div>
+          </figure>
+          <div class="chapter-copy">
             <p class="section-kicker">Gallery 02 · Recover</p>
             <h2>회복은 언제나 느리게 시작해 갑자기 빨라진다.</h2>
             <p>
@@ -134,9 +123,17 @@
             </p>
           </div>
         </article>
-        <article class="story-chapter" data-chapter="REPRICE">
-          <span class="chapter-word">REPRICE</span>
-          <div>
+        <article class="story-chapter" data-chapter="REPRICE" data-era="reprice">
+          <figure class="era-panel" aria-hidden="true">
+            <span class="chapter-word">REPRICE</span>
+            <svg class="era-chart" viewBox="0 0 900 520" preserveAspectRatio="none"></svg>
+            <div class="era-stats">
+              <div><span>구간 수익률</span><strong data-era-stat="return">—</strong></div>
+              <div><span>최대 낙폭</span><strong data-era-stat="drawdown">—</strong></div>
+              <div><span>구간</span><strong data-era-stat="span">—</strong></div>
+            </div>
+          </figure>
+          <div class="chapter-copy">
             <p class="section-kicker">Gallery 03 · Reprice</p>
             <h2>새 산업이 등장하면 지수의 언어도 바뀐다.</h2>
             <p>
@@ -168,15 +165,24 @@
                   <span class="tour-icon" aria-hidden="true"></span>
                   <span class="tour-label">가이드 투어</span>
                 </button>
+                <button class="mode-btn" id="data-mode-btn" type="button" aria-pressed="false">데이터 모드</button>
+              </div>
+              <div class="phase-legend" aria-hidden="true">
+                <span class="legend-item legend-crisis">위기</span>
+                <span class="legend-item legend-recovery">회복</span>
+                <span class="legend-item legend-growth">성장</span>
               </div>
             </div>
           </div>
-          <div class="chart-scroll" id="chart-scroll" tabindex="0" aria-label="1980년부터 2025년 12월 30일까지 코스피 장기 차트 가로 스크롤 영역">
-            <div class="chart-wrap">
-              <svg id="kospi-chart" viewBox="0 0 3600 860" role="img" aria-labelledby="chart-title chart-desc"></svg>
-              <div class="chart-tooltip" id="chart-tooltip" hidden></div>
+          <div class="chart-stage">
+            <div class="chart-yaxis" id="chart-yaxis" aria-hidden="true"></div>
+            <div class="chart-scroll" id="chart-scroll" tabindex="0" aria-label="1980년부터 최신까지 코스피 장기 차트 가로 스크롤 영역">
+              <div class="chart-wrap">
+                <svg id="kospi-chart" viewBox="0 0 3600 860" role="img" aria-labelledby="chart-title chart-desc"></svg>
+                <div class="chart-tooltip" id="chart-tooltip" hidden></div>
+              </div>
+              <p class="chart-hint" id="chart-hint" aria-hidden="true">좌우로 끌어 보세요 · ← → 키 이동 · 아래 미니맵으로 점프 · 데이터 모드로 명료하게</p>
             </div>
-            <p class="chart-hint" id="chart-hint" aria-hidden="true">좌우로 끌어 보세요 · ← → 키 이동 · 아래 미니맵으로 점프</p>
           </div>
           <div class="chart-minimap" aria-hidden="true">
             <svg id="kospi-minimap" viewBox="0 0 1200 96" preserveAspectRatio="none"></svg>
@@ -195,7 +201,7 @@
               <span id="chart-moment-summary">코스피는 1980년 1월 4일을 기준 100으로 삼아 장기 비교의 출발점을 만들었습니다.</span>
             </div>
             <p id="detail-copy">
-              오늘의 7,000선도 이 숫자에서 출발합니다. 긴 차트의 첫 점은 작은 숫자지만, 이후 46년 동안 시장이 반복한 공포와 회복을 모두 품고 있습니다.
+              오늘의 4,000선도 이 숫자에서 출발합니다. 긴 차트의 첫 점은 작은 숫자지만, 이후 45년 동안 시장이 반복한 공포와 회복을 모두 품고 있습니다.
             </p>
             <dl class="detail-stats">
               <div>
@@ -236,7 +242,7 @@
         <p class="section-kicker" id="modal-date">1980.01.04</p>
         <p class="modal-signal" id="modal-signal">모든 파형의 원점</p>
         <h2 id="modal-title">기준 지수 100</h2>
-        <p id="modal-copy">오늘의 7,000선도 이 숫자에서 출발합니다.</p>
+        <p id="modal-copy">오늘의 4,000선도 이 숫자에서 출발합니다.</p>
         <dl class="modal-stats">
           <div>
             <dt>지수</dt>

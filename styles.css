@@ -1935,7 +1935,7 @@ h1 {
 
   .chart-panel {
     margin-bottom: 0;
-    min-height: calc(100svh - 24px);
+    min-height: auto;
   }
 
   .signal-console {
@@ -2015,26 +2015,39 @@ h1 {
     padding-top: 24px;
   }
 
+  /* 차트가 화면을 독점하지 않도록 높이 상한 — 아래 콘텐츠 접근 용이 */
   .chart-scroll {
-    height: min(600px, calc(100svh - 150px));
-    min-height: 460px;
+    height: clamp(300px, 58svh, 520px);
+    min-height: 0;
   }
 
   .chart-wrap {
-    min-height: 600px;
+    min-height: clamp(300px, 58svh, 520px);
   }
 
   #kospi-chart {
-    height: 600px;
+    height: clamp(300px, 58svh, 520px);
   }
 
   .chart-yaxis {
-    height: 600px;
+    height: clamp(300px, 58svh, 520px);
     width: 42px;
   }
 
   .yaxis-tick {
     font-size: 0.66rem;
+  }
+
+  /* 아래 콘텐츠가 이어진다는 신호 */
+  .chart-stage::after {
+    position: absolute;
+    left: 50%;
+    bottom: -4px;
+    color: rgba(199, 154, 75, 0.6);
+    font-size: 0.9rem;
+    pointer-events: none;
+    content: "↓";
+    animation: cueBob 1.6s ease-in-out infinite;
   }
 
   .signal-console .detail-signal {
@@ -2103,4 +2116,9 @@ h1 {
   .chapter-copy h2 {
     font-size: clamp(1.7rem, 8.5vw, 2.4rem);
   }
+}
+
+@keyframes cueBob {
+  0%, 100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, 5px); }
 }

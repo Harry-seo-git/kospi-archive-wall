@@ -974,18 +974,24 @@ function renderChart() {
   const dataMaxYear = Math.max(...allYears);
   const maxYear = Math.max(2026.0, Math.ceil((dataMaxYear + 0.15) * 4) / 4);
   const dataMax = Math.max(...allVals);
-  const maxIndex = Math.max(3000, Math.ceil((dataMax * 1.12) / 500) * 500);
-  const levels = [];
-  for (let v = 1000; v < maxIndex; v += 1000) levels.push(v);
+  // 로그 스케일 — 100→8,000의 45년이 하단에 압착되지 않고 전 구간이 고르게 읽힘.
+  const niceTicks = [100, 150, 200, 300, 500, 700, 1000, 1500, 2000, 3000, 5000, 7000, 10000, 15000];
+  const loBound = 80;
+  const hiBound = niceTicks.find((t) => t >= dataMax * 1.04) || Math.ceil((dataMax * 1.06) / 500) * 500;
+  const maxIndex = hiBound;
+  const levels = niceTicks.filter((t) => t >= 100 && t <= hiBound);
   const decadeTicks = [];
   for (let yr = 1980; yr <= Math.floor(maxYear); yr += 10) decadeTicks.push(yr);
   const lastTick = Math.floor(dataMaxYear);
   if (!decadeTicks.includes(lastTick)) decadeTicks.push(lastTick);
+  const baseline = height - pad.bottom;
+  const lLo = Math.log10(loBound);
+  const lHi = Math.log10(hiBound);
   const x = (year) => pad.left + ((year - minYear) / (maxYear - minYear)) * (width - pad.left - pad.right);
-  const y = (value) => height - pad.bottom - (value / maxIndex) * (height - pad.top - pad.bottom);
+  const y = (value) =>
+    baseline - ((Math.log10(Math.max(value, loBound)) - lLo) / (lHi - lLo)) * (baseline - pad.top);
   const points = events.map((event) => ({ ...event, x: x(event.year), y: y(event.index) }));
   const linePoints = rawLine.map((p) => ({ x: x(p.year), y: y(p.index) }));
-  const baseline = height - pad.bottom;
 
   pointPositions = new Map(points.map((point) => [point.id, point]));
   chart.innerHTML = "";
@@ -1045,9 +1051,9 @@ function renderChart() {
     }));
   }
 
-  [0, ...levels].forEach((tick) => {
+  levels.forEach((tick) => {
     chart.appendChild(createSvgElement("line", {
-      class: tick === 0 ? "grid-line baseline" : "grid-line level-line",
+      class: "grid-line level-line",
       x1: pad.left,
       x2: width - pad.right,
       y1: y(tick),
@@ -1170,10 +1176,10 @@ function renderChart() {
 function renderYAxis() {
   if (!chartYaxis || !chartGeo) return;
   const { y, levels, height } = chartGeo;
-  chartYaxis.innerHTML = [0, ...levels]
-    .map((v) => {
+  chartYaxis.innerHTML = levels
+    .map((v, i) => {
       const top = (y(v) / height) * 100;
-      return `<span class="yaxis-tick${v === 0 ? " is-base" : ""}" style="top:${top.toFixed(2)}%">${formatIndex(v)}</span>`;
+      return `<span class="yaxis-tick${i === 0 ? " is-base" : ""}" style="top:${top.toFixed(2)}%">${formatIndex(v)}</span>`;
     })
     .join("");
 }

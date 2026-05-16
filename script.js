@@ -444,7 +444,6 @@ function applyStaticI18n() {
 
 function refreshDynamicI18n() {
   setSelected(selectedId, false);
-  if (dataNote) dataNote.textContent = t(`mode.${currentFilter}`) || t("mode.all");
   updateProvenance();
   updateLatestUI();
   renderHero();
@@ -520,11 +519,6 @@ const detailIndex = document.querySelector("#detail-index");
 const detailPhase = document.querySelector("#detail-phase");
 const detailChange = document.querySelector("#detail-change");
 const detailDrawdown = document.querySelector("#detail-drawdown");
-const chartMomentCard = document.querySelector("#chart-moment-card");
-const chartMomentDate = document.querySelector("#chart-moment-date");
-const chartMomentTitle = document.querySelector("#chart-moment-title");
-const chartMomentIndex = document.querySelector("#chart-moment-index");
-const chartMomentSummary = document.querySelector("#chart-moment-summary");
 const momentModal = document.querySelector("#moment-modal");
 const modalScrim = document.querySelector("#modal-scrim");
 const modalClose = document.querySelector("#modal-close");
@@ -545,7 +539,6 @@ const progressBar = document.querySelector("#reading-progress");
 const loader = document.querySelector("#loader");
 const loaderCount = document.querySelector("#loader-count");
 const chapterIndicator = document.querySelector("#chapter-indicator");
-const dataNote = document.querySelector(".data-note");
 const phaseWash = document.querySelector("#phase-wash");
 const heroSvg = document.querySelector("#hero-chart");
 const heroVisual = document.querySelector("#hero-visual");
@@ -721,7 +714,6 @@ function setSelected(id, shouldChartScroll = true) {
   applyStatTone(detailChange, metrics.change);
   applyStatTone(detailDrawdown, metrics.drawdown);
 
-  updateChartMoment(selected);
   document.body.dataset.phase = selected.phase;
 
   const point = pointPositions.get(id);
@@ -794,12 +786,6 @@ function positionSignalConsole(point) {
   signalConsole.classList.toggle("is-left", pointViewportX > chartScroll.clientWidth * 0.58);
 }
 
-function updateChartMoment(event) {
-  chartMomentDate.textContent = event.date;
-  chartMomentTitle.textContent = tEv(event, "title");
-  chartMomentIndex.textContent = `${formatIndex(event.index)} · ${tEv(event, "phaseLabel")}`;
-  chartMomentSummary.textContent = tEv(event, "summary");
-}
 
 function updateModal(event) {
   const metrics = getEventMetrics(event);
@@ -861,7 +847,6 @@ function resetChartToStart() {
 function applyFilter(filter) {
   currentFilter = filter;
   document.body.dataset.filterMode = filter;
-  if (dataNote) dataNote.textContent = t(`mode.${filter}`) || t("mode.all");
   hideSignalConsole();
 
   filterButtons.forEach((button) => {
@@ -1491,6 +1476,7 @@ function observeChapters() {
       const chapter = entry.target.dataset.chapter;
       chapterIndicator.textContent = chapter;
       entry.target.classList.add("is-current");
+      if (entry.target.dataset.era) playEraStats(entry.target);
       chapters.forEach((item) => {
         if (item !== entry.target) item.classList.remove("is-current");
       });

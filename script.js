@@ -964,8 +964,14 @@ function sampleLine(year) {
 }
 
 function renderChart() {
+  // 모바일: 가로 스크롤 폐지 — 전 곡선을 패널 폭에 맞추는 좁은 좌표계로 재계산
+  const isMobileChart = window.matchMedia("(max-width: 620px)").matches;
+  chartSize.width = isMobileChart ? 760 : 3600;
+  chartSize.height = isMobileChart ? 460 : 860;
   const { width, height } = chartSize;
-  const pad = { top: 28, right: 110, bottom: 42, left: 92 };
+  const pad = isMobileChart
+    ? { top: 22, right: 22, bottom: 34, left: 52 }
+    : { top: 28, right: 110, bottom: 42, left: 92 };
   const minYear = chartYears.min;
   const rawLine = buildLinePoints();
   // 데이터 범위에 맞춰 축·레벨선을 동적으로 산출 (라이브 데이터의 미지 범위까지 안전).

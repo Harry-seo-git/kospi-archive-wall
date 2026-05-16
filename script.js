@@ -325,6 +325,7 @@ const I18N = {
     "era.return": "구간 수익률",
     "era.drawdown": "최대 낙폭",
     "era.span": "구간",
+    "panel.kicker": "코스피 실록",
     "panel.h2": "핀조명 아래 드러나는 코스피의 결정적 장면",
     "hint.text": "좌우로 끌어 보세요 · ← → 키 이동 · 아래 미니맵으로 점프",
     "sources.rest": "수치는 근사·실측 혼합값이며 한국장 마감(15:45 KST) 기준으로 자동 갱신됩니다. 데이터 출처:",
@@ -400,6 +401,7 @@ const I18N = {
     "era.return": "Period return",
     "era.drawdown": "Max drawdown",
     "era.span": "Span",
+    "panel.kicker": "KOSPI Veritable Records",
     "panel.h2": "KOSPI's decisive scenes, revealed under a pin light",
     "hint.text": "Drag left/right · ← → keys · jump via the minimap below",
     "sources.rest": "Figures are an approximation/observed blend, auto-refreshed at the Korean market close (15:45 KST). Data sources:",
@@ -1441,8 +1443,14 @@ function maybeMagneticSnap() {
 function enableChartGestures() {
   if (!chartScroll) return;
 
+  let downId = null;
+  let downX = 0;
+  let downY = 0;
+  let moved = false;
+
+  // hover(버튼 안 누른 상태)에서만 리빌 — 누른 상태(탭/드래그)는 제외
   chartScroll.addEventListener("pointermove", (event) => {
-    if (isChartDragging) return;
+    if (isChartDragging || downId !== null) return;
     const nearest = getNearestPointFromClientX(event.clientX);
     if (!nearest) return;
     revealPoint(nearest);
@@ -1460,26 +1468,50 @@ function enableChartGestures() {
   }, { passive: false });
 
   chartScroll.addEventListener("pointerdown", (event) => {
-    if (event.button !== 0) return;
-    isChartDragging = true;
+    if (event.button !== 0 && event.pointerType === "mouse") return;
+    downId = event.pointerId;
+    downX = event.clientX;
+    downY = event.clientY;
+    moved = false;
     chartDragStartX = event.clientX;
     chartDragStartLeft = chartScroll.scrollLeft;
-    chartScroll.classList.add("is-dragging");
-    chartScroll.setPointerCapture(event.pointerId);
   });
 
   chartScroll.addEventListener("pointermove", (event) => {
-    if (!isChartDragging) return;
-    chartScroll.scrollLeft = chartDragStartLeft - (event.clientX - chartDragStartX);
+    if (downId === null || event.pointerId !== downId) return;
+    // 임계 이동 후에만 드래그 시작 (그 전 탭은 보존)
+    if (!moved && Math.hypot(event.clientX - downX, event.clientY - downY) > 8) {
+      moved = true;
+      isChartDragging = true;
+      chartScroll.classList.add("is-dragging");
+      try { chartScroll.setPointerCapture(downId); } catch (e) { /* noop */ }
+    }
+    if (isChartDragging) {
+      chartScroll.scrollLeft = chartDragStartLeft - (event.clientX - chartDragStartX);
+    }
   });
 
   chartScroll.addEventListener("pointerup", (event) => {
+    if (downId === null || event.pointerId !== downId) return;
+    const wasTap = !moved;
+    try { chartScroll.releasePointerCapture(downId); } catch (e) { /* noop */ }
+    downId = null;
     isChartDragging = false;
     chartScroll.classList.remove("is-dragging");
-    chartScroll.releasePointerCapture(event.pointerId);
+    if (wasTap) {
+      // 탭/클릭 — 가장 가까운 사건의 월 라벨을 띄움 (모바일 포함)
+      const nearest = getNearestPointFromClientX(event.clientX);
+      if (nearest) {
+        stopTour();
+        revealPoint(nearest, true);
+        showTooltip(nearest);
+        writeHash(nearest.id);
+      }
+    }
   });
 
   chartScroll.addEventListener("pointercancel", () => {
+    downId = null;
     isChartDragging = false;
     chartScroll.classList.remove("is-dragging");
   });

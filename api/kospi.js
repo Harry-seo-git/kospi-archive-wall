@@ -1,21 +1,26 @@
-// KOSPI 실데이터 프록시 — 야후 → Stooq.
+// KOSPI 실데이터 프록시 — 야후(query1→query2) → Stooq.
 // 월봉(장기 곡선) + 일봉(정확한 최신 종가)을 함께 반환하고,
 // 캐시 TTL을 "다음 KRX 정산(평일 15:45 KST)"에 맞춰 동적으로 설정한다.
 // 장중 호출이면 intraday=true(잠정). 모든 소스 실패 시 502 → 클라이언트 번들 폴백.
+// Stooq는 무료 CSV에 apikey(캡차 발급)를 요구하므로 STOOQ_APIKEY 환경변수가
+// 있을 때만 폴백으로 사용. 키가 없거나 apikey 안내 응답이면 깔끔히 건너뛴다.
 
 const UA = { "User-Agent": "Mozilla/5.0 (compatible; KospiArchiveWall/1.0)" };
 const CLOSE_MIN = 15 * 60 + 45; // 15:45 KST — 정산 + 버퍼
 const OPEN_MIN = 9 * 60; // 09:00 KST
+const TIMEOUT_MS = 7000;
 
 function ymd(d) {
   return d.toISOString().slice(0, 10);
 }
 
-async function yahoo(range, interval) {
-  const url = `https://query1.finance.yahoo.com/v8/finance/chart/%5EKS11?range=${range}&interval=${interval}`;
-  const res = await fetch(url, { headers: UA });
-  if (!res.ok) throw new Error(`yahoo ${res.status}`);
-  const json = await res.json();
+function timedFetch(url, opts) {
+  return fetch(url, Object.assign({ signal: AbortSignal.timeout(TIMEOUT_MS) }, opts));
+}
+
+const YAHOO_HOSTS = ["query1.finance.yahoo.com", "query2.finance.yahoo.com"];
+
+function parseYahoo(json) {
   const r = json && json.chart && json.chart.result && json.chart.result[0];
   const ts = (r && r.timestamp) || [];
   const closes =
@@ -29,10 +34,32 @@ async function yahoo(range, interval) {
   return out;
 }
 
+async function yahoo(range, interval) {
+  let lastErr;
+  for (const host of YAHOO_HOSTS) {
+    try {
+      const url = `https://${host}/v8/finance/chart/%5EKS11?range=${range}&interval=${interval}`;
+      const res = await timedFetch(url, { headers: Object.assign({ Accept: "application/json" }, UA) });
+      if (!res.ok) throw new Error(`yahoo ${host} ${res.status}`);
+      return parseYahoo(await res.json());
+    } catch (e) {
+      lastErr = e;
+    }
+  }
+  throw lastErr || new Error("yahoo failed");
+}
+
 async function stooq(interval) {
-  const res = await fetch(`https://stooq.com/q/d/l/?s=^kospi&i=${interval}`, { headers: UA });
+  const key = process.env.STOOQ_APIKEY;
+  if (!key) throw new Error("stooq skipped: no STOOQ_APIKEY");
+  const url = `https://stooq.com/q/d/l/?s=^kospi&i=${interval}&apikey=${encodeURIComponent(key)}`;
+  const res = await timedFetch(url, { headers: UA });
   if (!res.ok) throw new Error(`stooq ${res.status}`);
   const text = await res.text();
+  // CSV가 아니면(apikey/캡차 안내 등) 파싱하지 않고 실패 처리.
+  if (!/^date,/i.test(text.trim()) || /apikey/i.test(text)) {
+    throw new Error("stooq non-CSV response");
+  }
   const lines = text.trim().split(/\r?\n/);
   const out = [];
   for (let i = 1; i < lines.length; i += 1) {

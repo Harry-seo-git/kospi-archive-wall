@@ -359,62 +359,11 @@ h1 span {
   margin: clamp(42px, 7vw, 84px) 0 0;
 }
 
-.hero-visual svg {
-  display: block;
-  width: 100%;
-  max-height: 46svh;
-  border-top: 1px solid rgba(232, 222, 202, 0.1);
-  border-bottom: 1px solid rgba(232, 222, 202, 0.08);
-  background:
-    radial-gradient(circle at 82% 30%, rgba(232, 222, 202, 0.08), transparent 24%),
-    rgba(8, 13, 20, 0.28);
-}
-
 .hero-visual figcaption {
-  margin-top: 12px;
-  color: rgba(127, 140, 163, 0.82);
-  font-size: 0.92rem;
+  margin-top: 14px;
+  color: rgba(150, 138, 118, 0.82);
+  font-size: 0.9rem;
   text-align: right;
-}
-
-.hero-signal-shadow,
-.hero-signal {
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.hero-signal-shadow {
-  stroke: rgba(199, 154, 75, 0.09);
-  stroke-width: 8;
-}
-
-.hero-signal {
-  stroke: url("#signalGradient");
-  stroke-width: 2;
-  stroke-dasharray: 1700;
-  stroke-dashoffset: 1700;
-  animation: drawLine 1800ms 650ms cubic-bezier(0.33, 1, 0.68, 1) forwards;
-}
-
-.hero-event circle {
-  fill: #060b12;
-  stroke-width: 2;
-}
-
-.hero-event-crisis circle {
-  stroke: var(--red);
-}
-
-.hero-event-growth circle {
-  stroke: var(--green);
-}
-
-.hero-event text {
-  fill: var(--ink);
-  font-family: var(--serif);
-  font-size: 28px;
-  font-weight: 700;
 }
 
 .hero-bottom {
@@ -507,37 +456,137 @@ h1 span {
   font-weight: 800;
 }
 
+/* 핀 스크롤리텔링 — 데이터 수묵 패널이 고정된 채 텍스트가 흐릅니다. */
 .story-chapter {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(260px, 0.72fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.12fr) minmax(280px, 0.88fr);
   gap: clamp(28px, 6vw, 88px);
-  align-items: center;
+  align-items: start;
   width: min(1480px, calc(100% - 32px));
-  min-height: 72svh;
+  min-height: 184svh;
   margin: 0 auto;
   border-bottom: 1px solid rgba(232, 222, 202, 0.08);
-  padding: clamp(72px, 10vw, 132px) 0;
-  opacity: 0.34;
-  transition: opacity 360ms ease;
-}
-
-.story-chapter.is-current {
-  opacity: 1;
 }
 
 .story-chapter:last-child {
   border-bottom: 0;
 }
 
+.era-panel {
+  position: sticky;
+  top: 11svh;
+  height: 78svh;
+  margin: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.era-panel .era-chart {
+  position: absolute;
+  inset: 8% 0 12%;
+  width: 100%;
+  height: 80%;
+}
+
+.era-area {
+  fill: rgba(199, 154, 75, 0.06);
+}
+
+.era-stroke {
+  fill: none;
+  stroke: var(--hwang);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  filter: drop-shadow(0 0 8px currentColor);
+  color: var(--hwang);
+  transition: stroke-dashoffset 1500ms cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.story-chapter.is-played .era-stroke {
+  stroke-dashoffset: 0;
+}
+
+.story-chapter[data-era="crash"] .era-stroke {
+  stroke: var(--ju);
+  color: var(--ju);
+}
+
+.story-chapter[data-era="recover"] .era-stroke {
+  stroke: var(--cheong);
+  color: var(--cheong);
+}
+
+.story-chapter[data-era="reprice"] .era-stroke {
+  stroke: var(--hwang);
+  color: var(--hwang);
+}
+
 .chapter-word {
+  position: relative;
+  z-index: 2;
   color: transparent;
   font-family: var(--display);
-  font-size: clamp(4rem, 11vw, 12rem);
+  font-size: clamp(4.5rem, 13vw, 15rem);
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: 0.01em;
+  -webkit-text-stroke: 1.5px rgba(240, 233, 218, 0.22);
+  text-stroke: 1.5px rgba(240, 233, 218, 0.22);
+  transition: color 600ms ease, -webkit-text-stroke-color 600ms ease;
+}
+
+.story-chapter.is-current[data-era="crash"] .chapter-word {
+  color: rgba(192, 71, 58, 0.92);
+  -webkit-text-stroke-color: var(--ju);
+}
+
+.story-chapter.is-current[data-era="recover"] .chapter-word {
+  color: rgba(63, 138, 134, 0.9);
+  -webkit-text-stroke-color: var(--cheong);
+}
+
+.story-chapter.is-current[data-era="reprice"] .chapter-word {
+  color: rgba(185, 142, 68, 0.92);
+  -webkit-text-stroke-color: var(--hwang);
+}
+
+.era-stats {
+  position: absolute;
+  left: 0;
+  bottom: 2%;
+  z-index: 2;
+  display: flex;
+  gap: clamp(20px, 4vw, 56px);
+}
+
+.era-stats div {
+  display: grid;
+  gap: 4px;
+}
+
+.era-stats span {
+  color: var(--muted);
+  font-size: 0.74rem;
   font-weight: 700;
-  line-height: 0.92;
-  -webkit-text-stroke: 1px rgba(232, 222, 202, 0.18);
-  text-stroke: 1px rgba(232, 222, 202, 0.18);
+  letter-spacing: 0.04em;
+}
+
+.era-stats strong {
+  font-family: var(--hangul-serif);
+  font-size: clamp(1.6rem, 3vw, 2.8rem);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.chapter-copy {
+  align-self: start;
+  padding: 34svh 0 34svh;
+  max-width: 560px;
 }
 
 .story-chapter h2 {
@@ -554,7 +603,7 @@ h1 span {
 .story-chapter p:not(.section-kicker) {
   max-width: 690px;
   margin: 0;
-  color: #aebacd;
+  color: #b6a98d;
   font-size: clamp(1.02rem, 1.5vw, 1.18rem);
   line-height: 1.95;
   word-break: keep-all;
@@ -1521,16 +1570,6 @@ h1 {
   transition: letter-spacing 240ms ease, transform 240ms ease;
 }
 
-/* 대 타이틀은 은은한 화이트 아웃라인 톤 유지 */
-.chapter-word {
-  transition: -webkit-text-stroke-color 480ms ease;
-}
-
-.story-chapter.is-current .chapter-word {
-  -webkit-text-stroke-color: rgba(240, 233, 218, 0.32);
-  text-stroke-color: rgba(240, 233, 218, 0.32);
-}
-
 /* 과장된 인장 강조 — 도장이 깊게 찍힌 듯 */
 .chart-point.is-selected,
 .chart-point:hover {
@@ -1546,6 +1585,248 @@ h1 {
 .event-label.is-selected {
   font-size: 15px;
   fill: #ffffff;
+}
+
+/* ===== Hero — 핀조명 실데이터 곡선 ===== */
+.hero-visual {
+  position: relative;
+  cursor: crosshair;
+}
+
+#hero-chart {
+  display: block;
+  width: 100%;
+  height: clamp(220px, 34svh, 420px);
+  touch-action: none;
+}
+
+.hero-dim {
+  fill: none;
+  stroke: rgba(240, 233, 218, 0.14);
+  stroke-width: 1.2;
+  stroke-linejoin: round;
+}
+
+.hero-lit {
+  fill: none;
+  stroke: var(--hwang);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 7px rgba(185, 142, 68, 0.7));
+}
+
+.hero-seal {
+  fill: transparent;
+  stroke: currentColor;
+  stroke-width: 1.4;
+}
+
+.hero-seal.crisis { color: var(--ju); }
+.hero-seal.recovery { color: var(--cheong); }
+.hero-seal.growth { color: var(--hwang); }
+
+.hero-readout {
+  position: absolute;
+  left: 0;
+  bottom: 8px;
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  pointer-events: none;
+}
+
+.hero-readout b {
+  font-family: var(--hangul-serif);
+  font-size: clamp(1.4rem, 3vw, 2.4rem);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.hero-readout span {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.hero-visual figcaption em {
+  color: rgba(185, 142, 68, 0.85);
+  font-style: normal;
+  font-weight: 700;
+}
+
+/* ===== Chart — 가독성: 고정 Y축 · 크로스헤어 · 데이터 모드 ===== */
+.chart-stage {
+  position: relative;
+}
+
+.chart-yaxis {
+  position: absolute;
+  left: 0;
+  top: 32px;
+  z-index: 4;
+  width: 58px;
+  height: 860px;
+  pointer-events: none;
+}
+
+.yaxis-tick {
+  position: absolute;
+  left: 8px;
+  transform: translateY(-50%);
+  color: rgba(240, 233, 218, 0.66);
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-shadow: 0 0 6px rgba(8, 6, 10, 0.95), 0 0 6px rgba(8, 6, 10, 0.95);
+}
+
+.yaxis-tick.is-base {
+  color: rgba(185, 142, 68, 0.8);
+}
+
+.axis-label-y {
+  display: none;
+}
+
+.chart-cross-h {
+  opacity: 0;
+  stroke: rgba(240, 233, 218, 0.28);
+  stroke-dasharray: 3 8;
+  stroke-width: 0.8;
+  transition: opacity 140ms ease;
+  pointer-events: none;
+}
+
+.chart-cross-h.is-visible {
+  opacity: 1;
+}
+
+.chart-tooltip {
+  position: absolute;
+  z-index: 6;
+  display: grid;
+  gap: 1px;
+  transform: translate(-50%, calc(-100% - 14px));
+  padding: 8px 12px;
+  border: 1px solid rgba(185, 142, 68, 0.5);
+  border-radius: 3px;
+  background: rgba(10, 8, 8, 0.96);
+  color: var(--ink);
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.chart-tooltip[hidden] {
+  display: none;
+}
+
+.chart-tooltip strong {
+  font-family: var(--hangul-serif);
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.chart-tooltip span {
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.chart-tooltip em {
+  font-size: 0.78rem;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.chart-tooltip.is-up em { color: var(--cheong); }
+.chart-tooltip.is-down em { color: var(--ju); }
+
+.phase-legend {
+  display: flex;
+  gap: 14px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 800;
+}
+
+.legend-item::before {
+  width: 9px;
+  height: 9px;
+  border-radius: 1px;
+  content: "";
+}
+
+.legend-crisis::before { background: var(--ju); }
+.legend-recovery::before { background: var(--cheong); }
+.legend-growth::before { background: var(--hwang); }
+
+.mode-btn {
+  border: 1px solid rgba(185, 142, 68, 0.32);
+  border-radius: 999px;
+  padding: 7px 15px;
+  background: rgba(12, 10, 12, 0.6);
+  color: rgba(240, 233, 218, 0.78);
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: color 160ms ease, background 160ms ease, border-color 160ms ease;
+}
+
+.mode-btn:hover {
+  color: var(--ink);
+  border-color: rgba(185, 142, 68, 0.6);
+}
+
+.mode-btn.is-active {
+  border-color: var(--hwang);
+  background: rgba(185, 142, 68, 0.18);
+  color: var(--ink);
+}
+
+/* 데이터 모드 — 아트보다 명료함 우선 */
+body.is-data-mode .path-line,
+body.is-data-mode .path-shadow {
+  filter: none !important;
+}
+
+body.is-data-mode .path-line {
+  stroke-width: 2.6;
+  stroke: #f3ead6;
+}
+
+body.is-data-mode .path-glow,
+body.is-data-mode #market-particles,
+body.is-data-mode .phase-wash {
+  display: none;
+}
+
+body.is-data-mode .area-fill {
+  opacity: 0.4;
+}
+
+body.is-data-mode .grid-line.level-line {
+  stroke: rgba(240, 233, 218, 0.16);
+  stroke-dasharray: none;
+}
+
+body.is-data-mode .yaxis-tick {
+  color: var(--ink);
+}
+
+body.is-data-mode .phase-band {
+  opacity: 0 !important;
 }
 
 @media (pointer: coarse) {
@@ -1636,6 +1917,21 @@ h1 {
   .story-chapter {
     grid-template-columns: 1fr;
     min-height: auto;
+    padding: 8svh 0;
+  }
+
+  .era-panel {
+    position: static;
+    height: 52svh;
+    margin-bottom: 18px;
+  }
+
+  .era-stats {
+    gap: 18px;
+  }
+
+  .chapter-copy {
+    padding: 0;
   }
 
   .chapter-index {
@@ -1744,6 +2040,11 @@ h1 {
 
   #kospi-chart {
     height: 760px;
+  }
+
+  .chart-yaxis {
+    height: 760px;
+    width: 46px;
   }
 
   .signal-console .detail-signal {

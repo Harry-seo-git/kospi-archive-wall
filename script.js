@@ -297,6 +297,15 @@ const loaderCount = document.querySelector("#loader-count");
 const chapterIndicator = document.querySelector("#chapter-indicator");
 const dataNote = document.querySelector(".data-note");
 const phaseWash = document.querySelector("#phase-wash");
+const heroSvg = document.querySelector("#hero-chart");
+const heroVisual = document.querySelector("#hero-visual");
+const heroReadout = document.querySelector("#hero-readout");
+const chartYaxis = document.querySelector("#chart-yaxis");
+const dataModeBtn = document.querySelector("#data-mode-btn");
+
+let chartGeo = null;
+let heroSweep = 0;
+let heroPointerAt = 0;
 
 let selectedId = "base";
 let currentFilter = "all";
@@ -766,7 +775,7 @@ function renderChart() {
       y2: y(tick)
     }));
     const label = createSvgElement("text", {
-      class: "axis-label",
+      class: "axis-label axis-label-y",
       x: 10,
       y: y(tick) + 5
     });
@@ -805,6 +814,13 @@ function renderChart() {
     x2: points[0].x,
     y1: pad.top,
     y2: baseline
+  }));
+  chart.appendChild(createSvgElement("line", {
+    class: "chart-cross-h",
+    x1: pad.left,
+    x2: width - pad.right,
+    y1: points[0].y,
+    y2: points[0].y
   }));
   chart.appendChild(createSvgElement("rect", {
     class: "chart-pulse",
@@ -866,7 +882,20 @@ function renderChart() {
     chart.appendChild(dot);
   });
 
+  chartGeo = { pad, maxIndex, maxYear, baseline, levels, height, y };
   renderMinimap(linePoints);
+  renderYAxis();
+}
+
+function renderYAxis() {
+  if (!chartYaxis || !chartGeo) return;
+  const { y, levels, height } = chartGeo;
+  chartYaxis.innerHTML = [0, ...levels]
+    .map((v) => {
+      const top = (y(v) / height) * 100;
+      return `<span class="yaxis-tick${v === 0 ? " is-base" : ""}" style="top:${top.toFixed(2)}%">${formatIndex(v)}</span>`;
+    })
+    .join("");
 }
 
 function renderMinimap(linePoints) {
@@ -961,14 +990,29 @@ function showTooltip(point) {
   const rect = chart.getBoundingClientRect();
   const scaleX = rect.width / chartSize.width;
   const scaleY = rect.height / chartSize.height;
+  const ev = events.find((e) => e.id === point.id);
+  const metrics = ev ? getEventMetrics(ev) : { change: null };
+  const change = metrics.change === null ? "기준점" : formatSignedPct(metrics.change);
   tooltip.hidden = false;
+  tooltip.classList.toggle("is-up", Number.isFinite(metrics.change) && metrics.change > 0);
+  tooltip.classList.toggle("is-down", Number.isFinite(metrics.change) && metrics.change < 0);
   tooltip.style.left = `${point.x * scaleX}px`;
   tooltip.style.top = `${point.y * scaleY}px`;
-  tooltip.innerHTML = `<strong>${point.title}</strong><span>${point.date} · ${formatIndex(point.index)}</span>`;
+  tooltip.innerHTML =
+    `<strong>${formatIndex(point.index)}</strong>` +
+    `<span>${point.date}</span>` +
+    `<em>${change}</em>`;
+  const crossH = chart.querySelector(".chart-cross-h");
+  if (crossH) {
+    crossH.setAttribute("y1", point.y);
+    crossH.setAttribute("y2", point.y);
+    crossH.classList.add("is-visible");
+  }
 }
 
 function hideTooltip() {
   tooltip.hidden = true;
+  chart.querySelector(".chart-cross-h")?.classList.remove("is-visible");
 }
 
 function getFilteredEventsInOrder() {
@@ -1444,12 +1488,262 @@ function updateProvenance() {
   if (code) code.textContent = `Exhibition Archive · 1980 — ${dataMeta.asOf}`;
 }
 
+/* ===== 상단 최신 지표 ===== */
+function updateLatestUI() {
+  const label = document.querySelector("#pulse-latest-label");
+  const value = document.querySelector("#pulse-latest");
+  const note = document.querySelector("#pulse-latest-note");
+  if (!value) return;
+  if (liveLine && liveLine.length) {
+    const last = liveLine[liveLine.length - 1];
+    if (label) label.textContent = "Object 04 · Latest";
+    value.dataset.count = String(last.index);
+    value.textContent = formatIndex(last.index);
+    if (note) note.textContent = `${dataMeta.asOf} 종가 · ${dataMeta.source}`;
+    if (!prefersReducedMotion) {
+      value.textContent = "0";
+      animateCount(value, Math.round(last.index), { duration: 1100 });
+    }
+  }
+}
+
+/* ===== 시대(갤러리) 데이터 ===== */
+const eraConfig = {
+  crash: { from: 1996, to: 2010, phase: "crisis" },
+  recover: { from: 2009, to: 2021.2, phase: "recovery" },
+  reprice: { from: 2017, to: 9999, phase: "growth" }
+};
+
+function sliceLinePoints(from, to) {
+  return buildLinePoints().filter((p) => p.year >= from && p.year <= to);
+}
+
+function computeEraStats(from, to) {
+  const slice = sliceLinePoints(from, to);
+  if (slice.length < 2) return null;
+  const startVal = slice[0].index;
+  const endVal = slice[slice.length - 1].index;
+  let peak = slice[0].index;
+  let maxDd = 0;
+  slice.forEach((p) => {
+    peak = Math.max(peak, p.index);
+    maxDd = Math.min(maxDd, ((p.index - peak) / peak) * 100);
+  });
+  return {
+    slice,
+    returnPct: ((endVal - startVal) / startVal) * 100,
+    maxDrawdown: maxDd,
+    fromYear: Math.floor(slice[0].year),
+    toYear: Math.floor(slice[slice.length - 1].year)
+  };
+}
+
+function renderEraPanels() {
+  document.querySelectorAll(".story-chapter[data-era]").forEach((article) => {
+    const era = article.dataset.era;
+    const conf = eraConfig[era];
+    const svg = article.querySelector(".era-chart");
+    if (!conf || !svg) return;
+    const stats = computeEraStats(conf.from, conf.to);
+    if (!stats) return;
+    const vbW = 900;
+    const vbH = 520;
+    const padY = 60;
+    const xs = stats.slice.map((p) => p.year);
+    const ys = stats.slice.map((p) => p.index);
+    const minX = Math.min(...xs);
+    const maxX = Math.max(...xs);
+    const minY = Math.min(...ys);
+    const maxY = Math.max(...ys);
+    const sx = (v) => ((v - minX) / (maxX - minX || 1)) * vbW;
+    const sy = (v) => vbH - padY - ((v - minY) / (maxY - minY || 1)) * (vbH - padY * 2);
+    const d = stats.slice
+      .map((p, i) => `${i === 0 ? "M" : "L"} ${sx(p.year).toFixed(1)} ${sy(p.index).toFixed(1)}`)
+      .join(" ");
+    svg.innerHTML = "";
+    svg.setAttribute("viewBox", `0 0 ${vbW} ${vbH}`);
+    svg.appendChild(createSvgElement("path", {
+      class: "era-area",
+      d: `${d} L ${vbW} ${vbH} L 0 ${vbH} Z`
+    }));
+    svg.appendChild(createSvgElement("path", { class: "era-stroke", d, pathLength: "1" }));
+
+    const fmtPct = (v) => `${v > 0 ? "+" : ""}${v.toFixed(1)}%`;
+    article.querySelectorAll("[data-era-stat]").forEach((node) => {
+      const kind = node.dataset.eraStat;
+      if (kind === "span") {
+        node.dataset.target = "";
+        node.textContent = `${stats.fromYear}–${stats.toYear}`;
+      } else if (kind === "return") {
+        node.dataset.target = stats.returnPct.toFixed(1);
+        node.textContent = prefersReducedMotion ? fmtPct(stats.returnPct) : "0.0%";
+      } else if (kind === "drawdown") {
+        node.dataset.target = stats.maxDrawdown.toFixed(1);
+        node.textContent = prefersReducedMotion ? fmtPct(stats.maxDrawdown) : "0.0%";
+      }
+    });
+  });
+}
+
+function playEraStats(article) {
+  if (article.dataset.played === "1") return;
+  article.dataset.played = "1";
+  article.classList.add("is-played");
+  article.querySelectorAll("[data-era-stat]").forEach((node) => {
+    const target = parseFloat(node.dataset.target);
+    if (!Number.isFinite(target) || prefersReducedMotion) return;
+    const start = performance.now();
+    const tick = (now) => {
+      const t = Math.min(1, (now - start) / 900);
+      const eased = 1 - Math.pow(1 - t, 3);
+      const v = target * eased;
+      node.textContent = `${v > 0 ? "+" : ""}${v.toFixed(1)}%`;
+      if (t < 1) requestAnimationFrame(tick);
+      else node.textContent = `${target > 0 ? "+" : ""}${target.toFixed(1)}%`;
+    };
+    requestAnimationFrame(tick);
+  });
+}
+
+/* ===== Hero — 핀조명 + 실데이터 곡선 ===== */
+function renderHero() {
+  if (!heroSvg) return;
+  const W = 1100;
+  const H = 460;
+  const pad = { top: 36, right: 40, bottom: 40, left: 40 };
+  const line = buildLinePoints();
+  if (line.length < 2) return;
+  const minYear = line[0].year;
+  const maxYear = line[line.length - 1].year;
+  const vals = line.map((p) => p.index);
+  const minV = Math.min(...vals);
+  const maxV = Math.max(...vals);
+  const hx = (yr) => pad.left + ((yr - minYear) / (maxYear - minYear || 1)) * (W - pad.left - pad.right);
+  const hy = (v) => H - pad.bottom - ((v - minV) / (maxV - minV || 1)) * (H - pad.top - pad.bottom);
+  const d = line.map((p, i) => `${i === 0 ? "M" : "L"} ${hx(p.year).toFixed(1)} ${hy(p.index).toFixed(1)}`).join(" ");
+
+  heroSvg.innerHTML = "";
+  heroSvg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  const title = createSvgElement("title", { id: "hero-chart-title" });
+  title.textContent = `코스피 1980 — ${dataMeta.asOf}`;
+  const desc = createSvgElement("desc", { id: "hero-chart-desc" });
+  desc.textContent = "핀조명을 따라 드러나는 실데이터 코스피 곡선";
+  const defs = createSvgElement("defs");
+  const grad = createSvgElement("radialGradient", { id: "heroPinGrad" });
+  grad.appendChild(createSvgElement("stop", { offset: "0%", "stop-color": "#fff" }));
+  grad.appendChild(createSvgElement("stop", { offset: "58%", "stop-color": "#fff" }));
+  grad.appendChild(createSvgElement("stop", { offset: "100%", "stop-color": "#000" }));
+  const mask = createSvgElement("mask", { id: "heroPin" });
+  mask.appendChild(createSvgElement("rect", { x: 0, y: 0, width: W, height: H, fill: "#000" }));
+  const pinC = createSvgElement("circle", { class: "hero-pin", cx: W * 0.62, cy: H * 0.4, r: 200, fill: "url(#heroPinGrad)" });
+  mask.appendChild(pinC);
+  defs.appendChild(grad);
+  defs.appendChild(mask);
+  heroSvg.append(title, desc, defs);
+
+  heroSvg.appendChild(createSvgElement("path", { class: "hero-dim", d }));
+  const lit = createSvgElement("g", prefersReducedMotion ? {} : { mask: "url(#heroPin)" });
+  lit.appendChild(createSvgElement("path", { class: "hero-lit", d }));
+  events.forEach((ev) => {
+    if (ev.year < minYear || ev.year > maxYear) return;
+    lit.appendChild(createSvgElement("rect", {
+      class: `hero-seal ${ev.phase}`,
+      "data-id": ev.id,
+      x: hx(ev.year) - 4,
+      y: hy(ev.index) - 4,
+      width: 8,
+      height: 8,
+      rx: 1.2
+    }));
+  });
+  heroSvg.appendChild(lit);
+
+  const pin = { x: W * 0.62, y: H * 0.4 };
+  const nearestEventToX = (svgX) => {
+    let best = null;
+    events.forEach((ev) => {
+      if (ev.year < minYear || ev.year > maxYear) return;
+      const ex = hx(ev.year);
+      if (!best || Math.abs(ex - svgX) < Math.abs(hx(best.year) - svgX)) best = ev;
+    });
+    return best;
+  };
+  const setReadout = (svgX) => {
+    const ev = nearestEventToX(svgX);
+    if (ev && heroReadout) {
+      heroReadout.innerHTML = `<b>${formatIndex(ev.index)}</b><span>${ev.date} · ${ev.title}</span>`;
+    }
+    return ev;
+  };
+  const movePin = (svgX, svgY) => {
+    pin.x = svgX;
+    pin.y = svgY;
+    pinC.setAttribute("cx", svgX.toFixed(1));
+    pinC.setAttribute("cy", svgY.toFixed(1));
+    setReadout(svgX);
+  };
+  const toSvg = (clientX, clientY) => {
+    const r = heroSvg.getBoundingClientRect();
+    return {
+      x: ((clientX - r.left) / r.width) * W,
+      y: ((clientY - r.top) / r.height) * H
+    };
+  };
+
+  if (heroVisual) {
+    heroVisual.onpointermove = (e) => {
+      heroPointerAt = performance.now();
+      const s = toSvg(e.clientX, e.clientY);
+      movePin(s.x, s.y);
+    };
+    heroVisual.onpointerleave = () => setReadout(pin.x);
+    heroVisual.onclick = (e) => {
+      const s = toSvg(e.clientX, e.clientY);
+      const ev = nearestEventToX(s.x);
+      if (!ev) return;
+      stopTour();
+      const target = document.querySelector("#index");
+      if (target && typeof target.scrollIntoView === "function") {
+        target.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "start" });
+      }
+      revealPoint(ev, true);
+      writeHash(ev.id);
+    };
+  }
+  setReadout(pin.x);
+}
+
+function heroAutoSweep() {
+  if (!heroSvg || prefersReducedMotion) return;
+  const pinC = heroSvg.querySelector(".hero-pin");
+  if (pinC && performance.now() - heroPointerAt > 2600) {
+    heroSweep += 0.006;
+    const W = 1100;
+    const H = 460;
+    const cx = W * (0.5 + 0.42 * Math.sin(heroSweep));
+    const cy = H * (0.45 + 0.16 * Math.sin(heroSweep * 0.7));
+    pinC.setAttribute("cx", cx.toFixed(1));
+    pinC.setAttribute("cy", cy.toFixed(1));
+  }
+  window.requestAnimationFrame(heroAutoSweep);
+}
+
+function toggleDataMode() {
+  const on = document.body.classList.toggle("is-data-mode");
+  if (dataModeBtn) {
+    dataModeBtn.classList.toggle("is-active", on);
+    dataModeBtn.setAttribute("aria-pressed", String(on));
+  }
+}
+
 function rebuildChart() {
   renderChart();
   applyFilter(currentFilter);
   resetChartToStart();
   applyHashFromLocation();
   updateChartScrollbar();
+  renderHero();
+  renderEraPanels();
 }
 
 // 폴백 우선: 번들 데이터로 먼저 렌더한 뒤, 라이브가 도착하면 보강.
@@ -1487,11 +1781,24 @@ async function enhanceWithLiveData() {
   addSyntheticEvents(pts, data);
   rebuildChart();
   updateProvenance();
+  updateLatestUI();
+}
+
+function observeEraPanels() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) playEraStats(entry.target);
+    });
+  }, { threshold: 0.35 });
+  document.querySelectorAll(".story-chapter[data-era]").forEach((a) => observer.observe(a));
 }
 
 document.body.dataset.phase = "growth";
 renderChart();
+renderHero();
+renderEraPanels();
 observeChapters();
+observeEraPanels();
 enableChartGestures();
 enableMinimap();
 initParticles();
@@ -1503,6 +1810,14 @@ if (!applyHashFromLocation()) {
 updateProgress();
 updateChartScrollbar();
 updateProvenance();
+updateLatestUI();
 watchChartPosition();
+heroAutoSweep();
 runLoader();
 enhanceWithLiveData();
+
+dataModeBtn?.addEventListener("click", toggleDataMode);
+window.addEventListener("resize", () => {
+  renderHero();
+  renderEraPanels();
+}, { passive: true });

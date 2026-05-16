@@ -9,7 +9,7 @@ const events = [
     signal: "모든 파형의 원점",
     title: "기준 지수 100",
     summary: "코스피는 1980년 1월 4일을 기준 100으로 삼아 장기 비교의 출발점을 만들었습니다.",
-    detail: "오늘의 7,000선도 이 숫자에서 출발합니다. 긴 차트의 첫 점은 작은 숫자지만, 이후 46년 동안 시장이 반복한 공포와 회복을 모두 품고 있습니다."
+    detail: "오늘의 4,000선도 이 숫자에서 출발합니다. 긴 차트의 첫 점은 작은 숫자지만, 이후 45년 동안 시장이 반복한 공포와 회복을 모두 품고 있습니다."
   },
   {
     id: "launch",
@@ -37,15 +37,15 @@ const events = [
   },
   {
     id: "imf",
-    year: 1998,
+    year: 1998.5,
     date: "1998.06",
-    index: 277,
+    index: 280,
     phase: "crisis",
     phaseLabel: "외환위기",
     signal: "공포가 숫자가 된 밤",
     title: "IMF 충격의 저점",
     summary: "외환위기 이후 신용 경색과 구조조정 공포가 시장을 깊은 저점으로 끌어내립니다.",
-    detail: "1997년 말 구제금융 합의 이후에도 불확실성은 이어졌습니다. 이 장면은 한국 시장의 가장 강렬한 급락 기억 중 하나입니다."
+    detail: "1997년 말 구제금융 합의 이후에도 불확실성은 이어졌습니다. 1998년 중반의 이 저점은 한국 시장의 가장 강렬한 급락 기억 중 하나입니다."
   },
   {
     id: "dotcom",
@@ -73,7 +73,7 @@ const events = [
   },
   {
     id: "gfc",
-    year: 2008,
+    year: 2008.83,
     date: "2008.10",
     index: 938,
     phase: "crisis",
@@ -121,7 +121,7 @@ const events = [
   },
   {
     id: "covid",
-    year: 2020,
+    year: 2020.21,
     date: "2020.03",
     index: 1457,
     phase: "crisis",
@@ -149,22 +149,22 @@ const events = [
     date: "2021.06",
     index: 3316,
     phase: "growth",
-    phaseLabel: "역사적 고점",
+    phaseLabel: "팬데믹기 고점",
     signal: "가장 높은 숨",
-    title: "역사적 고점",
+    title: "2021년 고점",
     summary: "코스피는 2021년 6월 장중 3316선까지 오르며 팬데믹 이후 랠리의 정점을 기록합니다.",
-    detail: "이후 금리 상승과 성장주 재평가가 시작되며 시장은 다시 조정 국면으로 들어갔습니다. 2026년 랠리 전까지 이 고점은 긴 기억으로 남았습니다."
+    detail: "이후 금리 상승과 성장주 재평가가 시작되며 시장은 다시 조정 국면으로 들어갔습니다. 2025년 랠리 전까지 이 고점은 긴 기억으로 남았습니다."
   },
   {
     id: "rate-shock",
-    year: 2022.99,
-    date: "2022.12",
-    index: 2236.4,
+    year: 2022.75,
+    date: "2022.10",
+    index: 2155,
     phase: "crisis",
     phaseLabel: "금리 충격",
     signal: "유동성이 빠진 자리",
-    title: "2022년 약세장",
-    summary: "금리 상승과 성장주 재평가 속에서 코스피는 2022년 말 2236.40으로 내려왔습니다.",
+    title: "2022년 약세장 저점",
+    summary: "금리 급등과 성장주 재평가 속에서 코스피는 2022년 가을 2200선 아래까지 밀렸습니다.",
     detail: "팬데믹 이후의 유동성 랠리가 끝나자 시장은 다시 이익과 금리의 언어로 돌아왔습니다. 상승장의 낙관이 한 해 만에 방어적 가격으로 바뀐 구간입니다."
   },
   {
@@ -181,15 +181,27 @@ const events = [
   },
   {
     id: "policy-drag",
-    year: 2024.99,
+    year: 2024.93,
     date: "2024.12",
     index: 2399.49,
     phase: "crisis",
-    phaseLabel: "2400선 이탈",
-    signal: "회복의 숨 고르기",
-    title: "2024년 재하락",
-    summary: "2024년 말 코스피는 2399.49로 내려오며 2400선을 지키지 못했습니다.",
-    detail: "실적과 정책 기대가 엇갈리면서 시장은 다시 방어적인 위치로 이동했습니다. 이 지점이 2025년 급등 전의 낮은 출발선이 됐습니다."
+    phaseLabel: "정치 충격",
+    signal: "한 해를 닫은 충격",
+    title: "2024년 정치 리스크 급락",
+    summary: "2024년 말 정치 불확실성이 커지며 코스피는 2399.49로 한 해를 마쳤습니다.",
+    detail: "비상계엄 선포와 탄핵 정국 등 정치 리스크가 위험회피를 키웠습니다. 이 낮은 출발선이 2025년 강한 반등의 토대가 됐습니다."
+  },
+  {
+    id: "rebound-2025",
+    year: 2025.45,
+    date: "2025.06",
+    index: 3129,
+    phase: "recovery",
+    phaseLabel: "밸류업 반등",
+    signal: "낮은 곳에서 다시",
+    title: "2025년 밸류업·AI 반등",
+    summary: "2025년 들어 코스피는 빠르게 반등하며 다시 3000선을 회복했습니다.",
+    detail: "기업 밸류업 프로그램과 반도체·AI 기대가 맞물리며 시장은 2024년 말의 공포를 빠르게 되돌렸습니다."
   },
   {
     id: "four-thousand",
@@ -213,55 +225,7 @@ const events = [
     signal: "랠리가 연말을 닫다",
     title: "2025년 4214.17 마감",
     summary: "2025년 마지막 거래일 코스피는 4214.17로 마감하며 전년 대비 큰 폭 상승을 기록했습니다.",
-    detail: "2024년 말 2399.49에서 2025년 말 4214.17까지의 이동은 차트의 기울기를 완전히 바꿔놓았습니다. 2026년 랠리의 전주곡이었습니다."
-  },
-  {
-    id: "six-thousand",
-    year: 2026.15,
-    date: "2026.02.25",
-    index: 6083.86,
-    phase: "growth",
-    phaseLabel: "첫 6000",
-    signal: "가속 구간",
-    title: "6000선 돌파",
-    summary: "2026년 2월 코스피는 6000선을 넘어서며 상승 속도를 한 단계 더 높였습니다.",
-    detail: "이 구간부터 차트는 완만한 우상향이 아니라 가속 곡선에 가까워집니다. 시장은 한국 대형주의 재평가와 유동성 기대를 빠르게 반영했습니다."
-  },
-  {
-    id: "record-close-2026",
-    year: 2026.366,
-    date: "2026.05.14",
-    index: 7981.41,
-    phase: "growth",
-    phaseLabel: "종가 고점",
-    signal: "8000선 직전의 고도",
-    title: "역대 최고 종가 7981.41",
-    summary: "2026년 5월 14일 코스피는 7981.41로 역대 최고 종가를 기록했습니다.",
-    detail: "장기 차트에서 가장 가파른 구간입니다. 시장은 8000선이라는 새로운 심리적 가격을 눈앞에 두고 있었습니다."
-  },
-  {
-    id: "intraday-8000",
-    year: 2026.368,
-    date: "2026.05.15 장중",
-    index: 8046.78,
-    phase: "growth",
-    phaseLabel: "장중 8000",
-    signal: "넘어섰지만 머물지 못한 선",
-    title: "장중 8046.78",
-    summary: "2026년 5월 15일 코스피는 장중 8046.78까지 오르며 8000선을 넘어섰습니다.",
-    detail: "긴 상승의 정점처럼 보였지만, 그날의 결말은 달랐습니다. 차트는 같은 날짜 안에서 고점과 급락을 함께 기록하게 됐습니다."
-  },
-  {
-    id: "latest-2026",
-    year: 2026.371,
-    date: "2026.05.15 종가",
-    index: 7493.18,
-    phase: "crisis",
-    phaseLabel: "6.12% 급락",
-    signal: "랠리의 끝이 아니라 변동성의 시작",
-    title: "2026년 5월 15일 7493.18",
-    summary: "8000선을 장중 돌파한 바로 그날, 코스피는 6.12% 하락한 7493.18로 마감했습니다.",
-    detail: "2026년 5월 15일은 단순한 하락일이 아니라 과열된 상승장이 얼마나 빠르게 변동성으로 바뀔 수 있는지 보여준 장면입니다. 이 웹사이트의 데이터 기준점입니다."
+    detail: "2024년 말 2,399.49에서 2025년 말 4,214.17까지의 이동은 차트의 기울기를 완전히 바꿔놓았습니다. 이 사이트의 데이터 기준점입니다."
   }
 ];
 
@@ -278,6 +242,20 @@ const yearlyCloses = {
   2020: 2873.47, 2021: 2977.65, 2022: 2236.4, 2023: 2655.28, 2024: 2399.49,
   2025: 4214.17
 };
+
+// 위기 구간 월 단위 근사값 — 급락/회복 곡선의 결을 살립니다.
+const crisisMonthly = [
+  { year: 1997.5, index: 745 }, { year: 1997.83, index: 530 }, { year: 1997.99, index: 376 },
+  { year: 1998.2, index: 540 }, { year: 1998.46, index: 320 }, { year: 1998.62, index: 330 },
+  { year: 1998.8, index: 420 }, { year: 1999.5, index: 880 },
+  { year: 2008.3, index: 1700 }, { year: 2008.5, index: 1670 }, { year: 2008.78, index: 1450 },
+  { year: 2008.8, index: 1100 }, { year: 2008.92, index: 1050 }, { year: 2008.99, index: 1124 },
+  { year: 2009.5, index: 1390 },
+  { year: 2020.05, index: 2120 }, { year: 2020.13, index: 1980 }, { year: 2020.33, index: 1860 },
+  { year: 2020.5, index: 2110 }, { year: 2020.75, index: 2330 }, { year: 2020.99, index: 2873 },
+  { year: 2022.3, index: 2700 }, { year: 2022.5, index: 2350 }, { year: 2022.62, index: 2290 },
+  { year: 2022.83, index: 2220 }, { year: 2022.99, index: 2236 }
+];
 
 const chart = document.querySelector("#kospi-chart");
 const chartScroll = document.querySelector("#chart-scroll");
@@ -318,38 +296,47 @@ const loader = document.querySelector("#loader");
 const loaderCount = document.querySelector("#loader-count");
 const chapterIndicator = document.querySelector("#chapter-indicator");
 const dataNote = document.querySelector(".data-note");
+const phaseWash = document.querySelector("#phase-wash");
 
 let selectedId = "base";
 let currentFilter = "all";
+let lastPhase = "";
 let pointPositions = new Map();
 const chartSize = { width: 3600, height: 860 };
-const chartYears = { min: 1980, max: 2026.45 };
+const chartYears = { min: 1980, max: 2026.0 };
 let isChartDragging = false;
 let chartDragStartX = 0;
 let chartDragStartLeft = 0;
 let suppressChartSyncUntil = 0;
 let lastChartScrollLeft = -1;
+let lastScrollChangeAt = 0;
+let pendingSnap = false;
 let isTouring = false;
 let tourTimer = 0;
 let tourIndex = 0;
 let isMinimapDragging = false;
+let washTimer = 0;
+let scrollVelTimer = 0;
+let lastScrollY = window.scrollY;
+let lastScrollT = performance.now();
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
 
 const modeTargets = {
   all: "base",
-  crisis: "latest-2026",
-  recovery: "rate-cut-hope",
-  growth: "intraday-8000"
+  crisis: "covid",
+  recovery: "rebound-2025",
+  growth: "year-end-2025"
 };
 
 const modeLabels = {
-  all: "전체 흐름 · 2026.05.15 기준",
+  all: "전체 흐름 · 2025.12.30 기준",
   crisis: "위기 구간 · 급락 신호 강조",
   recovery: "회복 구간 · 반등 신호 강조",
   growth: "성장 구간 · 랠리 신호 강조"
 };
 
-const levelLines = [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000];
+const levelLines = [1000, 2000, 3000, 4000];
 
 function formatIndex(value) {
   return Math.round(value).toLocaleString("ko-KR");
@@ -359,6 +346,61 @@ function formatSignedPct(value) {
   if (value === null || !Number.isFinite(value)) return "—";
   const sign = value > 0 ? "+" : "";
   return `${sign}${value.toFixed(1)}%`;
+}
+
+// 숫자가 폭발적으로 카운트업되는 연출.
+function animateCount(node, to, { duration = 760, decimals = 0 } = {}) {
+  if (!node) return;
+  const fmt = (v) => v.toLocaleString("ko-KR", {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals
+  });
+  if (prefersReducedMotion) {
+    node.textContent = fmt(to);
+    return;
+  }
+  let from = parseFloat(String(node.textContent || "0").replace(/[^0-9.-]/g, ""));
+  if (!Number.isFinite(from)) from = 0;
+  if (from === to) {
+    node.textContent = fmt(to);
+    return;
+  }
+  node.classList.add("is-counting");
+  const start = performance.now();
+  const tick = (now) => {
+    const t = Math.min(1, (now - start) / duration);
+    const eased = 1 - Math.pow(1 - t, 3);
+    const value = from + (to - from) * eased;
+    node.textContent = fmt(decimals ? Number(value.toFixed(decimals)) : Math.round(value));
+    if (t < 1) {
+      requestAnimationFrame(tick);
+    } else {
+      node.textContent = fmt(to);
+      node.classList.remove("is-counting");
+    }
+  };
+  requestAnimationFrame(tick);
+}
+
+function flashPhaseWash(phase) {
+  if (!phaseWash || prefersReducedMotion) return;
+  phaseWash.dataset.phase = phase;
+  phaseWash.classList.remove("is-on");
+  void phaseWash.offsetWidth;
+  phaseWash.classList.add("is-on");
+  window.clearTimeout(washTimer);
+  washTimer = window.setTimeout(() => phaseWash.classList.remove("is-on"), 920);
+}
+
+function pulseSelectedPoint(point, phase) {
+  const pulse = chart.querySelector(".chart-pulse");
+  if (!pulse || !point) return;
+  pulse.setAttribute("cx", point.x);
+  pulse.setAttribute("cy", point.y);
+  pulse.style.color = phase === "crisis" ? "var(--red)" : phase === "recovery" ? "var(--green)" : "var(--blue)";
+  if (prefersReducedMotion) return;
+  pulse.classList.remove("is-on");
+  requestAnimationFrame(() => requestAnimationFrame(() => pulse.classList.add("is-on")));
 }
 
 function getSelectedEvent() {
@@ -409,7 +451,7 @@ function setSelected(id, shouldChartScroll = true) {
   detailTitle.textContent = selected.title;
   detailDate.textContent = selected.date;
   detailCopy.textContent = selected.detail;
-  detailIndex.textContent = formatIndex(selected.index);
+  animateCount(detailIndex, Math.round(selected.index));
   detailPhase.textContent = selected.phaseLabel;
   detailChange.textContent = metrics.change === null ? "기준점" : formatSignedPct(metrics.change);
   detailDrawdown.textContent = metrics.drawdown >= -0.05 ? "사상 최고권" : `${metrics.drawdown.toFixed(1)}%`;
@@ -419,8 +461,15 @@ function setSelected(id, shouldChartScroll = true) {
   updateChartMoment(selected);
   document.body.dataset.phase = selected.phase;
 
-  chart.querySelectorAll(".chart-point").forEach((point) => {
-    point.classList.toggle("is-selected", point.dataset.id === id);
+  const point = pointPositions.get(id);
+  pulseSelectedPoint(point, selected.phase);
+  if (selected.phase !== lastPhase) {
+    flashPhaseWash(selected.phase);
+    lastPhase = selected.phase;
+  }
+
+  chart.querySelectorAll(".chart-point").forEach((node) => {
+    node.classList.toggle("is-selected", node.dataset.id === id);
   });
 
   chart.querySelectorAll(".event-label").forEach((label) => {
@@ -495,7 +544,7 @@ function updateModal(event) {
   modalSignal.textContent = event.signal;
   modalTitle.textContent = event.title;
   modalCopy.textContent = event.detail;
-  modalIndex.textContent = formatIndex(event.index);
+  animateCount(modalIndex, Math.round(event.index), { duration: 900 });
   modalPhase.textContent = event.phaseLabel;
   modalChange.textContent = metrics.change === null ? "기준점" : formatSignedPct(metrics.change);
   modalDrawdown.textContent = metrics.drawdown >= -0.05 ? "사상 최고권" : `${metrics.drawdown.toFixed(1)}%`;
@@ -519,10 +568,15 @@ function closeMomentModal() {
   momentModal.hidden = true;
 }
 
+function centeredScrollLeft(point) {
+  const maxScroll = chartScroll.scrollWidth - chartScroll.clientWidth;
+  return Math.max(0, Math.min(maxScroll, point.x - chartScroll.clientWidth * 0.5));
+}
+
 function scrollChartTo(id) {
   const point = pointPositions.get(id);
   if (!point || !chartScroll) return;
-  const nextLeft = Math.max(0, point.x - chartScroll.clientWidth * 0.5);
+  const nextLeft = centeredScrollLeft(point);
   suppressChartSyncUntil = performance.now() + 1400;
   if (typeof chartScroll.scrollTo === "function") {
     chartScroll.scrollTo({ left: nextLeft, behavior: prefersReducedMotion ? "auto" : "smooth" });
@@ -574,12 +628,13 @@ function createSvgElement(name, attrs = {}) {
   return element;
 }
 
-// 연도별 종가 + 사건 포인트를 합쳐 실제 코스피에 가까운 밀도 높은 라인을 만듭니다.
+// 연도별 + 위기 월별 + 사건 포인트를 합쳐 실제 코스피에 가까운 라인을 만듭니다.
 function buildLinePoints() {
   const merged = [];
   Object.entries(yearlyCloses).forEach(([year, index]) => {
     merged.push({ year: Number(year) + 0.96, index });
   });
+  crisisMonthly.forEach((p) => merged.push({ year: p.year, index: p.index }));
   events.forEach((event) => merged.push({ year: event.year, index: event.index }));
   merged.sort((a, b) => a.year - b.year);
   return merged;
@@ -590,7 +645,7 @@ function renderChart() {
   const pad = { top: 28, right: 110, bottom: 42, left: 92 };
   const minYear = chartYears.min;
   const maxYear = chartYears.max;
-  const maxIndex = 8400;
+  const maxIndex = 4600;
   const x = (year) => pad.left + ((year - minYear) / (maxYear - minYear)) * (width - pad.left - pad.right);
   const y = (value) => height - pad.bottom - (value / maxIndex) * (height - pad.top - pad.bottom);
   const points = events.map((event) => ({ ...event, x: x(event.year), y: y(event.index) }));
@@ -602,9 +657,9 @@ function renderChart() {
   chart.setAttribute("viewBox", `0 0 ${width} ${height}`);
 
   const title = createSvgElement("title", { id: "chart-title" });
-  title.textContent = "코스피 1980년부터 2026년 5월 15일까지 장기 라인 차트";
+  title.textContent = "코스피 1980년부터 2025년 12월 30일까지 장기 라인 차트";
   const desc = createSvgElement("desc", { id: "chart-desc" });
-  desc.textContent = "1980년 기준 100에서 2026년 5월 15일 종가 7493.18까지 연도별 종가와 주요 위기·회복 지점을 연결한 차트";
+  desc.textContent = "1980년 기준 100에서 2025년 12월 30일 종가 4,214.17까지 연·월별 종가와 주요 위기·회복 지점을 연결한 차트";
   const defs = createSvgElement("defs");
   const gradient = createSvgElement("linearGradient", {
     id: "chartFill",
@@ -648,7 +703,7 @@ function renderChart() {
     chart.appendChild(label);
   });
 
-  [1980, 1990, 2000, 2010, 2020, 2026].forEach((tick) => {
+  [1980, 1990, 2000, 2010, 2020, 2025].forEach((tick) => {
     const label = createSvgElement("text", {
       class: "axis-label",
       x: x(tick),
@@ -664,12 +719,19 @@ function renderChart() {
   chart.appendChild(createSvgElement("path", { class: "area-fill", d: areaData }));
   chart.appendChild(createSvgElement("path", { class: "path-shadow", d: pathData }));
   chart.appendChild(createSvgElement("path", { class: "path-line", d: pathData }));
+  chart.appendChild(createSvgElement("path", { class: "path-glow", d: pathData }));
   chart.appendChild(createSvgElement("line", {
     class: "chart-cursor-line",
     x1: points[0].x,
     x2: points[0].x,
     y1: pad.top,
     y2: baseline
+  }));
+  chart.appendChild(createSvgElement("circle", {
+    class: "chart-pulse",
+    cx: points[0].x,
+    cy: points[0].y,
+    r: 7
   }));
 
   points.forEach((point) => {
@@ -850,10 +912,11 @@ function startTour() {
   const list = getFilteredEventsInOrder();
   if (!list.length) return;
   isTouring = true;
+  document.body.classList.add("is-touring");
   tourButton?.classList.add("is-playing");
   tourButton?.setAttribute("aria-pressed", "true");
   if (tourLabel) tourLabel.textContent = "투어 정지";
-  let idx = list.findIndex((event) => event.id === selectedId);
+  const idx = list.findIndex((event) => event.id === selectedId);
   tourIndex = idx >= 0 && idx < list.length - 1 ? idx : 0;
 
   const advance = () => {
@@ -866,7 +929,7 @@ function startTour() {
       return;
     }
     tourIndex += 1;
-    tourTimer = window.setTimeout(advance, prefersReducedMotion ? 1200 : 2600);
+    tourTimer = window.setTimeout(advance, prefersReducedMotion ? 1300 : 3000);
   };
   advance();
 }
@@ -874,6 +937,7 @@ function startTour() {
 function stopTour() {
   if (!isTouring) return;
   isTouring = false;
+  document.body.classList.remove("is-touring");
   window.clearTimeout(tourTimer);
   tourButton?.classList.remove("is-playing");
   tourButton?.setAttribute("aria-pressed", "false");
@@ -910,6 +974,21 @@ function updateProgress() {
   progressBar.style.transform = `scaleX(${Math.min(1, Math.max(0, progress))})`;
 }
 
+function updateScrollVelocity() {
+  if (prefersReducedMotion) return;
+  const now = performance.now();
+  const sy = window.scrollY;
+  const dt = Math.max(16, now - lastScrollT);
+  const velocity = Math.min(1, (Math.abs(sy - lastScrollY) / dt) / 2.4);
+  lastScrollY = sy;
+  lastScrollT = now;
+  document.documentElement.style.setProperty("--scroll-vel", velocity.toFixed(3));
+  window.clearTimeout(scrollVelTimer);
+  scrollVelTimer = window.setTimeout(() => {
+    document.documentElement.style.setProperty("--scroll-vel", "0");
+  }, 150);
+}
+
 function updateChartScrollbar() {
   updateMinimapWindow();
   syncSelectionToChartCenter();
@@ -930,6 +1009,27 @@ function syncSelectionToChartCenter() {
 
   if (nearest && nearest.id !== selectedId) {
     setSelected(nearest.id, false);
+  }
+}
+
+// 스크롤이 멈추면 가장 가까운 사건으로 자석처럼 붙습니다.
+function maybeMagneticSnap() {
+  if (!chartScroll || !pendingSnap) return;
+  if (isChartDragging || isTouring || isMinimapDragging) return;
+  if (performance.now() - lastScrollChangeAt < 170) return;
+  if (performance.now() < suppressChartSyncUntil) return;
+  pendingSnap = false;
+  const maxScroll = chartScroll.scrollWidth - chartScroll.clientWidth;
+  if (chartScroll.scrollLeft <= 2 || chartScroll.scrollLeft >= maxScroll - 2) return;
+  const point = pointPositions.get(selectedId);
+  if (!point) return;
+  const desired = centeredScrollLeft(point);
+  if (Math.abs(desired - chartScroll.scrollLeft) <= 8) return;
+  suppressChartSyncUntil = performance.now() + 650;
+  if (typeof chartScroll.scrollTo === "function") {
+    chartScroll.scrollTo({ left: desired, behavior: prefersReducedMotion ? "auto" : "smooth" });
+  } else {
+    chartScroll.scrollLeft = desired;
   }
 }
 
@@ -997,9 +1097,15 @@ function enableChartGestures() {
 }
 
 function watchChartPosition() {
-  if (chartScroll && chartScroll.scrollLeft !== lastChartScrollLeft) {
-    lastChartScrollLeft = chartScroll.scrollLeft;
-    updateChartScrollbar();
+  if (chartScroll) {
+    if (chartScroll.scrollLeft !== lastChartScrollLeft) {
+      lastChartScrollLeft = chartScroll.scrollLeft;
+      lastScrollChangeAt = performance.now();
+      pendingSnap = true;
+      updateChartScrollbar();
+    } else {
+      maybeMagneticSnap();
+    }
   }
   window.requestAnimationFrame(watchChartPosition);
 }
@@ -1021,6 +1127,75 @@ function observeChapters() {
   chapters.forEach((chapter) => observer.observe(chapter));
 }
 
+// 시장 국면에 따라 거동이 바뀌는 제너러티브 입자 레이어.
+function initParticles() {
+  const canvas = document.querySelector("#market-particles");
+  if (!canvas || prefersReducedMotion || coarsePointer) return;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+  const colors = { crisis: "#ff5d6c", recovery: "#39d08e", growth: "#49a6ff", default: "#49a6ff" };
+  let w = 0;
+  let h = 0;
+  let running = true;
+  let raf = 0;
+  const particles = [];
+
+  function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+  for (let i = 0; i < 64; i += 1) {
+    particles.push({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      r: Math.random() * 1.6 + 0.4
+    });
+  }
+  function frame() {
+    if (!running) return;
+    const phase = document.body.dataset.phase || "default";
+    const color = colors[phase] || colors.default;
+    let drift = -0.18;
+    let jitter = 0.25;
+    if (phase === "crisis") { drift = 0.5; jitter = 0.85; }
+    else if (phase === "recovery") { drift = -0.42; jitter = 0.2; }
+    else if (phase === "growth") { drift = -0.78; jitter = 0.12; }
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = color;
+    particles.forEach((p) => {
+      p.x += (Math.random() - 0.5) * jitter;
+      p.y += drift + (Math.random() - 0.5) * jitter;
+      if (p.y < -12) { p.y = h + 12; p.x = Math.random() * w; }
+      if (p.y > h + 12) { p.y = -12; p.x = Math.random() * w; }
+      ctx.globalAlpha = 0.45;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    raf = window.requestAnimationFrame(frame);
+  }
+  resize();
+  window.addEventListener("resize", resize);
+  document.addEventListener("visibilitychange", () => {
+    running = !document.hidden;
+    if (running) {
+      raf = window.requestAnimationFrame(frame);
+    } else {
+      window.cancelAnimationFrame(raf);
+    }
+  });
+  raf = window.requestAnimationFrame(frame);
+}
+
+function runMarketPulseIntro() {
+  document.querySelectorAll(".market-pulse strong[data-count]").forEach((node) => {
+    const raw = node.dataset.count || "0";
+    const decimals = raw.includes(".") ? 2 : 0;
+    node.textContent = prefersReducedMotion ? node.textContent : "0";
+    animateCount(node, parseFloat(raw), { duration: 1100, decimals });
+  });
+}
+
 function runLoader() {
   const fill = loader?.querySelector(".loader-line span");
   let value = 0;
@@ -1032,6 +1207,7 @@ function runLoader() {
       window.clearInterval(timer);
       window.setTimeout(() => {
         document.body.classList.add("is-ready");
+        runMarketPulseIntro();
         window.setTimeout(() => {
           if (loader) loader.hidden = true;
         }, 650);
@@ -1055,7 +1231,10 @@ window.addEventListener("keydown", (event) => {
   }
 });
 
-window.addEventListener("scroll", updateProgress, { passive: true });
+window.addEventListener("scroll", () => {
+  updateProgress();
+  updateScrollVelocity();
+}, { passive: true });
 chartScroll?.addEventListener("scroll", updateChartScrollbar, { passive: true });
 window.addEventListener("hashchange", () => {
   stopTour();
@@ -1085,10 +1264,12 @@ window.addEventListener("pointerleave", () => {
   document.body.classList.remove("has-pointer");
 });
 
+document.body.dataset.phase = "growth";
 renderChart();
 observeChapters();
 enableChartGestures();
 enableMinimap();
+initParticles();
 applyFilter("all");
 resetChartToStart();
 if (!applyHashFromLocation()) {

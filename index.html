@@ -3,11 +3,156 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>KOSPI Archive Wall</title>
+
+    <title>코스피 45년 아카이브 · KOSPI Archive Wall — 1980부터 실시간까지</title>
+    <meta
+      name="description"
+      content="1980년 지수 100부터 오늘까지, 코스피 45년사를 한 화면에서. IMF 외환위기·글로벌 금융위기·코로나 쇼크·최근 사상 최고치 랠리를 인터랙티브 수묵 곡선으로 훑어봅니다. KRX 종가에 맞춰 실데이터가 자동 갱신되며 한국어·영어를 지원합니다."
+    />
+    <meta name="author" content="Harry · hey-hu.com" />
+    <meta
+      name="keywords"
+      content="코스피, KOSPI, 코스피 지수, 코스피 역사, 코스피 차트, 코스피 45년, 한국 증시, IMF 외환위기, 글로벌 금융위기, 코로나 증시, KOSPI history, KOSPI chart, 데이터 시각화, 인터랙티브 아카이브"
+    />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="theme-color" content="#08060a" />
+    <link rel="canonical" href="https://kospi.hey-hu.com/" />
+    <link rel="alternate" hreflang="ko" href="https://kospi.hey-hu.com/" />
+    <link rel="alternate" hreflang="en" href="https://kospi.hey-hu.com/" />
+    <link rel="alternate" hreflang="x-default" href="https://kospi.hey-hu.com/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="KOSPI Archive Wall" />
+    <meta property="og:title" content="코스피 45년 아카이브 · KOSPI Archive Wall" />
+    <meta
+      property="og:description"
+      content="1980년 지수 100부터 오늘까지. 사상 최고치 랠리로 전 세계가 주목하는 코스피 45년을 인터랙티브 수묵 곡선으로 훑는 기록벽. 실데이터 자동 갱신·한영 지원."
+    />
+    <meta property="og:url" content="https://kospi.hey-hu.com/" />
+    <meta property="og:locale" content="ko_KR" />
+    <meta property="og:locale:alternate" content="en_US" />
+    <meta property="og:image" content="https://kospi.hey-hu.com/og.png" />
+    <meta property="og:image:secure_url" content="https://kospi.hey-hu.com/og.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="KOSPI Archive Wall — 1980년부터 현재까지 코스피 수묵 곡선" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="코스피 45년 아카이브 · KOSPI Archive Wall" />
+    <meta
+      name="twitter:description"
+      content="1980년 지수 100부터 오늘까지. 사상 최고치 랠리를 인터랙티브 수묵 곡선으로 훑는 코스피 45년 기록벽."
+    />
+    <meta name="twitter:image" content="https://kospi.hey-hu.com/og.png" />
+    <meta name="twitter:image:alt" content="KOSPI Archive Wall — 코스피 45년 수묵 곡선" />
+
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='13'%20fill='%2308060a'/%3E%3Cpath%20d='M11%2046%20L25%2032%20L35%2040%20L53%2017'%20fill='none'%20stroke='%23b98e44'%20stroke-width='6'%20stroke-linecap='round'%20stroke-linejoin='round'/%3E%3Ccircle%20cx='53'%20cy='17'%20r='5'%20fill='%23c0473a'/%3E%3C/svg%3E"
+    />
+    <link
+      rel="apple-touch-icon"
+      href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20fill='%2308060a'/%3E%3Cpath%20d='M11%2046%20L25%2032%20L35%2040%20L53%2017'%20fill='none'%20stroke='%23b98e44'%20stroke-width='6'%20stroke-linecap='round'%20stroke-linejoin='round'/%3E%3Ccircle%20cx='53'%20cy='17'%20r='5'%20fill='%23c0473a'/%3E%3C/svg%3E"
+    />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="./styles.css" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://kospi.hey-hu.com/#website",
+            "url": "https://kospi.hey-hu.com/",
+            "name": "KOSPI Archive Wall",
+            "alternateName": "코스피 기록벽",
+            "description": "1980년부터 현재까지 코스피 45년사를 핀조명 인터랙티브 수묵 곡선으로 보여주는 데이터 아카이브.",
+            "inLanguage": ["ko", "en"],
+            "author": { "@id": "https://www.hey-hu.com/#person" },
+            "publisher": { "@id": "https://www.hey-hu.com/#person" }
+          },
+          {
+            "@type": "WebApplication",
+            "@id": "https://kospi.hey-hu.com/#app",
+            "name": "KOSPI Archive Wall",
+            "url": "https://kospi.hey-hu.com/",
+            "applicationCategory": "FinanceApplication",
+            "operatingSystem": "Web",
+            "browserRequirements": "Requires JavaScript",
+            "inLanguage": ["ko", "en"],
+            "isAccessibleForFree": true,
+            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+            "creator": { "@id": "https://www.hey-hu.com/#person" },
+            "about": { "@id": "https://kospi.hey-hu.com/#dataset" }
+          },
+          {
+            "@type": "Dataset",
+            "@id": "https://kospi.hey-hu.com/#dataset",
+            "name": "KOSPI 종가 시계열 (1980–현재)",
+            "description": "코리아 종합주가지수(KOSPI, ^KS11)의 월봉·일봉 종가 시계열. KRX 정산 시점에 맞춰 자동 갱신되며 결측 시 번들 데이터로 폴백.",
+            "temporalCoverage": "1980-01-04/..",
+            "inLanguage": "ko",
+            "license": "https://kospi.hey-hu.com/",
+            "creator": { "@id": "https://www.hey-hu.com/#person" },
+            "variableMeasured": "KOSPI 종가 (코스피 지수 포인트)",
+            "isBasedOn": [
+              "https://finance.yahoo.com/quote/%5EKS11",
+              "https://stooq.com/q/?s=^kospi"
+            ]
+          },
+          {
+            "@type": "Person",
+            "@id": "https://www.hey-hu.com/#person",
+            "name": "Harry",
+            "url": "https://www.hey-hu.com"
+          },
+          {
+            "@type": "FAQPage",
+            "@id": "https://kospi.hey-hu.com/#faq",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "코스피 지수는 언제, 어떤 기준으로 만들어졌나요?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "코스피(KOSPI, 코리아 종합주가지수)는 1980년 1월 4일을 기준 시점으로 기준지수 100에서 출발했습니다. 이후 한국거래소(KRX) 상장 종목의 시가총액을 기준으로 산출됩니다."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "코스피 역사에서 가장 큰 위기 구간은 언제였나요?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "대표적인 충격 구간은 1997~1998년 IMF 외환위기, 2008년 글로벌 금융위기, 2020년 코로나19 쇼크입니다. KOSPI Archive Wall은 이 시점들을 '위기 / 회복 / 리프라이싱' 챕터로 나누어 보여줍니다."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "이 사이트의 코스피 데이터는 어디서 오고 얼마나 자주 갱신되나요?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yahoo Finance의 ^KS11과 Stooq의 ^kospi 시계열을 사용하며, 한국거래소 정산 시점(평일 15:45 KST)에 맞춰 캐시가 자동 갱신됩니다. 외부 데이터를 가져오지 못하면 사이트에 내장된 번들 데이터로 폴백합니다."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "KOSPI Archive Wall은 무엇인가요?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "1980년부터 현재까지 코스피 45년의 결정적 장면을 핀조명 아래 인터랙티브 수묵 곡선으로 보여주는 데이터 아카이브 사이트입니다. 한국어·영어를 지원하며 모바일에 최적화되어 있고 무료로 열람할 수 있습니다."
+                }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <div class="loader" id="loader" role="status" aria-live="polite">

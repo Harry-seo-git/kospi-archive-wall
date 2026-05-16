@@ -281,6 +281,50 @@ main {
   grid-template-rows: auto 1fr auto;
   min-height: calc(100svh - 66px);
   padding: clamp(64px, 9vw, 112px) 0 72px;
+  overflow: hidden;
+}
+
+/* 타이틀 뒤 태극기 — 평소엔 아주 옅게, 커서 핀조명 아래에서만 살짝 드러남.
+   포인터 없음/모바일/reduced-motion: 중앙에 은은한 정적 표시. */
+.hero-flag {
+  position: absolute;
+  top: 50%;
+  left: clamp(-4%, 2vw, 8%);
+  width: clamp(420px, 52vw, 860px);
+  height: auto;
+  transform: translateY(-50%);
+  z-index: 0;
+  opacity: 0.16;
+  pointer-events: none;
+  filter: saturate(0.7);
+  -webkit-mask-image: radial-gradient(
+    circle 240px at var(--hero-cx, 38%) var(--hero-cy, 50%),
+    #000 0,
+    rgba(0, 0, 0, 0.22) 46%,
+    transparent 76%
+  );
+  mask-image: radial-gradient(
+    circle 240px at var(--hero-cx, 38%) var(--hero-cy, 50%),
+    #000 0,
+    rgba(0, 0, 0, 0.22) 46%,
+    transparent 76%
+  );
+}
+
+@media (pointer: coarse) {
+  .hero-flag {
+    opacity: 0.08;
+    -webkit-mask-image: radial-gradient(circle at 40% 50%, #000, transparent 72%);
+    mask-image: radial-gradient(circle at 40% 50%, #000, transparent 72%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-flag {
+    opacity: 0.07;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
 }
 
 .hero::before {
@@ -360,20 +404,6 @@ h1 {
 
 h1 span {
   display: block;
-}
-
-.hero-kospi {
-  display: flex;
-  align-items: center;
-  gap: clamp(14px, 1.6vw, 30px);
-}
-
-.kr-flag {
-  flex: 0 0 auto;
-  width: clamp(46px, 6vw, 96px);
-  height: auto;
-  border-radius: 2px;
-  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.5);
 }
 
 .hero-subline {
@@ -491,19 +521,19 @@ h1 span {
   font-weight: 800;
 }
 
-/* 핀 스크롤리텔링 — 거대한 글자가 섹션 배경 워터마크로 깔리고,
-   데이터 잉크와 본문이 그 위에 선명하게 얹힌다. */
-/* 겹침 없는 2단 — 좌: 액자형 데이터 패널(스티키, 자기 칸 안에서만),
-   우: 본문. 음수 마진/오버랩/스크림 없음 → 다른 섹션과 절대 겹치지 않음. */
+/* 거대한 타이포가 챕터 배경에 풀블리드로 깔리며 섹션을 잇는다.
+   overflow:hidden 으로 글자를 "이 챕터" 안에만 클리핑 → 차트/히어로/버튼 등
+   다른 섹션으로는 절대 새지 않음(음수 마진/sticky 오버랩 미사용). */
 .story-chapter {
   position: relative;
+  overflow: hidden;
   display: grid;
-  grid-template-columns: minmax(0, 1.08fr) minmax(280px, 0.92fr);
+  grid-template-columns: minmax(0, 1.04fr) minmax(280px, 0.96fr);
   gap: clamp(28px, 5vw, 76px);
-  align-items: start;
+  align-items: center;
   width: min(1480px, calc(100% - 32px));
   margin: 0 auto;
-  padding: clamp(56px, 9vw, 116px) 0;
+  padding: clamp(72px, 12vw, 168px) 0;
   border-bottom: 1px solid rgba(232, 222, 202, 0.08);
 }
 
@@ -512,16 +542,10 @@ h1 span {
 }
 
 .era-panel {
-  position: sticky;
-  top: 14svh;
-  height: clamp(420px, 66svh, 700px);
+  position: relative;
+  z-index: 1;
+  height: clamp(360px, 56svh, 620px);
   margin: 0;
-  overflow: hidden;
-  border: 1px solid rgba(199, 154, 75, 0.16);
-  border-radius: 3px;
-  background:
-    radial-gradient(circle at 50% 38%, rgba(199, 154, 75, 0.05), transparent 60%),
-    rgba(8, 6, 10, 0.42);
 }
 
 .era-panel .era-chart {
@@ -575,7 +599,8 @@ h1 span {
   color: var(--hwang);
 }
 
-/* 패널 배경 워터마크 — 패널 안에만 갇혀 콘텐츠 뒤로 아주 어둡게 깔린다. */
+/* 챕터 전체 배경 풀블리드 타이포 — 칼럼 밖으로 자연스럽게 흘러 섹션을 잇는다.
+   story-chapter overflow:hidden 이 이 글자를 챕터 안으로만 가둔다. */
 .chapter-word {
   position: absolute;
   inset: 0;
@@ -584,19 +609,19 @@ h1 span {
   place-items: center;
   color: transparent;
   font-family: var(--display);
-  font-size: clamp(3.4rem, 13vw, 11rem);
+  font-size: clamp(5rem, 21vw, 22rem);
   font-weight: 800;
-  line-height: 0.86;
-  letter-spacing: -0.02em;
+  line-height: 0.82;
+  letter-spacing: -0.03em;
   white-space: nowrap;
   pointer-events: none;
-  -webkit-text-stroke: 1.5px rgba(240, 233, 218, 0.06);
-  text-stroke: 1.5px rgba(240, 233, 218, 0.06);
+  -webkit-text-stroke: 1.5px rgba(240, 233, 218, 0.07);
+  text-stroke: 1.5px rgba(240, 233, 218, 0.07);
   transform:
-    translate(calc(var(--px, 0) * 14px), calc(var(--py, 0) * 10px))
-    scale(calc(1 + var(--era-p, 0) * 0.08));
-  transition: color 500ms ease, -webkit-text-stroke-color 500ms ease,
-    transform 240ms ease;
+    translate(calc(var(--px, 0) * 18px), calc(var(--py, 0) * 12px))
+    scale(calc(1 + var(--era-p, 0) * 0.06));
+  transition: color 600ms ease, -webkit-text-stroke-color 600ms ease,
+    transform 260ms ease;
 }
 
 .story-chapter.is-current[data-era="crash"] .chapter-word {
@@ -644,12 +669,27 @@ h1 span {
   line-height: 1;
 }
 
-/* 본문 — 우측 칸, 일반 흐름. 다른 요소와 겹치지 않으므로 스크림 불필요. */
+/* 본문 — 풀블리드 글자 위에 z-위계 + 국소 스크림으로 항상 또렷. */
 .chapter-copy {
   position: relative;
+  z-index: 3;
   align-self: center;
   max-width: 560px;
   padding: clamp(8px, 4vw, 40px) 0;
+}
+
+.chapter-copy::before {
+  position: absolute;
+  inset: -24px -32px;
+  z-index: -1;
+  background: radial-gradient(
+    120% 100% at 30% 50%,
+    rgba(8, 6, 10, 0.82),
+    rgba(8, 6, 10, 0.5) 60%,
+    transparent
+  );
+  pointer-events: none;
+  content: "";
 }
 
 .story-chapter h2 {

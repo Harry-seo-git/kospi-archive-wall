@@ -833,10 +833,8 @@ h1 span {
   gap: 12px;
   width: min(520px, calc(100% - 32px));
   max-height: none;
-  border-top: 1px solid rgba(199, 154, 75, 0.24);
-  border-bottom: 1px solid rgba(199, 154, 75, 0.12);
-  border-left: 1px solid rgba(199, 154, 75, 0.28);
-  padding: 18px 0 18px 22px;
+  border: 1px solid rgba(199, 154, 75, 0.22);
+  padding: clamp(16px, 2vw, 22px);
   background:
     linear-gradient(90deg, rgba(3, 5, 8, 0.96), rgba(3, 5, 8, 0.58)),
     linear-gradient(180deg, rgba(199, 154, 75, 0.055), rgba(199, 154, 75, 0));
@@ -848,10 +846,6 @@ h1 span {
 .signal-console.is-left {
   right: auto;
   left: clamp(16px, 4vw, 64px);
-  border-right: 1px solid rgba(199, 154, 75, 0.28);
-  border-left: 0;
-  padding-right: 22px;
-  padding-left: 0;
   background:
     linear-gradient(270deg, rgba(3, 5, 8, 0.96), rgba(3, 5, 8, 0.58)),
     linear-gradient(180deg, rgba(199, 154, 75, 0.055), rgba(199, 154, 75, 0));
@@ -1943,15 +1937,10 @@ h1 {
     right: auto;
     width: min(100% - 32px, 620px);
     margin: 22px auto 0;
-    padding-left: 0;
-    border-left: 0;
-    border-top: 1px solid rgba(199, 154, 75, 0.22);
   }
 
   .signal-console.is-left {
     left: auto;
-    padding-right: 0;
-    border-right: 0;
   }
 }
 
@@ -2107,7 +2096,7 @@ h1 {
   /* 라벨(시그널 콘솔) 컴팩트화 — 작은 차트 바로 아래 한 화면에 */
   .signal-console {
     margin-top: 14px;
-    padding: 14px 0 0;
+    padding: clamp(14px, 4vw, 18px);
     gap: 8px;
   }
 

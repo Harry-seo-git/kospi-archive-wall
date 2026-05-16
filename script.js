@@ -1709,10 +1709,16 @@ window.addEventListener("keydown", (event) => {
   }
 });
 
+let scrollTick = false;
 window.addEventListener("scroll", () => {
-  updateProgress();
-  updateScrollVelocity();
-  updateEraProgress();
+  if (scrollTick) return;
+  scrollTick = true;
+  window.requestAnimationFrame(() => {
+    updateProgress();
+    updateScrollVelocity();
+    updateEraProgress();
+    scrollTick = false;
+  });
 }, { passive: true });
 chartScroll?.addEventListener("scroll", updateChartScrollbar, { passive: true });
 window.addEventListener("hashchange", () => {
@@ -2257,6 +2263,27 @@ function enableEraParallax() {
   });
 }
 
+// 모바일 진입 리빌 — 핵심 섹션이 뷰포트에 들어오면 1회 떠오르며 등장.
+// JS·모바일·모션 허용·IO 지원 모두 만족할 때만 숨김 상태를 켠다(미충족 시 콘텐츠 그대로 노출).
+function enableMobileReveal() {
+  const isMobile = coarsePointer || window.matchMedia("(max-width: 620px)").matches;
+  if (!isMobile || prefersReducedMotion || !("IntersectionObserver" in window)) return;
+  const targets = [];
+  document
+    .querySelectorAll(".hero-subline, .lead, .story-chapter .chapter-copy, .panel-heading, .market-pulse > div")
+    .forEach((el) => { el.classList.add("reveal-up"); targets.push(el); });
+  if (!targets.length) return;
+  document.documentElement.classList.add("js-motion");
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (!e.isIntersecting) return;
+      e.target.classList.add("is-revealed");
+      io.unobserve(e.target);
+    });
+  }, { threshold: 0.12, rootMargin: "0px 0px -6% 0px" });
+  targets.forEach((el) => io.observe(el));
+}
+
 // 히어로 태극기 핀조명 — 데스크톱은 커서, 모바일은 자동 스윕 + 손가락 드래그.
 function enableHeroFlag() {
   const hero = document.querySelector(".hero");
@@ -2305,6 +2332,7 @@ renderEraPanels();
 observeChapters();
 observeEraPanels();
 enableEraParallax();
+enableMobileReveal();
 enableHeroFlag();
 updateEraProgress();
 enableChartGestures();

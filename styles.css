@@ -2024,24 +2024,38 @@ h1 {
     padding-top: 16px;
   }
 
-  /* 컴팩트 차트 — 라인+점만, 바로 아래 월 라벨이 한 화면에 함께 */
+  /* fit-to-width — 가로 스크롤 폐지, 45년 곡선 전체가 패널 폭에 한눈에 */
   .chart-scroll {
-    height: clamp(220px, 42svh, 360px);
+    height: auto;
     min-height: 0;
-    margin-top: 14px;
+    margin-top: 12px;
+    overflow: hidden;
+    cursor: default;
+    mask-image: none;
   }
 
   .chart-wrap {
-    min-height: clamp(220px, 42svh, 360px);
+    width: 100%;
+    min-height: 0;
   }
 
   #kospi-chart {
-    height: clamp(220px, 42svh, 360px);
+    display: block;
+    width: 100%;
+    height: auto;
   }
 
+  /* 인-SVG 축 라벨로 대체(차트와 함께 스케일·정렬) */
   .chart-yaxis {
-    height: clamp(220px, 42svh, 360px);
-    width: 38px;
+    display: none;
+  }
+
+  .axis-label-y {
+    display: inline;
+  }
+
+  .axis-label {
+    font-size: 22px;
   }
 
   .yaxis-tick {
@@ -2058,13 +2072,21 @@ h1 {
     opacity: 0.28;
   }
 
-  /* 작은 화면에서 라인이 또렷하게 보이도록 굵게·발광 */
+  /* 좁은 viewBox(760)에서 또렷하게 — 굵게·발광 */
   .path-line {
-    stroke-width: 3;
+    stroke-width: 6;
   }
 
   .path-shadow {
-    stroke-width: 7;
+    stroke-width: 12;
+  }
+
+  .chart-point {
+    stroke-width: 2.4;
+  }
+
+  .event-label {
+    font-size: 19px;
   }
 
   .panel-heading h2 {

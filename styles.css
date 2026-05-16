@@ -18,8 +18,9 @@
   --shadow: 0 30px 100px rgba(0, 0, 0, 0.42);
   --serif: "Cormorant Garamond", "Times New Roman", serif;
   --hangul-serif: "Nanum Myeongjo", "Cormorant Garamond", serif;
-  --display: "Noto Sans KR", "Inter", system-ui, sans-serif;
-  --sans: "Inter", "Noto Sans KR", system-ui, sans-serif;
+  /* 산세리프 미사용 — 전 영역 명조/세리프 */
+  --display: "Nanum Myeongjo", "Cormorant Garamond", serif;
+  --sans: "Nanum Myeongjo", "Cormorant Garamond", serif;
   --cursor-x: 50vw;
   --cursor-y: 50vh;
 }
@@ -326,10 +327,10 @@ main {
 .eyebrow,
 .section-kicker {
   margin: 0;
-  color: rgba(107, 229, 164, 0.86);
+  color: rgba(199, 154, 75, 0.82);
   font-size: 0.74rem;
   font-weight: 700;
-  letter-spacing: 0;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
@@ -410,7 +411,7 @@ h1 span {
 
 .lead {
   max-width: 720px;
-  color: #b9c6d8;
+  color: #cabd9f;
   font-size: clamp(1.02rem, 1.45vw, 1.22rem);
   line-height: 1.95;
   word-break: keep-all;
@@ -494,6 +495,9 @@ h1 span {
    데이터 잉크와 본문이 그 위에 선명하게 얹힌다. */
 .story-chapter {
   position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: start;
   width: min(1480px, calc(100% - 32px));
   margin: 0 auto;
   border-bottom: 1px solid rgba(232, 222, 202, 0.08);
@@ -504,20 +508,26 @@ h1 span {
 }
 
 .era-panel {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: start;
   position: sticky;
   top: 0;
-  height: 100svh;
+  height: 100vh;
   margin: 0;
   overflow: hidden;
 }
 
 .era-panel .era-chart {
   position: absolute;
-  inset: 16% 4% 18%;
+  left: 4%;
+  right: 4%;
+  top: 27%;
+  bottom: 26%;
   z-index: 1;
-  width: 92%;
-  height: 66%;
-  opacity: 0.9;
+  width: auto;
+  height: auto;
+  opacity: 0.92;
 }
 
 .era-area {
@@ -561,9 +571,8 @@ h1 span {
   position: absolute;
   inset: 0;
   z-index: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
   color: transparent;
   font-family: var(--display);
   font-size: clamp(5rem, 18vw, 19rem);
@@ -594,10 +603,12 @@ h1 span {
 
 .era-stats {
   position: absolute;
-  left: 4%;
-  bottom: 7%;
+  left: 5%;
+  right: 5%;
+  bottom: 9%;
   z-index: 2;
   display: flex;
+  flex-wrap: wrap;
   gap: clamp(20px, 4vw, 56px);
 }
 
@@ -622,18 +633,21 @@ h1 span {
 
 /* 본문은 핀된 배경 위로 스크롤되며 항상 또렷하게 읽힌다. */
 .chapter-copy {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: start;
+  justify-self: end;
   position: relative;
   z-index: 3;
-  max-width: 560px;
-  margin: -100svh 0 0 auto;
-  padding: 44svh clamp(0px, 4vw, 56px) 44svh 0;
+  width: min(520px, 90%);
+  padding: 116vh clamp(0px, 3vw, 48px) 60vh 0;
 }
 
 .chapter-copy::before {
   position: absolute;
-  inset: -8svh -6vw -8svh -14vw;
+  inset: -10vh -8vw -10vh -22vw;
   z-index: -1;
-  background: linear-gradient(90deg, transparent, rgba(8, 6, 10, 0.82) 26%, rgba(8, 6, 10, 0.9));
+  background: linear-gradient(90deg, transparent, rgba(8, 6, 10, 0.86) 32%, rgba(8, 6, 10, 0.94));
   pointer-events: none;
   content: "";
 }
@@ -714,9 +728,10 @@ h1 span {
 
 .panel-heading {
   display: flex;
-  align-items: end;
+  align-items: center;
   justify-content: space-between;
-  gap: 20px;
+  gap: 20px 28px;
+  flex-wrap: wrap;
 }
 
 .chart-panel .panel-heading,
@@ -724,6 +739,11 @@ h1 span {
   width: min(1480px, calc(100% - 32px));
   margin-right: auto;
   margin-left: auto;
+}
+
+.panel-heading > div {
+  flex: 1 1 320px;
+  min-width: 0;
 }
 
 .panel-heading h2,
@@ -735,25 +755,6 @@ h1 span {
   font-weight: 700;
   line-height: 1.28;
   word-break: keep-all;
-}
-
-.data-note {
-  flex: 0 0 auto;
-  color: var(--muted);
-  font-size: 0.86rem;
-  font-weight: 700;
-}
-
-.data-note {
-  border-left: 1px solid rgba(199, 154, 75, 0.38);
-  padding: 4px 0 4px 12px;
-}
-
-.chart-meta {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 8px;
 }
 
 .chart-scroll {
@@ -883,45 +884,6 @@ h1 span {
   font-size: 1.38rem;
 }
 
-.chart-moment-card {
-  display: grid;
-  gap: 7px;
-  width: 100%;
-  border: 0;
-  border-top: 1px solid rgba(199, 154, 75, 0.22);
-  border-radius: 0;
-  padding: 14px 0 0;
-  background: transparent;
-  box-shadow: none;
-  color: var(--ink);
-  text-align: left;
-  pointer-events: none;
-}
-
-.chart-moment-card span:first-child,
-.chart-moment-card em {
-  color: var(--muted);
-  font-size: 0.8rem;
-  font-style: normal;
-  font-weight: 700;
-  line-height: 1.5;
-}
-
-.chart-moment-card strong {
-  display: block;
-  font-size: 1rem;
-  line-height: 1.5;
-}
-
-.chart-moment-card span:last-child {
-  display: block;
-  color: #aebacd;
-  font-size: 0.92rem;
-  font-weight: 600;
-  line-height: 1.72;
-  word-break: keep-all;
-}
-
 .chart-wrap {
   position: relative;
   z-index: 2;
@@ -994,7 +956,7 @@ h1 span {
 }
 
 #detail-copy {
-  color: #aebacd;
+  color: #b8ab8e;
   line-height: 1.86;
   word-break: keep-all;
 }
@@ -1114,7 +1076,7 @@ h1 span {
 }
 
 #modal-copy {
-  color: #b9c6d8;
+  color: #cabd9f;
   font-size: 1.05rem;
   line-height: 1.76;
   word-break: keep-all;
@@ -1363,7 +1325,7 @@ body:not([data-filter-mode="all"]) .path-line {
 .chart-hint {
   width: min(1480px, calc(100% - 32px));
   margin: 14px auto 0;
-  color: rgba(127, 140, 163, 0.78);
+  color: rgba(171, 159, 134, 0.78);
   font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.02em;
@@ -1795,33 +1757,6 @@ h1 {
 .chart-tooltip.is-up em { color: var(--cheong); }
 .chart-tooltip.is-down em { color: var(--ju); }
 
-.phase-legend {
-  display: flex;
-  gap: 14px;
-  width: 100%;
-  margin-top: 10px;
-}
-
-.legend-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--muted);
-  font-size: 0.74rem;
-  font-weight: 800;
-}
-
-.legend-item::before {
-  width: 9px;
-  height: 9px;
-  border-radius: 1px;
-  content: "";
-}
-
-.legend-crisis::before { background: var(--ju); }
-.legend-recovery::before { background: var(--cheong); }
-.legend-growth::before { background: var(--hwang); }
-
 .mode-btn {
   border: 1px solid rgba(185, 142, 68, 0.32);
   border-radius: 999px;
@@ -1917,13 +1852,9 @@ body.is-data-mode .phase-band {
 }
 
 @media (max-width: 980px) {
-  .chart-meta {
-    justify-content: flex-start;
-  }
-
   .chart-tools {
     width: 100%;
-    margin-top: 12px;
+    margin-top: 14px;
   }
 }
 
@@ -1965,18 +1896,22 @@ body.is-data-mode .phase-band {
   }
 
   .story-chapter {
-    padding: 7svh 0 9svh;
+    display: block;
+    padding: 6svh 0 9svh;
   }
 
   .era-panel {
-    position: static;
-    height: 54svh;
-    margin-bottom: 22px;
+    grid-column: auto;
+    grid-row: auto;
+    position: relative;
+    top: auto;
+    height: 56svh;
+    margin-bottom: 24px;
   }
 
   .era-stats {
     gap: 18px;
-    bottom: 4%;
+    bottom: 5%;
   }
 
   .chapter-word {
@@ -1984,9 +1919,11 @@ body.is-data-mode .phase-band {
   }
 
   .chapter-copy {
-    margin: 0;
+    grid-column: auto;
+    grid-row: auto;
+    width: auto;
+    justify-self: auto;
     padding: 0;
-    max-width: none;
   }
 
   .chapter-copy::before {
@@ -2032,17 +1969,6 @@ body.is-data-mode .phase-band {
     left: auto;
     padding-right: 0;
     border-right: 0;
-  }
-
-  .data-note {
-    display: inline-block;
-    margin-top: 12px;
-  }
-
-  .chart-moment-card {
-    position: static;
-    width: 100%;
-    margin: 0;
   }
 }
 

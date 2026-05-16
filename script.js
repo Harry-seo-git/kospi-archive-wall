@@ -979,7 +979,13 @@ function renderChart() {
   const loBound = 80;
   const hiBound = niceTicks.find((t) => t >= dataMax * 1.04) || Math.ceil((dataMax * 1.06) / 500) * 500;
   const maxIndex = hiBound;
-  const levels = niceTicks.filter((t) => t >= 100 && t <= hiBound);
+  let levels = niceTicks.filter((t) => t >= 100 && t <= hiBound);
+  // 모바일: 눈금/그리드를 성기게 — 옆 수치가 차트 라인을 가리지 않게
+  const compact = coarsePointer || window.innerWidth <= 620;
+  if (compact) {
+    const sparse = [100, 1000, 3000, 5000, 7000, 10000, 15000];
+    levels = levels.filter((t) => sparse.includes(t) || t === levels[levels.length - 1]);
+  }
   const decadeTicks = [];
   for (let yr = 1980; yr <= Math.floor(maxYear); yr += 10) decadeTicks.push(yr);
   const lastTick = Math.floor(dataMaxYear);

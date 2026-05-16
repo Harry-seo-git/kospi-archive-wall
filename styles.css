@@ -16,11 +16,11 @@
   --red: var(--ju);
   --gold: #c79a4b;
   --shadow: 0 30px 100px rgba(0, 0, 0, 0.42);
-  --serif: "Cormorant Garamond", "Times New Roman", serif;
-  --hangul-serif: "Nanum Myeongjo", "Cormorant Garamond", serif;
-  /* 산세리프 미사용 — 전 영역 명조/세리프 */
-  --display: "Nanum Myeongjo", "Cormorant Garamond", serif;
-  --sans: "Nanum Myeongjo", "Cormorant Garamond", serif;
+  /* 세리프 미사용 — 전 영역 산세리프 */
+  --serif: "Inter", "Noto Sans KR", system-ui, sans-serif;
+  --hangul-serif: "Noto Sans KR", "Inter", system-ui, sans-serif;
+  --display: "Noto Sans KR", "Inter", system-ui, sans-serif;
+  --sans: "Inter", "Noto Sans KR", system-ui, sans-serif;
   --cursor-x: 50vw;
   --cursor-y: 50vh;
 }
@@ -493,13 +493,17 @@ h1 span {
 
 /* 핀 스크롤리텔링 — 거대한 글자가 섹션 배경 워터마크로 깔리고,
    데이터 잉크와 본문이 그 위에 선명하게 얹힌다. */
+/* 겹침 없는 2단 — 좌: 액자형 데이터 패널(스티키, 자기 칸 안에서만),
+   우: 본문. 음수 마진/오버랩/스크림 없음 → 다른 섹션과 절대 겹치지 않음. */
 .story-chapter {
   position: relative;
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1.08fr) minmax(280px, 0.92fr);
+  gap: clamp(28px, 5vw, 76px);
   align-items: start;
   width: min(1480px, calc(100% - 32px));
   margin: 0 auto;
+  padding: clamp(56px, 9vw, 116px) 0;
   border-bottom: 1px solid rgba(232, 222, 202, 0.08);
 }
 
@@ -508,26 +512,28 @@ h1 span {
 }
 
 .era-panel {
-  grid-column: 1;
-  grid-row: 1;
-  align-self: start;
   position: sticky;
-  top: 0;
-  height: 100vh;
+  top: 14svh;
+  height: clamp(420px, 66svh, 700px);
   margin: 0;
   overflow: hidden;
+  border: 1px solid rgba(199, 154, 75, 0.16);
+  border-radius: 3px;
+  background:
+    radial-gradient(circle at 50% 38%, rgba(199, 154, 75, 0.05), transparent 60%),
+    rgba(8, 6, 10, 0.42);
 }
 
 .era-panel .era-chart {
   position: absolute;
-  left: 4%;
-  right: 4%;
-  top: 27%;
-  bottom: 26%;
+  left: 5%;
+  right: 5%;
+  top: 24%;
+  bottom: 24%;
   z-index: 1;
   width: auto;
   height: auto;
-  opacity: 0.92;
+  opacity: 0.95;
 }
 
 .era-area {
@@ -566,7 +572,7 @@ h1 span {
   color: var(--hwang);
 }
 
-/* 섹션 배경 워터마크 — 거대한 글자가 콘텐츠 뒤에 아주 어둡게 깔린다. */
+/* 패널 배경 워터마크 — 패널 안에만 갇혀 콘텐츠 뒤로 아주 어둡게 깔린다. */
 .chapter-word {
   position: absolute;
   inset: 0;
@@ -575,14 +581,14 @@ h1 span {
   place-items: center;
   color: transparent;
   font-family: var(--display);
-  font-size: clamp(5rem, 18vw, 19rem);
+  font-size: clamp(3.4rem, 13vw, 11rem);
   font-weight: 800;
   line-height: 0.86;
   letter-spacing: -0.02em;
   white-space: nowrap;
   pointer-events: none;
-  -webkit-text-stroke: 2px rgba(240, 233, 218, 0.05);
-  text-stroke: 2px rgba(240, 233, 218, 0.05);
+  -webkit-text-stroke: 1.5px rgba(240, 233, 218, 0.055);
+  text-stroke: 1.5px rgba(240, 233, 218, 0.055);
   transition: color 700ms ease, -webkit-text-stroke-color 700ms ease;
 }
 
@@ -631,25 +637,12 @@ h1 span {
   line-height: 1;
 }
 
-/* 본문은 핀된 배경 위로 스크롤되며 항상 또렷하게 읽힌다. */
+/* 본문 — 우측 칸, 일반 흐름. 다른 요소와 겹치지 않으므로 스크림 불필요. */
 .chapter-copy {
-  grid-column: 1;
-  grid-row: 1;
-  align-self: start;
-  justify-self: end;
   position: relative;
-  z-index: 3;
-  width: min(520px, 90%);
-  padding: 116vh clamp(0px, 3vw, 48px) 60vh 0;
-}
-
-.chapter-copy::before {
-  position: absolute;
-  inset: -10vh -8vw -10vh -22vw;
-  z-index: -1;
-  background: linear-gradient(90deg, transparent, rgba(8, 6, 10, 0.86) 32%, rgba(8, 6, 10, 0.94));
-  pointer-events: none;
-  content: "";
+  align-self: center;
+  max-width: 560px;
+  padding: clamp(8px, 4vw, 40px) 0;
 }
 
 .story-chapter h2 {
@@ -705,28 +698,9 @@ h1 span {
   padding: clamp(26px, 3.2vw, 46px) 0 12px;
 }
 
-.chart-panel::before,
-.chart-panel::after {
-  position: absolute;
-  top: 112px;
-  bottom: 0;
-  z-index: 3;
-  width: min(9vw, 110px);
-  pointer-events: none;
-  content: "";
-}
-
-.chart-panel::before {
-  left: 0;
-  background: linear-gradient(90deg, var(--bg), rgba(5, 7, 11, 0));
-}
-
-.chart-panel::after {
-  right: 0;
-  background: linear-gradient(270deg, var(--bg), rgba(5, 7, 11, 0));
-}
-
 .panel-heading {
+  position: relative;
+  z-index: 4;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1897,37 +1871,28 @@ body.is-data-mode .phase-band {
 
   .story-chapter {
     display: block;
-    padding: 6svh 0 9svh;
+    padding: 6svh 0 8svh;
   }
 
   .era-panel {
-    grid-column: auto;
-    grid-row: auto;
     position: relative;
     top: auto;
-    height: 56svh;
-    margin-bottom: 24px;
+    height: 52svh;
+    margin-bottom: 22px;
   }
 
   .era-stats {
     gap: 18px;
-    bottom: 5%;
+    bottom: 6%;
   }
 
   .chapter-word {
-    font-size: clamp(3.4rem, 26vw, 8rem);
+    font-size: clamp(3.2rem, 24vw, 7rem);
   }
 
   .chapter-copy {
-    grid-column: auto;
-    grid-row: auto;
-    width: auto;
-    justify-self: auto;
+    max-width: none;
     padding: 0;
-  }
-
-  .chapter-copy::before {
-    display: none;
   }
 
   .chapter-index {

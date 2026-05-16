@@ -289,23 +289,23 @@ main {
 .hero-flag {
   position: absolute;
   top: 50%;
-  left: clamp(-4%, 2vw, 8%);
-  width: clamp(420px, 52vw, 860px);
-  height: auto;
-  transform: translateY(-50%);
+  left: 50%;
+  width: min(1280px, 108%);
+  height: 84%;
+  transform: translate(-50%, -50%);
   z-index: 0;
   opacity: 0.5;
   pointer-events: none;
   filter: saturate(0.82);
   -webkit-mask-image: radial-gradient(
-    circle 300px at var(--hero-cx, 36%) var(--hero-cy, 50%),
+    circle 380px at var(--hero-cx, 50%) var(--hero-cy, 50%),
     #000 0,
     rgba(0, 0, 0, 0.55) 48%,
     rgba(0, 0, 0, 0.3) 78%,
     rgba(0, 0, 0, 0.18) 100%
   );
   mask-image: radial-gradient(
-    circle 300px at var(--hero-cx, 36%) var(--hero-cy, 50%),
+    circle 380px at var(--hero-cx, 50%) var(--hero-cy, 50%),
     #000 0,
     rgba(0, 0, 0, 0.55) 48%,
     rgba(0, 0, 0, 0.3) 78%,
@@ -1020,14 +1020,18 @@ h1 span {
 }
 
 .sources p {
-  max-width: 980px;
-  margin: 0;
+  width: min(1480px, 100%);
+  max-width: none;
+  margin: 0 auto;
   color: var(--muted);
   font-size: 0.84rem;
   line-height: 1.9;
 }
 
 .site-credit {
+  width: min(1480px, 100%);
+  margin-left: auto;
+  margin-right: auto;
   margin-top: 16px;
   padding-top: 14px;
   border-top: 1px solid rgba(232, 222, 202, 0.08);

@@ -490,15 +490,11 @@ h1 span {
   font-weight: 800;
 }
 
-/* 핀 스크롤리텔링 — 데이터 수묵 패널이 고정된 채 텍스트가 흐릅니다. */
+/* 핀 스크롤리텔링 — 거대한 글자가 섹션 배경 워터마크로 깔리고,
+   데이터 잉크와 본문이 그 위에 선명하게 얹힌다. */
 .story-chapter {
   position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 1.12fr) minmax(280px, 0.88fr);
-  gap: clamp(28px, 6vw, 88px);
-  align-items: start;
   width: min(1480px, calc(100% - 32px));
-  min-height: 184svh;
   margin: 0 auto;
   border-bottom: 1px solid rgba(232, 222, 202, 0.08);
 }
@@ -509,19 +505,19 @@ h1 span {
 
 .era-panel {
   position: sticky;
-  top: 11svh;
-  height: 78svh;
+  top: 0;
+  height: 100svh;
   margin: 0;
-  display: grid;
-  place-items: center;
   overflow: hidden;
 }
 
 .era-panel .era-chart {
   position: absolute;
-  inset: 8% 0 12%;
-  width: 100%;
-  height: 80%;
+  inset: 16% 4% 18%;
+  z-index: 1;
+  width: 92%;
+  height: 66%;
+  opacity: 0.9;
 }
 
 .era-area {
@@ -560,44 +556,46 @@ h1 span {
   color: var(--hwang);
 }
 
-/* 의도된 타이포 블리드 — 가운데 정렬된 거대한 단어를 패널이 양끝 대칭으로
-   크롭해 전시 벽의 텍스처처럼 보이게 한다 (버그 아님, 디자인 효과). */
+/* 섹션 배경 워터마크 — 거대한 글자가 콘텐츠 뒤에 아주 어둡게 깔린다. */
 .chapter-word {
-  position: relative;
-  z-index: 2;
-  flex: 0 0 auto;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: transparent;
   font-family: var(--display);
-  font-size: clamp(5rem, 17vw, 17rem);
+  font-size: clamp(5rem, 18vw, 19rem);
   font-weight: 800;
   line-height: 0.86;
   letter-spacing: -0.02em;
   white-space: nowrap;
-  text-align: center;
-  -webkit-text-stroke: 1.5px rgba(240, 233, 218, 0.2);
-  text-stroke: 1.5px rgba(240, 233, 218, 0.2);
-  transition: color 600ms ease, -webkit-text-stroke-color 600ms ease;
+  pointer-events: none;
+  -webkit-text-stroke: 2px rgba(240, 233, 218, 0.05);
+  text-stroke: 2px rgba(240, 233, 218, 0.05);
+  transition: color 700ms ease, -webkit-text-stroke-color 700ms ease;
 }
 
 .story-chapter.is-current[data-era="crash"] .chapter-word {
-  color: rgba(192, 71, 58, 0.92);
-  -webkit-text-stroke-color: var(--ju);
+  color: rgba(192, 71, 58, 0.1);
+  -webkit-text-stroke-color: rgba(192, 71, 58, 0.22);
 }
 
 .story-chapter.is-current[data-era="recover"] .chapter-word {
-  color: rgba(63, 138, 134, 0.9);
-  -webkit-text-stroke-color: var(--cheong);
+  color: rgba(63, 138, 134, 0.1);
+  -webkit-text-stroke-color: rgba(63, 138, 134, 0.22);
 }
 
 .story-chapter.is-current[data-era="reprice"] .chapter-word {
-  color: rgba(185, 142, 68, 0.92);
-  -webkit-text-stroke-color: var(--hwang);
+  color: rgba(185, 142, 68, 0.11);
+  -webkit-text-stroke-color: rgba(185, 142, 68, 0.24);
 }
 
 .era-stats {
   position: absolute;
-  left: 0;
-  bottom: 2%;
+  left: 4%;
+  bottom: 7%;
   z-index: 2;
   display: flex;
   gap: clamp(20px, 4vw, 56px);
@@ -622,10 +620,22 @@ h1 span {
   line-height: 1;
 }
 
+/* 본문은 핀된 배경 위로 스크롤되며 항상 또렷하게 읽힌다. */
 .chapter-copy {
-  align-self: start;
-  padding: 34svh 0 34svh;
+  position: relative;
+  z-index: 3;
   max-width: 560px;
+  margin: -100svh 0 0 auto;
+  padding: 44svh clamp(0px, 4vw, 56px) 44svh 0;
+}
+
+.chapter-copy::before {
+  position: absolute;
+  inset: -8svh -6vw -8svh -14vw;
+  z-index: -1;
+  background: linear-gradient(90deg, transparent, rgba(8, 6, 10, 0.82) 26%, rgba(8, 6, 10, 0.9));
+  pointer-events: none;
+  content: "";
 }
 
 .story-chapter h2 {
@@ -636,13 +646,14 @@ h1 span {
   font-weight: 700;
   line-height: 1.18;
   letter-spacing: 0;
+  color: var(--ink);
   word-break: keep-all;
 }
 
 .story-chapter p:not(.section-kicker) {
   max-width: 690px;
   margin: 0;
-  color: #b6a98d;
+  color: #cabd9f;
   font-size: clamp(1.02rem, 1.5vw, 1.18rem);
   line-height: 1.95;
   word-break: keep-all;
@@ -1954,23 +1965,32 @@ body.is-data-mode .phase-band {
   }
 
   .story-chapter {
-    grid-template-columns: 1fr;
-    min-height: auto;
-    padding: 8svh 0;
+    padding: 7svh 0 9svh;
   }
 
   .era-panel {
     position: static;
-    height: 52svh;
-    margin-bottom: 18px;
+    height: 54svh;
+    margin-bottom: 22px;
   }
 
   .era-stats {
     gap: 18px;
+    bottom: 4%;
+  }
+
+  .chapter-word {
+    font-size: clamp(3.4rem, 26vw, 8rem);
   }
 
   .chapter-copy {
+    margin: 0;
     padding: 0;
+    max-width: none;
+  }
+
+  .chapter-copy::before {
+    display: none;
   }
 
   .chapter-index {

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" font-family="'Noto Sans KR','Inter',system-ui,sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b070d" />
+      <stop offset="0.55" stop-color="#08060a" />
+      <stop offset="1" stop-color="#100a0c" />
+    </linearGradient>
+    <radialGradient id="pin" cx="0.7" cy="0.34" r="0.62">
+      <stop offset="0" stop-color="#b98e44" stop-opacity="0.22" />
+      <stop offset="1" stop-color="#b98e44" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)" />
+  <rect width="1200" height="630" fill="url(#pin)" />
+  <rect x="36" y="36" width="1128" height="558" rx="10" fill="none" stroke="#2a2420" stroke-width="2" />
+
+  <path
+    d="M120 470 L250 432 L330 458 L430 360 L520 392 L620 286 L720 320 L830 214 L930 250 L1040 132"
+    fill="none" stroke="#b98e44" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity="0.92" />
+  <circle cx="1040" cy="132" r="11" fill="#c0473a" />
+  <circle cx="520" cy="392" r="7" fill="#3f8a86" />
+  <circle cx="430" cy="360" r="7" fill="#3f8a86" />
+
+  <text x="90" y="150" fill="#ab9f86" font-size="30" font-weight="600" letter-spacing="6">EXHIBITION ARCHIVE · 1980 — NOW</text>
+  <text x="86" y="300" fill="#f0e9da" font-size="118" font-weight="800" letter-spacing="2">KOSPI ARCHIVE WALL</text>
+  <text x="90" y="372" fill="#e6dcc6" font-size="44" font-weight="700">코스피 45년 기록벽 · 위기 / 회복 / 리프라이싱</text>
+  <text x="90" y="430" fill="#ab9f86" font-size="30" font-weight="500">사상 최고치 랠리로 주목받는 코스피, 인터랙티브 수묵 곡선으로</text>
+
+  <text x="90" y="556" fill="#b98e44" font-size="30" font-weight="700">kospi.hey-hu.com</text>
+  <text x="1110" y="556" fill="#6f6557" font-size="26" font-weight="500" text-anchor="end">실데이터 자동 갱신 · KO / EN</text>
+</svg>

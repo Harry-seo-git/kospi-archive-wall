@@ -1,9 +1,0 @@
-{
-  "name": "kospi-archive-wall",
-  "version": "1.0.0",
-  "private": true,
-  "description": "Interactive KOSPI 45-year archive wall",
-  "dependencies": {
-    "@vercel/og": "^0.6.3"
-  }
-}

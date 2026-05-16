@@ -4,7 +4,7 @@
   --paper: #0c0a0c;
   --surface: #16120f;
   --ink: #f0e9da;
-  --muted: #968a76;
+  --muted: #ab9f86;
   --line: rgba(199, 154, 75, 0.22);
   /* 오방색 — 미술관급 절제: 황(성장·구조), 청(회복), 주(위기) */
   --hwang: #b98e44;
@@ -206,9 +206,29 @@ body.is-ready .loader {
   margin-left: auto;
   border-left: 1px solid rgba(232, 222, 202, 0.12);
   padding-left: 18px;
-  color: rgba(127, 140, 163, 0.82);
+  color: rgba(171, 159, 134, 0.92);
   font-size: 0.78rem;
   font-weight: 800;
+}
+
+.lang-toggle {
+  margin-left: 16px;
+  border: 1px solid rgba(199, 154, 75, 0.4);
+  border-radius: 999px;
+  padding: 6px 13px;
+  background: rgba(12, 10, 12, 0.6);
+  color: rgba(240, 233, 218, 0.86);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.lang-toggle:hover {
+  color: var(--ink);
+  border-color: var(--hwang);
+  background: rgba(185, 142, 68, 0.16);
 }
 
 /* 낙관(落款) 도장형 마크 — 사건 인장 마커와 같은 시각 언어 */
@@ -540,22 +560,22 @@ h1 span {
   color: var(--hwang);
 }
 
+/* 의도된 타이포 블리드 — 가운데 정렬된 거대한 단어를 패널이 양끝 대칭으로
+   크롭해 전시 벽의 텍스처처럼 보이게 한다 (버그 아님, 디자인 효과). */
 .chapter-word {
   position: relative;
   z-index: 2;
-  width: 100%;
-  box-sizing: border-box;
-  padding: 0 4vw;
+  flex: 0 0 auto;
   color: transparent;
   font-family: var(--display);
-  font-size: clamp(2.2rem, 8.5vw, 6.6rem);
+  font-size: clamp(5rem, 17vw, 17rem);
   font-weight: 800;
-  line-height: 0.9;
-  letter-spacing: -0.01em;
+  line-height: 0.86;
+  letter-spacing: -0.02em;
   white-space: nowrap;
   text-align: center;
-  -webkit-text-stroke: 1.5px rgba(240, 233, 218, 0.22);
-  text-stroke: 1.5px rgba(240, 233, 218, 0.22);
+  -webkit-text-stroke: 1.5px rgba(240, 233, 218, 0.2);
+  text-stroke: 1.5px rgba(240, 233, 218, 0.2);
   transition: color 600ms ease, -webkit-text-stroke-color 600ms ease;
 }
 
@@ -2075,6 +2095,6 @@ body.is-data-mode .phase-band {
   }
 
   .chapter-word {
-    font-size: clamp(2rem, 13vw, 3.4rem);
+    font-size: clamp(3.6rem, 26vw, 7rem);
   }
 }

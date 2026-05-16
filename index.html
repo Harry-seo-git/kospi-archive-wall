@@ -154,6 +154,18 @@
             </div>
             <div class="chart-meta">
               <span class="data-note">벽면을 따라 움직이면 가장 가까운 사건이 조명 아래 나타납니다.</span>
+              <div class="chart-tools">
+                <div class="filter-chips" role="group" aria-label="국면 필터">
+                  <button class="nav-chip is-active" type="button" data-filter="all" aria-pressed="true">전체</button>
+                  <button class="nav-chip" type="button" data-filter="crisis" aria-pressed="false">위기</button>
+                  <button class="nav-chip" type="button" data-filter="recovery" aria-pressed="false">회복</button>
+                  <button class="nav-chip" type="button" data-filter="growth" aria-pressed="false">성장</button>
+                </div>
+                <button class="tour-btn" id="tour-btn" type="button" aria-pressed="false">
+                  <span class="tour-icon" aria-hidden="true"></span>
+                  <span class="tour-label">가이드 투어</span>
+                </button>
+              </div>
             </div>
           </div>
           <div class="chart-scroll" id="chart-scroll" tabindex="0" aria-label="1980년부터 2026년 5월 15일까지 코스피 장기 차트 가로 스크롤 영역">
@@ -161,6 +173,10 @@
               <svg id="kospi-chart" viewBox="0 0 3600 860" role="img" aria-labelledby="chart-title chart-desc"></svg>
               <div class="chart-tooltip" id="chart-tooltip" hidden></div>
             </div>
+            <p class="chart-hint" id="chart-hint" aria-hidden="true">좌우로 끌어 보세요 · ← → 키 이동 · 아래 미니맵으로 점프</p>
+          </div>
+          <div class="chart-minimap" aria-hidden="true">
+            <svg id="kospi-minimap" viewBox="0 0 1200 96" preserveAspectRatio="none"></svg>
           </div>
           <div class="signal-console" aria-live="polite" hidden>
             <div class="signal-console-head">
@@ -187,9 +203,28 @@
                 <dt>국면</dt>
                 <dd id="detail-phase">기준 100</dd>
               </div>
+              <div>
+                <dt>직전 대비</dt>
+                <dd id="detail-change">—</dd>
+              </div>
+              <div>
+                <dt>전고점 대비</dt>
+                <dd id="detail-drawdown">—</dd>
+              </div>
             </dl>
           </div>
         </div>
+      </section>
+
+      <section class="timeline-section" aria-label="코스피 사건 타임라인">
+        <div class="timeline-head">
+          <div>
+            <p class="section-kicker">Wall Index · Timeline</p>
+            <h2>사건 카드로 훑어보는 46년</h2>
+          </div>
+          <span class="timeline-note">카드를 누르면 해당 장면이 핀조명 아래 열립니다.</span>
+        </div>
+        <div class="timeline" id="timeline" role="list"></div>
       </section>
 
       <section class="sources">
@@ -218,6 +253,22 @@
           <div>
             <dt>국면</dt>
             <dd id="modal-phase">기준 100</dd>
+          </div>
+          <div>
+            <dt>직전 대비</dt>
+            <dd id="modal-change">—</dd>
+          </div>
+          <div>
+            <dt>전고점 대비</dt>
+            <dd id="modal-drawdown">—</dd>
+          </div>
+          <div>
+            <dt>구간 CAGR</dt>
+            <dd id="modal-cagr">—</dd>
+          </div>
+          <div>
+            <dt>회복 소요</dt>
+            <dd id="modal-recovery">—</dd>
           </div>
         </dl>
       </article>

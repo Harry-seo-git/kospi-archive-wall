@@ -297,7 +297,7 @@ const loaderCount = document.querySelector("#loader-count");
 const chapterIndicator = document.querySelector("#chapter-indicator");
 const dataNote = document.querySelector(".data-note");
 
-let selectedId = "latest-2026";
+let selectedId = "base";
 let currentFilter = "all";
 let pointPositions = new Map();
 const chartSize = { width: 3600, height: 860 };
@@ -309,7 +309,7 @@ let suppressChartSyncUntil = 0;
 let lastChartScrollLeft = -1;
 
 const modeTargets = {
-  all: "latest-2026",
+  all: "base",
   crisis: "latest-2026",
   recovery: "rate-cut-hope",
   growth: "intraday-8000"
@@ -451,6 +451,15 @@ function scrollChartTo(id) {
   } else {
     chartScroll.scrollLeft = nextLeft;
   }
+}
+
+function resetChartToStart() {
+  if (!chartScroll) return;
+  suppressChartSyncUntil = performance.now() + 900;
+  chartScroll.scrollLeft = 0;
+  lastChartScrollLeft = 0;
+  setSelected("base", false, false);
+  hideSignalConsole();
 }
 
 function scrollTimelineTo(id) {
@@ -799,6 +808,9 @@ window.addEventListener("keydown", (event) => {
 
 window.addEventListener("scroll", updateProgress, { passive: true });
 chartScroll?.addEventListener("scroll", updateChartScrollbar, { passive: true });
+window.addEventListener("pageshow", () => {
+  window.requestAnimationFrame(resetChartToStart);
+});
 window.addEventListener("resize", () => {
   updateProgress();
   updateChartScrollbar();
@@ -822,6 +834,8 @@ renderChart();
 observeChapters();
 enableChartGestures();
 applyFilter("all");
+resetChartToStart();
+window.setTimeout(resetChartToStart, 120);
 updateProgress();
 updateChartScrollbar();
 watchChartPosition();

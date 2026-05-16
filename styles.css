@@ -2331,3 +2331,34 @@ h1 {
     line-height: 1.85;
   }
 }
+
+/* 모바일 스크롤 모션 — PC만큼 과감하지 않게, 스크롤 연동 위주 (보통 강도) */
+@media (max-width: 620px) {
+  /* 챕터 워터마크: 스크롤 진행도(--era-p)에 따라 세로 시차 + 미세 스케일.
+     스크롤을 또렷이 따라가도록 transform 트랜지션은 제거(색 전환만 유지). */
+  .chapter-word {
+    transform:
+      translateY(calc((0.5 - var(--era-p, 0.5)) * 70px))
+      scale(calc(1 + var(--era-p, 0) * 0.05));
+    transition: color 600ms ease, -webkit-text-stroke-color 600ms ease;
+  }
+}
+
+@media (max-width: 620px) and (prefers-reduced-motion: no-preference) {
+  html.js-motion .reveal-up {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 620ms ease,
+      transform 680ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+
+  html.js-motion .reveal-up.is-revealed {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* market-pulse 4개 지표 순차 등장 */
+  html.js-motion .market-pulse > div:nth-child(2) { transition-delay: 80ms; }
+  html.js-motion .market-pulse > div:nth-child(3) { transition-delay: 160ms; }
+  html.js-motion .market-pulse > div:nth-child(4) { transition-delay: 240ms; }
+}

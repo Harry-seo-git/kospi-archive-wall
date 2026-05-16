@@ -20,19 +20,22 @@
 
     <div class="reading-progress" id="reading-progress" aria-hidden="true"></div>
     <div class="paper-texture" aria-hidden="true"></div>
+    <canvas id="market-particles" aria-hidden="true"></canvas>
+    <div class="phase-wash" id="phase-wash" aria-hidden="true"></div>
+    <div class="cinema-bars" aria-hidden="true"></div>
 
     <header class="topbar">
       <a class="brand" href="#top" aria-label="KOSPI Archive Wall">
         <span class="brand-mark"></span>
         <span>KOSPI Archive Wall</span>
       </a>
-      <span class="topbar-meta">Data wall · 2026.05.15</span>
+      <span class="topbar-meta">Data wall · 2025.12.30</span>
     </header>
 
     <main id="top">
       <section class="hero" aria-labelledby="page-title">
         <div class="hero-mast">
-          <p class="hero-code">Exhibition Archive · 1980 — 2026.05.15</p>
+          <p class="hero-code">Exhibition Archive · 1980 — 2025.12.30</p>
           <h1 id="page-title">
             <span>KOSPI</span>
             <span>ARCHIVE WALL</span>
@@ -67,10 +70,10 @@
             </g>
             <g class="hero-event hero-event-growth">
               <circle cx="918" cy="126" r="10" />
-              <text x="918" y="90" text-anchor="middle">2026</text>
+              <text x="918" y="90" text-anchor="middle">2025</text>
             </g>
           </svg>
-          <figcaption>Dark gallery wall · 46 years of price memory under a moving light.</figcaption>
+          <figcaption>Dark gallery wall · 45 years of price memory under a moving light.</figcaption>
         </figure>
 
         <div class="hero-bottom">
@@ -82,23 +85,23 @@
           <aside class="market-pulse" aria-label="요약 지표">
             <div>
               <span class="metric-label">Object 01 · Base</span>
-              <strong>100</strong>
-              <small>1980.01.04</small>
+              <strong data-count="100">100</strong>
+              <small>1980.01.04 기준 100</small>
             </div>
             <div>
-              <span class="metric-label">Object 02 · Close</span>
-              <strong>7,493.18</strong>
-              <small>-6.12% 당일 종가</small>
+              <span class="metric-label">Object 02 · 2024 Low</span>
+              <strong data-count="2399.49">2,399.49</strong>
+              <small>2024.12 정치 충격</small>
             </div>
             <div>
-              <span class="metric-label">Object 03 · Record</span>
-              <strong>7,981.41</strong>
-              <small>2026.05.14 종가</small>
+              <span class="metric-label">Object 03 · First 4000</span>
+              <strong data-count="4042.83">4,042.83</strong>
+              <small>2025.10.27 사상 첫 4000</small>
             </div>
             <div>
-              <span class="metric-label">Object 04 · Intraday</span>
-              <strong>8,046.78</strong>
-              <small>2026.05.15 장중</small>
+              <span class="metric-label">Object 04 · 2025 Close</span>
+              <strong data-count="4214.17">4,214.17</strong>
+              <small>2025.12.30 종가</small>
             </div>
           </aside>
         </div>
@@ -137,8 +140,8 @@
             <p class="section-kicker">Gallery 03 · Reprice</p>
             <h2>새 산업이 등장하면 지수의 언어도 바뀐다.</h2>
             <p>
-              조선과 철강, 반도체와 배터리, 플랫폼과 AI 기대, 그리고 2026년의
-              정책·유동성 랠리까지. 코스피의 고점은 단순한 숫자가 아니라 한국
+              조선과 철강, 반도체와 배터리, 플랫폼과 AI 기대, 그리고 2025년의
+              밸류업·AI 랠리까지. 코스피의 고점은 단순한 숫자가 아니라 한국
               기업이 어떤 미래를 대표하는지에 대한 집단적 베팅이었습니다.
             </p>
           </div>
@@ -168,7 +171,7 @@
               </div>
             </div>
           </div>
-          <div class="chart-scroll" id="chart-scroll" tabindex="0" aria-label="1980년부터 2026년 5월 15일까지 코스피 장기 차트 가로 스크롤 영역">
+          <div class="chart-scroll" id="chart-scroll" tabindex="0" aria-label="1980년부터 2025년 12월 30일까지 코스피 장기 차트 가로 스크롤 영역">
             <div class="chart-wrap">
               <svg id="kospi-chart" viewBox="0 0 3600 860" role="img" aria-labelledby="chart-title chart-desc"></svg>
               <div class="chart-tooltip" id="chart-tooltip" hidden></div>
@@ -218,10 +221,9 @@
 
       <section class="sources">
         <p>
-          Provenance Note · 수치는 주요 변곡점 이해를 위한 요약값입니다. 기준일은 2026년 5월 15일입니다. 참고:
+          Provenance Note · 모든 수치는 실제 코스피 흐름을 따른 근사값입니다. 연·월별 종가와 주요 변곡점은 공개 기록 기반의 추정치이며, 기준일은 2025년 12월 30일(종가 4,214.17)입니다. 위기 구간(1997–98, 2008, 2020, 2022)은 월 단위로 보강했습니다. 참고:
           <a href="https://en.wikipedia.org/wiki/KOSPI" target="_blank" rel="noreferrer">KOSPI annual returns and milestones</a>,
-          <a href="https://en.fnnews.com/news/202512301614331303" target="_blank" rel="noreferrer">2025 close 4,214.17</a>,
-          <a href="https://en.fnnews.com/news/202605151621532493" target="_blank" rel="noreferrer">2026.05.15 close and intraday high</a>.
+          <a href="https://en.fnnews.com/news/202512301614331303" target="_blank" rel="noreferrer">2025 close 4,214.17</a>.
         </p>
       </section>
     </main>

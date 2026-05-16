@@ -282,7 +282,6 @@ const yearlyCloses = {
 const chart = document.querySelector("#kospi-chart");
 const chartScroll = document.querySelector("#chart-scroll");
 const minimap = document.querySelector("#kospi-minimap");
-const timeline = document.querySelector("#timeline");
 const tooltip = document.querySelector("#chart-tooltip");
 const signalConsole = document.querySelector(".signal-console");
 const detailSignal = document.querySelector("#detail-signal");
@@ -400,8 +399,8 @@ function applyStatTone(node, value, { invert = false } = {}) {
   node.classList.add(positive ? "stat-up" : "stat-down");
 }
 
-function setSelected(id, shouldScroll = false, shouldChartScroll = true) {
-  if (selectedId === id && !shouldScroll && !shouldChartScroll) return;
+function setSelected(id, shouldChartScroll = true) {
+  if (selectedId === id && !shouldChartScroll) return;
   selectedId = id;
   const selected = getSelectedEvent();
   const metrics = getEventMetrics(selected);
@@ -420,10 +419,6 @@ function setSelected(id, shouldScroll = false, shouldChartScroll = true) {
   updateChartMoment(selected);
   document.body.dataset.phase = selected.phase;
 
-  document.querySelectorAll(".timeline-card").forEach((card) => {
-    card.classList.toggle("is-selected", card.dataset.id === id);
-  });
-
   chart.querySelectorAll(".chart-point").forEach((point) => {
     point.classList.toggle("is-selected", point.dataset.id === id);
   });
@@ -438,10 +433,6 @@ function setSelected(id, shouldScroll = false, shouldChartScroll = true) {
   if (shouldChartScroll) {
     scrollChartTo(id);
   }
-
-  if (shouldScroll) {
-    scrollTimelineTo(id);
-  }
 }
 
 function showSignalConsole() {
@@ -454,12 +445,12 @@ function hideSignalConsole() {
   chart.querySelector(".chart-cursor-line")?.classList.remove("is-visible");
 }
 
-function revealPoint(point, shouldScroll = false, shouldChartScroll = false) {
+function revealPoint(point, shouldChartScroll = false) {
   if (!point) return;
   if (currentFilter !== "all" && currentFilter !== point.phase) {
     applyFilter("all");
   }
-  setSelected(point.id, shouldScroll, shouldChartScroll);
+  setSelected(point.id, shouldChartScroll);
   showSignalConsole();
 }
 
@@ -545,15 +536,8 @@ function resetChartToStart() {
   suppressChartSyncUntil = performance.now() + 900;
   chartScroll.scrollLeft = 0;
   lastChartScrollLeft = 0;
-  setSelected("base", false, false);
+  setSelected("base", false);
   hideSignalConsole();
-}
-
-function scrollTimelineTo(id) {
-  const card = document.querySelector(`.timeline-card[data-id="${id}"]`);
-  if (!card || !timeline) return;
-  const nextTop = Math.max(0, card.offsetTop - timeline.clientHeight * 0.5 + card.clientHeight * 0.5);
-  timeline.scrollTo({ top: nextTop, behavior: prefersReducedMotion ? "auto" : "smooth" });
 }
 
 function applyFilter(filter) {
@@ -581,56 +565,7 @@ function applyFilter(filter) {
   });
 
   const targetId = modeTargets[filter] || modeTargets.all;
-  setSelected(targetId, false, true);
-}
-
-function renderTimeline() {
-  if (!timeline) return;
-
-  timeline.innerHTML = events.map((event) => {
-    const metrics = getEventMetrics(event);
-    const move = metrics.change === null ? "기준점" : formatSignedPct(metrics.change);
-    return `
-    <button class="timeline-card" type="button" role="listitem" data-id="${event.id}" data-phase="${event.phase}">
-      <span class="year">${Math.floor(event.year)}</span>
-      <span class="card-body">
-        <h3>${event.title}</h3>
-        <p>${event.summary}</p>
-      </span>
-      <span class="card-meta">
-        <span class="phase ${event.phase}">${event.phaseLabel}</span>
-        <span class="card-move">${formatIndex(event.index)} · ${move}</span>
-      </span>
-    </button>
-  `;
-  }).join("");
-
-  timeline.querySelectorAll(".timeline-card").forEach((card) => {
-    card.addEventListener("click", () => {
-      stopTour();
-      setSelected(card.dataset.id);
-      writeHash(card.dataset.id);
-      openMomentModal(card.dataset.id);
-    });
-    card.addEventListener("pointermove", (event) => {
-      const rect = card.getBoundingClientRect();
-      const offset = ((event.clientX - rect.left) / rect.width - 0.5) * 12;
-      card.style.setProperty("--tilt", `${offset}px`);
-    });
-    card.addEventListener("pointerleave", () => {
-      card.style.removeProperty("--tilt");
-    });
-  });
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("is-visible");
-      }
-    });
-  }, { threshold: 0.18 });
-
-  timeline.querySelectorAll(".timeline-card").forEach((card) => observer.observe(card));
+  setSelected(targetId, true);
 }
 
 function createSvgElement(name, attrs = {}) {
@@ -906,7 +841,7 @@ function stepSelection(direction) {
   const next = list[nextIdx];
   if (next) {
     stopTour();
-    revealPoint(next, true, true);
+    revealPoint(next, true);
     writeHash(next.id);
   }
 }
@@ -924,7 +859,7 @@ function startTour() {
   const advance = () => {
     if (!isTouring) return;
     const event = list[tourIndex];
-    revealPoint(event, true, true);
+    revealPoint(event, true);
     writeHash(event.id);
     if (tourIndex >= list.length - 1) {
       stopTour();
@@ -964,7 +899,7 @@ function applyHashFromLocation() {
   const id = window.location.hash.replace("#", "");
   const event = getEventById(id);
   if (!event) return false;
-  revealPoint(event, true, true);
+  revealPoint(event, true);
   return true;
 }
 
@@ -994,7 +929,7 @@ function syncSelectionToChartCenter() {
   }, null);
 
   if (nearest && nearest.id !== selectedId) {
-    setSelected(nearest.id, false, false);
+    setSelected(nearest.id, false);
   }
 }
 
@@ -1087,10 +1022,12 @@ function observeChapters() {
 }
 
 function runLoader() {
+  const fill = loader?.querySelector(".loader-line span");
   let value = 0;
   const timer = window.setInterval(() => {
-    value = Math.min(100, value + Math.ceil(Math.random() * 14));
+    value = Math.min(100, value + Math.ceil(Math.random() * 12) + 2);
     loaderCount.textContent = `${value}%`;
+    if (fill) fill.style.transform = `scaleX(${value / 100})`;
     if (value >= 100) {
       window.clearInterval(timer);
       window.setTimeout(() => {
@@ -1098,9 +1035,9 @@ function runLoader() {
         window.setTimeout(() => {
           if (loader) loader.hidden = true;
         }, 650);
-      }, 220);
+      }, 260);
     }
-  }, 80);
+  }, 90);
 }
 
 filterButtons.forEach((button) => {
@@ -1148,7 +1085,6 @@ window.addEventListener("pointerleave", () => {
   document.body.classList.remove("has-pointer");
 });
 
-renderTimeline();
 renderChart();
 observeChapters();
 enableChartGestures();

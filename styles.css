@@ -2713,24 +2713,6 @@ h1 {
   font-size: 0.86rem;
 }
 
-/* ===== D. 수묵 인트로 — 곡선 위로 굵은 금색 붓이 전체를 휘갈기고 사라진다 ===== */
-.hero-intro {
-  fill: none;
-  stroke: var(--hwang);
-  stroke-width: 5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  filter: drop-shadow(0 0 16px rgba(199, 154, 75, 0.95)) drop-shadow(0 0 4px rgba(255, 233, 184, 0.9));
-  pointer-events: none;
-}
-
-.hero-intro.is-fading {
-  transition: opacity 760ms ease, stroke-width 760ms ease, filter 760ms ease;
-  opacity: 0;
-  stroke-width: 2.4;
-  filter: drop-shadow(0 0 6px rgba(199, 154, 75, 0.4));
-}
-
 /* ===== E. 낙관 스탬프 마이크로 연출 (모션 허용 시) ===== */
 @media (prefers-reduced-motion: no-preference) {
   /* 마커를 움직이지 않고 잉크가 '쾅' 번지는 느낌만 — transform 미사용(원점 이슈 회피) */

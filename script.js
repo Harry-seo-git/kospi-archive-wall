@@ -1775,6 +1775,7 @@ function runLoader() {
       window.clearInterval(timer);
       window.setTimeout(() => {
         document.body.classList.add("is-ready");
+        playHeroIntro();
         runMarketPulseIntro();
         // 로더가 사라진 뒤 종가 롤을 다시 재생(로딩 화면 뒤에서 끝나버리지 않게).
         const qv = document.querySelector("#hero-quote-value");
@@ -1909,10 +1910,18 @@ function enableChapterNav() {
           b.classList.toggle("is-active", on);
           b.setAttribute("aria-current", on ? "true" : "false");
         });
-        rail.classList.add("is-shown");
       });
     }, { rootMargin: "-45% 0px -45% 0px", threshold: 0 });
     chaptersList.forEach((c) => io.observe(c));
+
+    // 갤러리(챕터) 구역 안에서만 레일 노출 — HERO·코스피 실록에서는 사라짐.
+    const wrap = document.querySelector(".chapter-wrap");
+    if (wrap) {
+      const visIo = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => rail.classList.toggle("is-shown", entry.isIntersecting));
+      }, { threshold: 0, rootMargin: "-12% 0px -12% 0px" });
+      visIo.observe(wrap);
+    }
   }
 
   const decadeNav = document.querySelector("#decade-nav");
@@ -2292,6 +2301,30 @@ function playEraStats(article) {
 }
 
 /* ===== Hero — 핀조명 + 실데이터 곡선 ===== */
+// D. 수묵 인트로 — 마스크 없는 hero-dim 곡선을 1회 붓으로 긋는다(모션 허용 시).
+let heroIntroPlayed = false;
+function playHeroIntro() {
+  if (heroIntroPlayed || prefersReducedMotion) return;
+  const path = heroSvg && heroSvg.querySelector(".hero-dim.is-drawing");
+  if (!path) return;
+  heroIntroPlayed = true;
+  void path.getBoundingClientRect();
+  const settle = () => {
+    path.classList.remove("is-drawing");
+    path.style.transition = "";
+    path.style.strokeDasharray = "";
+    path.style.strokeDashoffset = "";
+    path.removeEventListener("transitionend", onEnd);
+  };
+  const onEnd = (e) => { if (e.propertyName === "stroke-dashoffset") settle(); };
+  requestAnimationFrame(() => {
+    path.style.transition = "stroke-dashoffset 2000ms cubic-bezier(0.22, 1, 0.36, 1) 260ms";
+    path.style.strokeDashoffset = "0";
+  });
+  path.addEventListener("transitionend", onEnd);
+  window.setTimeout(settle, 2800);
+}
+
 function renderHero() {
   if (!heroSvg) return;
   const W = 1100;
@@ -2327,7 +2360,15 @@ function renderHero() {
   defs.appendChild(mask);
   heroSvg.append(title, desc, defs);
 
-  heroSvg.appendChild(createSvgElement("path", { class: "hero-dim", d }));
+  const dimPath = createSvgElement("path", { class: "hero-dim", d, pathLength: "1" });
+  heroSvg.appendChild(dimPath);
+  if (!heroIntroPlayed && !prefersReducedMotion) {
+    dimPath.classList.add("is-drawing");
+    dimPath.style.transition = "none";
+    dimPath.style.strokeDasharray = "1";
+    dimPath.style.strokeDashoffset = "1";
+    if (document.body.classList.contains("is-ready")) playHeroIntro();
+  }
   const lit = createSvgElement("g", prefersReducedMotion ? {} : { mask: "url(#heroPin)" });
   lit.appendChild(createSvgElement("path", { class: "hero-lit", d, pathLength: "1" }));
   events.forEach((ev) => {

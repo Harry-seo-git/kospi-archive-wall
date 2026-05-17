@@ -314,6 +314,15 @@ const I18N = {
     "era.span": "구간",
     "panel.kicker": "코스피 실록",
     "console.kicker": "전시 라벨 · 현재 신호",
+    "share.label": "이 순간 공유",
+    "share.copied": "링크 복사됨",
+    "help.title": "단축키 · 도움말",
+    "help.arrows": "이전 · 다음 사건",
+    "help.homeend": "처음 · 마지막 사건",
+    "help.qmark": "이 도움말 열기 · 닫기",
+    "help.esc": "닫기",
+    "help.tour": "투어 버튼으로 사건을 자동 순회합니다",
+    "help.share": "월 라벨의 '이 순간 공유'로 링크를 복사할 수 있어요",
     "panel.h2": "핀조명 아래 드러나는 코스피의 결정적 장면",
     "hint.text": "좌우로 끌어 보세요 · ← → 키 이동 · 아래 미니맵으로 점프",
     "sources.rest": "최신 구간은 한국장 마감(15:45 KST) 기준 실데이터로 자동 반영되며, 라이브 미연결 시 번들 폴백(1980–2024 실측)을 사용합니다. 데이터 출처:",
@@ -393,6 +402,15 @@ const I18N = {
     "era.span": "Span",
     "panel.kicker": "KOSPI Veritable Records",
     "console.kicker": "Wall Label · Current Signal",
+    "share.label": "Share this moment",
+    "share.copied": "Link copied",
+    "help.title": "Shortcuts · Help",
+    "help.arrows": "Previous · next event",
+    "help.homeend": "First · last event",
+    "help.qmark": "Toggle this help",
+    "help.esc": "Close",
+    "help.tour": "Use the tour button to auto-cycle events",
+    "help.share": "Copy a link via 'Share this moment' on the wall label",
     "panel.h2": "KOSPI's decisive scenes, revealed under a pin light",
     "hint.text": "Drag left/right · ← → keys · jump via the minimap below",
     "sources.rest": "The latest range auto-updates with real data at the Korean market close (15:45 KST); a bundled fallback (1980–2024 actuals) is used when live is unavailable. Data sources:",
@@ -794,7 +812,7 @@ function setSelected(id, shouldChartScroll = true) {
   detailTitle.textContent = tEv(selected, "title");
   detailDate.textContent = selected.date;
   detailCopy.textContent = tEv(selected, "detail");
-  animateCount(detailIndex, Math.round(selected.index));
+  rollNumber(detailIndex, selected.index);
   detailPhase.textContent = tEv(selected, "phaseLabel");
   detailChange.textContent = metrics.change === null ? t("stat.base") : formatSignedPct(metrics.change);
   detailDrawdown.textContent = metrics.drawdown >= -0.05 ? t("stat.ath") : `${metrics.drawdown.toFixed(1)}%`;
@@ -1660,18 +1678,20 @@ function observeChapters() {
 
 // 코스피 실록 섹션에 들어오면(마우스/터치 스크롤) 아직 고른 게 없을 때
 // 기본 선택을 맨 처음 1980.01.04 기준점으로 두고 월 라벨을 띄운다.
+let chartSectionVisible = false;
 function observeChartSection() {
   const section = document.querySelector("#index");
   if (!section) return;
   const io = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
+      chartSectionVisible = entry.isIntersecting;
       if (!entry.isIntersecting) return;
-      if (signalConsole && signalConsole.hidden) {
+      if (entry.intersectionRatio >= 0.18 && signalConsole && signalConsole.hidden) {
         const base = getEventById("base");
         if (base) revealPoint(base, false);
       }
     });
-  }, { threshold: 0.18 });
+  }, { threshold: [0, 0.18] });
   io.observe(section);
 }
 
@@ -1777,11 +1797,142 @@ filterButtons.forEach((button) => {
 tourButton?.addEventListener("click", toggleTour);
 modalClose.addEventListener("click", closeMomentModal);
 modalScrim.addEventListener("click", closeMomentModal);
+function closeHelp() {
+  const h = document.querySelector("#help-modal");
+  if (h && !h.hidden) h.hidden = true;
+}
+function toggleHelp() {
+  const h = document.querySelector("#help-modal");
+  if (!h) return;
+  h.hidden = !h.hidden;
+}
+
 window.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && !momentModal.hidden) {
-    closeMomentModal();
+  if (event.key === "Escape") {
+    if (!momentModal.hidden) { closeMomentModal(); return; }
+    closeHelp();
+    return;
   }
+  const tag = (event.target && event.target.tagName) || "";
+  if (tag === "INPUT" || tag === "TEXTAREA" || event.metaKey || event.ctrlKey || event.altKey) return;
+  if (event.key === "?" || (event.shiftKey && event.key === "/")) {
+    event.preventDefault();
+    toggleHelp();
+    return;
+  }
+  // ← → Home End 로 사건 이동 — 차트 섹션이 화면에 보일 때만(일반 스크롤 방해 X)
+  if (!chartSectionVisible) return;
+  if (event.key === "ArrowRight") { event.preventDefault(); stepSelection(1); }
+  else if (event.key === "ArrowLeft") { event.preventDefault(); stepSelection(-1); }
+  else if (event.key === "Home") { event.preventDefault(); stepSelection("home"); }
+  else if (event.key === "End") { event.preventDefault(); stepSelection("end"); }
 });
+
+// B. 이 순간 공유 — 월 라벨의 공유 버튼 → ?at=<id> URL 복사. 링크 진입 시 1회 이동.
+function enableShareDeepLink() {
+  const btn = document.querySelector("#share-moment");
+  if (btn) {
+    btn.addEventListener("click", async () => {
+      const url = `${location.origin}${location.pathname}?at=${encodeURIComponent(selectedId)}`;
+      let ok = false;
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(url);
+          ok = true;
+        }
+      } catch (e) { ok = false; }
+      if (!ok) {
+        try {
+          const ta = document.createElement("textarea");
+          ta.value = url;
+          ta.setAttribute("readonly", "");
+          ta.style.position = "absolute";
+          ta.style.left = "-9999px";
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand("copy");
+          document.body.removeChild(ta);
+          ok = true;
+        } catch (e2) { ok = false; }
+      }
+      btn.classList.add("is-copied");
+      btn.textContent = t(ok ? "share.copied" : "share.label");
+      window.setTimeout(() => {
+        btn.classList.remove("is-copied");
+        btn.textContent = t("share.label");
+      }, 1600);
+    });
+  }
+  const at = new URLSearchParams(location.search).get("at");
+  if (at) {
+    const ev = getEventById(at);
+    if (ev) {
+      // 먼저 선택(월 라벨 표시)해 두면 섹션 관찰자가 기준점으로 덮어쓰지 않음.
+      revealPoint(ev, true);
+      window.setTimeout(() => {
+        const sec = document.querySelector("#index");
+        if (sec && sec.scrollIntoView) {
+          sec.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "start" });
+        }
+        revealPoint(ev, true);
+      }, 320);
+    }
+    window.history.replaceState(null, "", location.pathname);
+  }
+}
+
+// F. 단축키 도움말 오버레이 토글 버튼/닫기 배선.
+function enableHelpOverlay() {
+  document.querySelector("#help-btn")?.addEventListener("click", toggleHelp);
+  document.querySelector("#help-close")?.addEventListener("click", closeHelp);
+  document.querySelector("#help-scrim")?.addEventListener("click", closeHelp);
+}
+
+// A. 길찾기 — 갤러리 01·02·03 레일 + 차트 10년 단위 점프.
+function enableChapterNav() {
+  const rail = document.querySelector("#chapter-rail");
+  const chaptersList = [...document.querySelectorAll(".story-chapter[data-chapter]")];
+  if (rail && chaptersList.length) {
+    const links = [...rail.querySelectorAll("button[data-go]")];
+    links.forEach((b) => {
+      b.addEventListener("click", () => {
+        const target = chaptersList[Number(b.dataset.go)];
+        if (target) target.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "start" });
+      });
+    });
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const idx = chaptersList.indexOf(entry.target);
+        links.forEach((b, i) => {
+          const on = i === idx;
+          b.classList.toggle("is-active", on);
+          b.setAttribute("aria-current", on ? "true" : "false");
+        });
+        rail.classList.add("is-shown");
+      });
+    }, { rootMargin: "-45% 0px -45% 0px", threshold: 0 });
+    chaptersList.forEach((c) => io.observe(c));
+  }
+
+  const decadeNav = document.querySelector("#decade-nav");
+  if (decadeNav) {
+    decadeNav.querySelectorAll("button[data-year]").forEach((b) => {
+      b.addEventListener("click", () => {
+        const yr = Number(b.dataset.year);
+        let best = null;
+        events.forEach((ev) => {
+          if (!best || Math.abs(ev.year - yr) < Math.abs(best.year - yr)) best = ev;
+        });
+        if (best) {
+          stopTour();
+          revealPoint(best, true);
+          writeHash(best.id);
+        }
+      });
+    });
+  }
+}
 
 let scrollTick = false;
 window.addEventListener("scroll", () => {
@@ -2178,7 +2329,7 @@ function renderHero() {
 
   heroSvg.appendChild(createSvgElement("path", { class: "hero-dim", d }));
   const lit = createSvgElement("g", prefersReducedMotion ? {} : { mask: "url(#heroPin)" });
-  lit.appendChild(createSvgElement("path", { class: "hero-lit", d }));
+  lit.appendChild(createSvgElement("path", { class: "hero-lit", d, pathLength: "1" }));
   events.forEach((ev) => {
     if (ev.year < minYear || ev.year > maxYear) return;
     lit.appendChild(createSvgElement("rect", {
@@ -2330,6 +2481,16 @@ async function enhanceWithLiveData() {
   updateLatestUI();
 }
 
+// 오래 켜둔 탭도 최신을 유지 — 탭 재포커스/주기적으로 라이브 재요청(최소 60초 간격).
+let lastLiveFetch = 0;
+function maybeRefreshLive() {
+  if (document.visibilityState !== "visible") return;
+  const now = Date.now();
+  if (now - lastLiveFetch < 60000) return;
+  lastLiveFetch = now;
+  enhanceWithLiveData();
+}
+
 function observeEraPanels() {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
@@ -2452,15 +2613,19 @@ initParticles();
 applyFilter("all");
 resetChartToStart();
 window.setTimeout(resetChartToStart, 120);
-// 새로고침 시 항상 최상단에서 시작 (브라우저 스크롤 복원·해시 점프 차단)
+// 새로고침 시 항상 최상단에서 시작 (브라우저 스크롤 복원·해시 점프 차단).
+// 단, 공유 링크(?at=)로 들어온 경우는 해당 시점으로 이동(enableShareDeepLink).
+const deepLinking = new URLSearchParams(window.location.search).has("at");
 if ("scrollRestoration" in window.history) {
   window.history.scrollRestoration = "manual";
 }
 if (window.location.hash) {
   window.history.replaceState(null, "", window.location.pathname + window.location.search);
 }
-window.scrollTo(0, 0);
-window.addEventListener("load", () => window.scrollTo(0, 0));
+if (!deepLinking) {
+  window.scrollTo(0, 0);
+  window.addEventListener("load", () => window.scrollTo(0, 0));
+}
 updateProgress();
 updateChartScrollbar();
 updateProvenance();
@@ -2469,7 +2634,13 @@ watchChartPosition();
 heroAutoSweep();
 applyLang(detectLang());
 runLoader();
+lastLiveFetch = Date.now();
 enhanceWithLiveData();
+document.addEventListener("visibilitychange", maybeRefreshLive);
+window.setInterval(maybeRefreshLive, 5 * 60 * 1000);
+enableShareDeepLink();
+enableHelpOverlay();
+enableChapterNav();
 
 document.querySelector("#lang-toggle")?.addEventListener("click", () => {
   applyLang(lang === "ko" ? "en" : "ko");

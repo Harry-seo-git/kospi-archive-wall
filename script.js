@@ -248,8 +248,8 @@ const events = [
     phaseLabel: "첫 8,000",
     signal: "일주일 만에 또 1,000p",
     title: "사상 첫 8,000 돌파(장중)",
-    summary: "2026년 5월 15일 코스피가 장중 사상 처음 8,000을 넘었습니다. 7,000 돌파 일주일 만입니다.",
-    detail: "올해 들어 약 85% 폭등하며 지수 앞자리를 네 번째 갈아치웠습니다. 삼성전자·SK하이닉스가 상승을 이끌었습니다. (출처: 한겨레)"
+    summary: "2026년 5월 15일 코스피가 장중 사상 처음 8,000을 넘어(고점 8,046.78) 7,000 돌파 일주일 만에 또 한 단계를 올렸습니다.",
+    detail: "올해 들어 약 90% 폭등하며 지수 앞자리를 네 번째 갈아치웠습니다. AI 반도체 호황 속 삼성전자·SK하이닉스가 상승을 이끌었습니다. (출처: 한겨레·머니투데이)"
   }
 ];
 
@@ -275,7 +275,7 @@ const eventsEn = {
   "first-6000": { phaseLabel: "First 6,000", signal: "1,000 points in a month", title: "First break above 6,000", summary: "On 25 Feb 2026 KOSPI opened at 6,022.7, crossing 6,000 for the first time.", detail: "Just 18 trading days after the 5,000 break on 27 Jan; the gain since the 3 June election reached 122%. (Source: Hankyoreh)" },
   "first-7000": { phaseLabel: "Dream 7,000", signal: "Straight to 7,300", title: "First break above 7,000", summary: "On 6 May 2026 KOSPI gapped up through 7,000 for the first time, reaching 7,300 intraday.", detail: "A US-Iran ceasefire tone amid sporadic clashes sank oil prices while overnight US tech strength carried over; an index-futures surge triggered a sidecar at the open. (Source: Yonhap)" },
   "iran-war-shock": { phaseLabel: "War-escalation shock", signal: "A sharp drop inside the rally", title: "US/Israel-Iran war escalates", summary: "On 12 May 2026 KOSPI rose to 7,999.67 early then reversed to close down 2.29% at 7,642.15.", detail: "Escalation of the US/Israel-Iran war, stalled Samsung labor talks and an 'AI citizens dividend' controversy weighed on the market; it rebounded 2.63% the next day on retail buying. (Source: Hankyoreh)" },
-  "first-8000": { phaseLabel: "First 8,000", signal: "Another 1,000 in a week", title: "First break above 8,000 (intraday)", summary: "On 15 May 2026 KOSPI crossed 8,000 intraday for the first time - a week after 7,000.", detail: "Up about 85% year-to-date, changing its leading digit for the fourth time, led by Samsung Electronics and SK hynix. (Source: Hankyoreh)" }
+  "first-8000": { phaseLabel: "First 8,000", signal: "Another 1,000 in a week", title: "First break above 8,000 (intraday)", summary: "On 15 May 2026 KOSPI crossed 8,000 intraday for the first time (high 8,046.78) - a week after 7,000.", detail: "Up about 90% year-to-date, changing its leading digit for the fourth time, led by Samsung Electronics and SK hynix amid the AI chip boom. (Source: Hankyoreh, Money Today)" }
 };
 
 const I18N = {

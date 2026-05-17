@@ -1626,22 +1626,7 @@ function enableChartGestures() {
     isChartDragging = false;
     chartScroll.classList.remove("is-dragging");
   });
-
-  chartScroll.addEventListener("keydown", (event) => {
-    if (event.key === "ArrowRight") {
-      event.preventDefault();
-      stepSelection(1);
-    } else if (event.key === "ArrowLeft") {
-      event.preventDefault();
-      stepSelection(-1);
-    } else if (event.key === "Home") {
-      event.preventDefault();
-      stepSelection("home");
-    } else if (event.key === "End") {
-      event.preventDefault();
-      stepSelection("end");
-    }
-  });
+  // 화살표/Home/End 는 전역 keydown(차트 섹션 표시 중)에서 단일 처리 — 중복 방지.
 }
 
 function watchChartPosition() {
@@ -2305,24 +2290,25 @@ function playEraStats(article) {
 let heroIntroPlayed = false;
 function playHeroIntro() {
   if (heroIntroPlayed || prefersReducedMotion) return;
-  const path = heroSvg && heroSvg.querySelector(".hero-dim.is-drawing");
+  const path = heroSvg && heroSvg.querySelector(".hero-intro");
   if (!path) return;
   heroIntroPlayed = true;
   void path.getBoundingClientRect();
-  const settle = () => {
-    path.classList.remove("is-drawing");
-    path.style.transition = "";
-    path.style.strokeDasharray = "";
-    path.style.strokeDashoffset = "";
-    path.removeEventListener("transitionend", onEnd);
+  let done = false;
+  const fadeOut = () => {
+    if (done) return;
+    done = true;
+    path.removeEventListener("transitionend", onDraw);
+    path.classList.add("is-fading");
+    window.setTimeout(() => path.remove(), 820);
   };
-  const onEnd = (e) => { if (e.propertyName === "stroke-dashoffset") settle(); };
+  const onDraw = (e) => { if (e.propertyName === "stroke-dashoffset") fadeOut(); };
   requestAnimationFrame(() => {
-    path.style.transition = "stroke-dashoffset 2000ms cubic-bezier(0.22, 1, 0.36, 1) 260ms";
+    path.style.transition = "stroke-dashoffset 1800ms cubic-bezier(0.16, 1, 0.3, 1) 240ms";
     path.style.strokeDashoffset = "0";
   });
-  path.addEventListener("transitionend", onEnd);
-  window.setTimeout(settle, 2800);
+  path.addEventListener("transitionend", onDraw);
+  window.setTimeout(fadeOut, 2400);
 }
 
 function renderHero() {
@@ -2360,15 +2346,7 @@ function renderHero() {
   defs.appendChild(mask);
   heroSvg.append(title, desc, defs);
 
-  const dimPath = createSvgElement("path", { class: "hero-dim", d, pathLength: "1" });
-  heroSvg.appendChild(dimPath);
-  if (!heroIntroPlayed && !prefersReducedMotion) {
-    dimPath.classList.add("is-drawing");
-    dimPath.style.transition = "none";
-    dimPath.style.strokeDasharray = "1";
-    dimPath.style.strokeDashoffset = "1";
-    if (document.body.classList.contains("is-ready")) playHeroIntro();
-  }
+  heroSvg.appendChild(createSvgElement("path", { class: "hero-dim", d }));
   const lit = createSvgElement("g", prefersReducedMotion ? {} : { mask: "url(#heroPin)" });
   lit.appendChild(createSvgElement("path", { class: "hero-lit", d, pathLength: "1" }));
   events.forEach((ev) => {
@@ -2384,6 +2362,15 @@ function renderHero() {
     }));
   });
   heroSvg.appendChild(lit);
+
+  if (!heroIntroPlayed && !prefersReducedMotion) {
+    const intro = createSvgElement("path", { class: "hero-intro", d, pathLength: "1" });
+    intro.style.transition = "none";
+    intro.style.strokeDasharray = "1";
+    intro.style.strokeDashoffset = "1";
+    heroSvg.appendChild(intro);
+    if (document.body.classList.contains("is-ready")) playHeroIntro();
+  }
 
   const pin = { x: W * 0.62, y: H * 0.4 };
   const nearestEventToX = (svgX) => {

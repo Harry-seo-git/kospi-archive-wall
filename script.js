@@ -678,6 +678,53 @@ function animateCount(node, to, { duration = 760, decimals = 0 } = {}) {
   requestAnimationFrame(tick);
 }
 
+// 종가 자릿수 롤(오도미터) — 각 칸이 0에서 목표 숫자까지 위로 굴러 올라온다.
+function rollNumber(node, value) {
+  if (!node) return;
+  const text = formatIndex(value);
+  if (node.dataset.shown === text) return;
+  node.dataset.shown = text;
+  node.setAttribute("aria-label", text);
+  if (prefersReducedMotion) {
+    node.textContent = text;
+    return;
+  }
+  node.textContent = "";
+  node.classList.add("hero-roll");
+  const cols = [];
+  [...text].forEach((ch) => {
+    if (ch < "0" || ch > "9") {
+      const sep = document.createElement("span");
+      sep.className = "roll-sep";
+      sep.setAttribute("aria-hidden", "true");
+      sep.textContent = ch;
+      node.appendChild(sep);
+      return;
+    }
+    const col = document.createElement("span");
+    col.className = "roll-col";
+    col.setAttribute("aria-hidden", "true");
+    const strip = document.createElement("span");
+    strip.className = "roll-strip";
+    for (let d = 0; d <= 9; d += 1) {
+      const i = document.createElement("i");
+      i.textContent = String(d);
+      strip.appendChild(i);
+    }
+    col.appendChild(strip);
+    node.appendChild(col);
+    cols.push({ strip, digit: Number(ch) });
+  });
+  window.requestAnimationFrame(() => {
+    window.requestAnimationFrame(() => {
+      cols.forEach((c, idx) => {
+        c.strip.style.transitionDelay = `${idx * 60}ms`;
+        c.strip.style.transform = `translateY(-${c.digit}em)`;
+      });
+    });
+  });
+}
+
 function flashPhaseWash(phase) {
   if (!phaseWash || prefersReducedMotion) return;
   phaseWash.dataset.phase = phase;
@@ -1964,14 +2011,7 @@ function updateLatestUI() {
         ? `${t("hero.quoteLabel")} · ${t("hero.quoteIntraday")}`
         : t("hero.quoteLabel");
     }
-    const target = Math.round(last.index);
-    if (prefersReducedMotion || qVal.dataset.shown === String(target)) {
-      qVal.textContent = formatIndex(last.index);
-    } else {
-      qVal.textContent = "0";
-      animateCount(qVal, target, { duration: 1100 });
-    }
-    qVal.dataset.shown = String(target);
+    rollNumber(qVal, last.index);
     if (qChange) {
       qChange.textContent = changePct === null ? "—" : formatSignedPct(changePct);
       qChange.classList.toggle("is-up", Number.isFinite(changePct) && changePct > 0);

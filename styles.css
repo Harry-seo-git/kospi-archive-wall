@@ -2494,3 +2494,36 @@ h1 {
       scale(calc(0.985 + var(--era-vis) * 0.015));
   }
 }
+
+/* ===== 종가 자릿수 롤(오도미터) ===== */
+.hero-roll {
+  display: inline-flex;
+  align-items: flex-end;
+}
+
+.hero-roll .roll-col {
+  display: inline-block;
+  height: 1em;
+  overflow: hidden;
+  line-height: 1;
+}
+
+.hero-roll .roll-strip {
+  display: flex;
+  flex-direction: column;
+  transition: transform 1000ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.hero-roll .roll-strip i {
+  display: block;
+  height: 1em;
+  line-height: 1;
+  font-style: normal;
+  text-align: right;
+}
+
+.hero-roll .roll-sep {
+  display: inline-block;
+  line-height: 1;
+}

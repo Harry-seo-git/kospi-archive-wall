@@ -112,59 +112,121 @@ a {
 }
 
 .loader {
+  --p: 0;
   position: fixed;
   inset: 0;
   z-index: 100;
   display: grid;
   place-content: center;
   justify-items: center;
-  gap: 26px;
+  overflow: hidden;
   background:
-    radial-gradient(circle at 50% 42%, rgba(199, 154, 75, 0.08), transparent 60%),
+    radial-gradient(circle at 50% 44%, rgba(199, 154, 75, 0.05), transparent 62%),
     #030508;
   color: var(--ink);
   text-align: center;
-  transition: opacity 520ms ease, visibility 520ms ease;
+  transition: opacity 620ms ease, visibility 620ms ease;
+}
+
+/* 전시벽에 핀조명이 켜진다 — 진행할수록 빛이 커지고 또렷해짐 */
+.loader-glow {
+  position: absolute;
+  left: 50%;
+  top: 44%;
+  width: 62vmax;
+  height: 62vmax;
+  transform: translate(-50%, -50%) scale(calc(0.5 + var(--p) * 0.55));
+  background: radial-gradient(circle, rgba(199, 154, 75, 0.22), rgba(199, 154, 75, 0.06) 38%, transparent 66%);
+  opacity: calc(0.22 + var(--p) * 0.78);
+  filter: blur(6px);
+  transition: transform 260ms ease, opacity 260ms ease;
+  pointer-events: none;
+}
+
+.loader-stage {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: center;
+  gap: 18px;
+  padding: 0 24px;
+}
+
+.loader-kicker {
+  margin: 0;
+  color: rgba(171, 159, 134, 0.9);
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
 }
 
 .loader-mark {
   font-family: var(--display);
-  font-size: clamp(4rem, 15vw, 9.5rem);
+  font-size: clamp(3.4rem, 12vw, 7.6rem);
   font-weight: 700;
-  line-height: 0.9;
-  letter-spacing: 0;
+  line-height: 0.92;
+  letter-spacing: 0.01em;
+}
+
+.loader-index {
+  font-family: var(--sans);
+  font-size: clamp(1.5rem, 4.4vw, 2.5rem);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--hwang);
+  text-shadow: 0 0 18px rgba(199, 154, 75, 0.35);
 }
 
 .loader-line {
-  width: min(340px, 70vw);
-  height: 2px;
+  width: min(220px, 56vw);
+  height: 1px;
   overflow: hidden;
-  background: rgba(199, 154, 75, 0.16);
+  background: rgba(199, 154, 75, 0.14);
 }
 
 .loader-line span {
   display: block;
   width: 100%;
   height: 100%;
-  background: var(--blue);
+  background: var(--hwang);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 220ms cubic-bezier(0.33, 1, 0.68, 1);
 }
 
-.loader p {
+.loader-status {
   margin: 0;
   color: var(--muted);
   font-family: var(--sans);
-  font-size: 0.74rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
 }
 
 body.is-ready .loader {
   visibility: hidden;
   opacity: 0;
+}
+
+body.is-ready .loader-glow {
+  transform: translate(-50%, -50%) scale(1.5);
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loader,
+  .loader-glow,
+  .loader-line span {
+    transition: none;
+  }
+
+  .loader-glow {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.6;
+  }
 }
 
 .reading-progress {
@@ -2633,6 +2695,13 @@ h1 {
 .share-btn.is-copied {
   color: var(--cheong);
   border-color: var(--cheong);
+}
+
+/* 모바일에서는 '이 순간 공유' 숨김 */
+@media (max-width: 620px) {
+  .share-btn {
+    display: none;
+  }
 }
 
 /* ===== F. 단축키 도움말 ===== */

@@ -322,7 +322,9 @@ const I18N = {
     "help.qmark": "이 도움말 열기 · 닫기",
     "help.esc": "닫기",
     "help.tour": "투어 버튼으로 사건을 자동 순회합니다",
-    "help.share": "월 라벨의 '이 순간 공유'로 링크를 복사할 수 있어요",
+    "loader.kicker": "코스피 기록벽",
+    "loader.status": "핀조명 점등",
+    "loader.done": "기록벽 열림",
     "panel.h2": "핀조명 아래 드러나는 코스피의 결정적 장면",
     "hint.text": "좌우로 끌어 보세요 · ← → 키 이동 · 아래 미니맵으로 점프",
     "sources.rest": "최신 구간은 한국장 마감(15:45 KST) 기준 실데이터로 자동 반영되며, 라이브 미연결 시 번들 폴백(1980–2024 실측)을 사용합니다. 데이터 출처:",
@@ -410,7 +412,9 @@ const I18N = {
     "help.qmark": "Toggle this help",
     "help.esc": "Close",
     "help.tour": "Use the tour button to auto-cycle events",
-    "help.share": "Copy a link via 'Share this moment' on the wall label",
+    "loader.kicker": "KOSPI ARCHIVE WALL",
+    "loader.status": "Lighting the wall",
+    "loader.done": "Wall open",
     "panel.h2": "KOSPI's decisive scenes, revealed under a pin light",
     "hint.text": "Drag left/right · ← → keys · jump via the minimap below",
     "sources.rest": "The latest range auto-updates with real data at the Korean market close (15:45 KST); a bundled fallback (1980–2024 actuals) is used when live is unavailable. Data sources:",
@@ -1751,13 +1755,20 @@ function runMarketPulseIntro() {
 
 function runLoader() {
   const fill = loader?.querySelector(".loader-line span");
+  const statusEl = document.querySelector("#loader-status");
+  // 핀조명이 켜지며 1980 기준 100 → 현재 코스피 지수가 차오른다(데이터와 연결).
+  const pts = buildLinePoints();
+  const target = pts && pts.length ? pts[pts.length - 1].index : 4000;
   let value = 0;
   const timer = window.setInterval(() => {
     value = Math.min(100, value + Math.ceil(Math.random() * 12) + 2);
-    loaderCount.textContent = `${value}%`;
+    const shown = value >= 100 ? target : 100 + (target - 100) * (value / 100);
+    if (loaderCount) loaderCount.textContent = formatIndex(shown);
+    if (loader) loader.style.setProperty("--p", String(value / 100));
     if (fill) fill.style.transform = `scaleX(${value / 100})`;
     if (value >= 100) {
       window.clearInterval(timer);
+      if (statusEl) statusEl.textContent = t("loader.done");
       window.setTimeout(() => {
         document.body.classList.add("is-ready");
         runMarketPulseIntro();
@@ -1813,7 +1824,7 @@ window.addEventListener("keydown", (event) => {
   else if (event.key === "End") { event.preventDefault(); stepSelection("end"); }
 });
 
-// B. 이 순간 공유 — 월 라벨의 공유 버튼 → ?at=<id> URL 복사. 링크 진입 시 1회 이동.
+// B. 이 순간 공유 — 툴바 버튼이 현재 선택 사건을 ?at=<id> URL로 복사. 링크 진입 시 1회 이동.
 function enableShareDeepLink() {
   const btn = document.querySelector("#share-moment");
   if (btn) {

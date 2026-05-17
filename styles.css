@@ -2527,3 +2527,219 @@ h1 {
   display: inline-block;
   line-height: 1;
 }
+
+/* ===== A. 길찾기 — 챕터 레일 + 연도 점프 ===== */
+.chapter-rail {
+  position: fixed;
+  top: 50%;
+  right: clamp(10px, 1.6vw, 22px);
+  z-index: 45;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transform: translateY(-50%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 400ms ease;
+}
+
+.chapter-rail.is-shown {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.chapter-rail button {
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(199, 154, 75, 0.32);
+  border-radius: 999px;
+  background: rgba(12, 10, 12, 0.5);
+  color: rgba(171, 159, 134, 0.9);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: color 180ms ease, border-color 180ms ease, background 180ms ease, transform 180ms ease;
+}
+
+.chapter-rail button:hover {
+  color: var(--ink);
+  border-color: var(--hwang);
+}
+
+.chapter-rail button.is-active {
+  color: var(--bg);
+  background: var(--hwang);
+  border-color: var(--hwang);
+  transform: scale(1.08);
+}
+
+.decade-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin: 14px auto 0;
+}
+
+.decade-nav button {
+  border: 1px solid rgba(199, 154, 75, 0.26);
+  border-radius: 999px;
+  padding: 6px 14px;
+  background: rgba(12, 10, 12, 0.5);
+  color: rgba(171, 159, 134, 0.92);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.decade-nav button:hover {
+  color: var(--ink);
+  border-color: var(--hwang);
+  background: rgba(185, 142, 68, 0.14);
+}
+
+@media (max-width: 620px) {
+  .chapter-rail {
+    display: none;
+  }
+}
+
+/* ===== B. 이 순간 공유 ===== */
+.signal-console-head {
+  flex-wrap: wrap;
+}
+
+.share-btn {
+  margin-left: auto;
+  border: 1px solid rgba(199, 154, 75, 0.34);
+  border-radius: 999px;
+  padding: 5px 12px;
+  background: rgba(185, 142, 68, 0.1);
+  color: rgba(240, 233, 218, 0.86);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.share-btn:hover {
+  color: var(--ink);
+  border-color: var(--hwang);
+  background: rgba(185, 142, 68, 0.2);
+}
+
+.share-btn.is-copied {
+  color: var(--cheong);
+  border-color: var(--cheong);
+}
+
+/* ===== F. 단축키 도움말 ===== */
+.help-btn {
+  margin-left: 10px;
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(199, 154, 75, 0.4);
+  border-radius: 999px;
+  background: rgba(12, 10, 12, 0.6);
+  color: rgba(240, 233, 218, 0.86);
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.help-btn:hover {
+  color: var(--ink);
+  border-color: var(--hwang);
+  background: rgba(185, 142, 68, 0.16);
+}
+
+.help-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 95;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.help-modal[hidden] {
+  display: none;
+}
+
+.help-sheet {
+  position: relative;
+  z-index: 1;
+  width: min(440px, 100%);
+  border: 1px solid rgba(199, 154, 75, 0.24);
+  padding: clamp(22px, 3vw, 32px);
+  background: linear-gradient(180deg, rgba(16, 18, 22, 0.98), rgba(8, 6, 10, 0.98));
+  box-shadow: var(--shadow);
+}
+
+.help-list {
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 12px;
+}
+
+.help-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: rgba(240, 233, 218, 0.86);
+  font-size: 0.92rem;
+}
+
+.help-list kbd {
+  min-width: 30px;
+  border: 1px solid rgba(199, 154, 75, 0.34);
+  border-radius: 5px;
+  padding: 3px 7px;
+  background: rgba(12, 10, 12, 0.7);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.help-list .help-misc {
+  color: rgba(171, 159, 134, 0.92);
+  font-size: 0.86rem;
+}
+
+/* ===== D. 수묵 인트로 핸드오프 (1회, 모션 허용 시) ===== */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-lit {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+  }
+
+  body.is-ready .hero-lit {
+    transition: stroke-dashoffset 1700ms cubic-bezier(0.22, 1, 0.36, 1) 220ms;
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ===== E. 낙관 스탬프 마이크로 연출 (모션 허용 시) ===== */
+@media (prefers-reduced-motion: no-preference) {
+  /* 마커를 움직이지 않고 잉크가 '쾅' 번지는 느낌만 — transform 미사용(원점 이슈 회피) */
+  @keyframes sealInk {
+    0% { filter: drop-shadow(0 0 0 currentColor); }
+    35% { filter: drop-shadow(0 0 15px currentColor); }
+    100% { filter: drop-shadow(0 0 6px currentColor); }
+  }
+
+  .chart-point.is-selected {
+    animation: sealInk 520ms ease-out;
+  }
+}

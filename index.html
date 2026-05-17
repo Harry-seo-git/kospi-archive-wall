@@ -176,6 +176,7 @@
       </a>
       <span class="topbar-meta">Data wall · 2024.12.30</span>
       <button class="lang-toggle" id="lang-toggle" type="button" aria-label="View in English">EN</button>
+      <button class="help-btn" id="help-btn" type="button" aria-label="도움말 · 단축키">?</button>
     </header>
 
     <main id="top">
@@ -264,6 +265,12 @@
           </aside>
         </div>
       </section>
+
+      <nav class="chapter-rail" id="chapter-rail" aria-label="챕터 이동">
+        <button type="button" data-go="0" aria-current="false">01</button>
+        <button type="button" data-go="1" aria-current="false">02</button>
+        <button type="button" data-go="2" aria-current="false">03</button>
+      </nav>
 
       <section class="chapter-wrap" aria-label="코스피 서사 챕터" data-i18n-aria="aria.chapterWrap">
         <div class="chapter-index" aria-hidden="true">
@@ -363,10 +370,18 @@
           <div class="chart-minimap" aria-hidden="true">
             <svg id="kospi-minimap" viewBox="0 0 1200 96" preserveAspectRatio="none"></svg>
           </div>
+          <nav class="decade-nav" id="decade-nav" aria-label="연도로 이동">
+            <button type="button" data-year="1980">1980</button>
+            <button type="button" data-year="1997">1997</button>
+            <button type="button" data-year="2008">2008</button>
+            <button type="button" data-year="2020">2020</button>
+            <button type="button" data-year="2026">2026</button>
+          </nav>
           <div class="signal-console" aria-live="polite" hidden>
             <div class="signal-console-head">
               <p class="section-kicker" data-i18n="console.kicker">전시 라벨 · 현재 신호</p>
               <span id="detail-date">1980.01.04</span>
+              <button class="share-btn" id="share-moment" type="button" data-i18n="share.label">이 순간 공유</button>
             </div>
             <p class="detail-signal" id="detail-signal">모든 파형의 원점</p>
             <h2 id="detail-title">기준 지수 100</h2>
@@ -444,6 +459,22 @@
             <dd id="modal-recovery">—</dd>
           </div>
         </dl>
+      </article>
+    </div>
+
+    <div class="help-modal" id="help-modal" role="dialog" aria-modal="true" aria-labelledby="help-title" hidden>
+      <button class="modal-scrim" id="help-scrim" type="button" aria-label="닫기"></button>
+      <article class="help-sheet">
+        <button class="modal-close" id="help-close" type="button" aria-label="닫기">×</button>
+        <p class="section-kicker" data-i18n="help.title">단축키 · 도움말</p>
+        <ul class="help-list">
+          <li><kbd>←</kbd><kbd>→</kbd><span data-i18n="help.arrows">이전 · 다음 사건</span></li>
+          <li><kbd>Home</kbd><kbd>End</kbd><span data-i18n="help.homeend">처음 · 마지막 사건</span></li>
+          <li><kbd>?</kbd><span data-i18n="help.qmark">이 도움말 열기 · 닫기</span></li>
+          <li><kbd>Esc</kbd><span data-i18n="help.esc">닫기</span></li>
+          <li><span class="help-misc" data-i18n="help.tour">투어 버튼으로 사건을 자동 순회합니다</span></li>
+          <li><span class="help-misc" data-i18n="help.share">월 라벨의 '이 순간 공유'로 링크를 복사할 수 있어요</span></li>
+        </ul>
       </article>
     </div>
 

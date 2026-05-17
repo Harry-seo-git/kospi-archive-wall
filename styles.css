@@ -1932,11 +1932,31 @@ h1 {
 }
 
 @media (max-width: 980px) {
-  .topbar,
   .hero-bottom,
   .dashboard,
   .panel-heading {
     display: block;
+  }
+
+  /* 모바일도 PC처럼 로고는 좌, 언어 버튼은 우 끝 — 좌우 패딩 대칭 */
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px clamp(16px, 4.5vw, 22px);
+  }
+
+  .brand {
+    min-width: 0;
+  }
+
+  .lang-toggle {
+    margin-left: auto;
+  }
+
+  /* 단축키 도움말은 키보드 전용 — 모바일에서는 숨김 */
+  .help-btn {
+    display: none;
   }
 
   .topbar-meta {
@@ -2013,10 +2033,6 @@ h1 {
 @media (max-width: 620px) {
   main {
     width: min(100% - 24px, 1480px);
-  }
-
-  .topbar {
-    padding: 14px 12px;
   }
 
   h1 {

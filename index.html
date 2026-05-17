@@ -156,11 +156,14 @@
   </head>
   <body>
     <div class="loader" id="loader" role="status" aria-live="polite">
-      <div class="loader-mark">KOSPI</div>
-      <div class="loader-line">
-        <span></span>
+      <div class="loader-glow" aria-hidden="true"></div>
+      <div class="loader-stage">
+        <p class="loader-kicker" data-i18n="loader.kicker">코스피 기록벽</p>
+        <div class="loader-mark">KOSPI</div>
+        <div class="loader-index"><span id="loader-count">100</span></div>
+        <div class="loader-line" aria-hidden="true"><span></span></div>
+        <p class="loader-status" id="loader-status" data-i18n="loader.status">핀조명 점등</p>
       </div>
-      <p>ARCHIVING WALL LIGHT · <span id="loader-count">0%</span></p>
     </div>
 
     <div class="reading-progress" id="reading-progress" aria-hidden="true"></div>
@@ -473,7 +476,6 @@
           <li><kbd>?</kbd><span data-i18n="help.qmark">이 도움말 열기 · 닫기</span></li>
           <li><kbd>Esc</kbd><span data-i18n="help.esc">닫기</span></li>
           <li><span class="help-misc" data-i18n="help.tour">투어 버튼으로 사건을 자동 순회합니다</span></li>
-          <li><span class="help-misc" data-i18n="help.share">월 라벨의 '이 순간 공유'로 링크를 복사할 수 있어요</span></li>
         </ul>
       </article>
     </div>

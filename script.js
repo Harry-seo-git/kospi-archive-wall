@@ -1760,7 +1760,6 @@ function runLoader() {
       window.clearInterval(timer);
       window.setTimeout(() => {
         document.body.classList.add("is-ready");
-        playHeroIntro();
         runMarketPulseIntro();
         // 로더가 사라진 뒤 종가 롤을 다시 재생(로딩 화면 뒤에서 끝나버리지 않게).
         const qv = document.querySelector("#hero-quote-value");
@@ -2286,31 +2285,6 @@ function playEraStats(article) {
 }
 
 /* ===== Hero — 핀조명 + 실데이터 곡선 ===== */
-// D. 수묵 인트로 — 마스크 없는 hero-dim 곡선을 1회 붓으로 긋는다(모션 허용 시).
-let heroIntroPlayed = false;
-function playHeroIntro() {
-  if (heroIntroPlayed || prefersReducedMotion) return;
-  const path = heroSvg && heroSvg.querySelector(".hero-intro");
-  if (!path) return;
-  heroIntroPlayed = true;
-  void path.getBoundingClientRect();
-  let done = false;
-  const fadeOut = () => {
-    if (done) return;
-    done = true;
-    path.removeEventListener("transitionend", onDraw);
-    path.classList.add("is-fading");
-    window.setTimeout(() => path.remove(), 820);
-  };
-  const onDraw = (e) => { if (e.propertyName === "stroke-dashoffset") fadeOut(); };
-  requestAnimationFrame(() => {
-    path.style.transition = "stroke-dashoffset 1800ms cubic-bezier(0.16, 1, 0.3, 1) 240ms";
-    path.style.strokeDashoffset = "0";
-  });
-  path.addEventListener("transitionend", onDraw);
-  window.setTimeout(fadeOut, 2400);
-}
-
 function renderHero() {
   if (!heroSvg) return;
   const W = 1100;
@@ -2348,7 +2322,7 @@ function renderHero() {
 
   heroSvg.appendChild(createSvgElement("path", { class: "hero-dim", d }));
   const lit = createSvgElement("g", prefersReducedMotion ? {} : { mask: "url(#heroPin)" });
-  lit.appendChild(createSvgElement("path", { class: "hero-lit", d, pathLength: "1" }));
+  lit.appendChild(createSvgElement("path", { class: "hero-lit", d }));
   events.forEach((ev) => {
     if (ev.year < minYear || ev.year > maxYear) return;
     lit.appendChild(createSvgElement("rect", {
@@ -2362,15 +2336,6 @@ function renderHero() {
     }));
   });
   heroSvg.appendChild(lit);
-
-  if (!heroIntroPlayed && !prefersReducedMotion) {
-    const intro = createSvgElement("path", { class: "hero-intro", d, pathLength: "1" });
-    intro.style.transition = "none";
-    intro.style.strokeDasharray = "1";
-    intro.style.strokeDashoffset = "1";
-    heroSvg.appendChild(intro);
-    if (document.body.classList.contains("is-ready")) playHeroIntro();
-  }
 
   const pin = { x: W * 0.62, y: H * 0.4 };
   const nearestEventToX = (svgX) => {

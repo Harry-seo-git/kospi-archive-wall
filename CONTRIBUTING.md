@@ -16,6 +16,6 @@ All changes should go through GitHub pull requests.
 
 Production is served from:
 
-https://kospi-archive-wall.vercel.app
+https://kospi.hey-hu.com/
 
 The `main` branch is connected to Vercel production deployments.

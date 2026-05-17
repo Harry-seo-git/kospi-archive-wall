@@ -1739,6 +1739,10 @@ function runLoader() {
       window.setTimeout(() => {
         document.body.classList.add("is-ready");
         runMarketPulseIntro();
+        // 로더가 사라진 뒤 종가 롤을 다시 재생(로딩 화면 뒤에서 끝나버리지 않게).
+        const qv = document.querySelector("#hero-quote-value");
+        if (qv) delete qv.dataset.shown;
+        updateLatestUI();
         window.setTimeout(() => {
           if (loader) loader.hidden = true;
         }, 650);

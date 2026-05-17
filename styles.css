@@ -2713,13 +2713,6 @@ h1 {
   border-color: var(--cheong);
 }
 
-/* 모바일에서는 '이 순간 공유' 숨김 */
-@media (max-width: 620px) {
-  .share-btn {
-    display: none;
-  }
-}
-
 /* ===== F. 단축키 도움말 ===== */
 .help-btn {
   margin-left: 10px;

@@ -1658,6 +1658,23 @@ function observeChapters() {
   chapters.forEach((chapter) => observer.observe(chapter));
 }
 
+// 코스피 실록 섹션에 들어오면(마우스/터치 스크롤) 아직 고른 게 없을 때
+// 기본 선택을 맨 처음 1980.01.04 기준점으로 두고 월 라벨을 띄운다.
+function observeChartSection() {
+  const section = document.querySelector("#index");
+  if (!section) return;
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      if (signalConsole && signalConsole.hidden) {
+        const base = getEventById("base");
+        if (base) revealPoint(base, false);
+      }
+    });
+  }, { threshold: 0.18 });
+  io.observe(section);
+}
+
 // 시장 국면에 따라 거동이 바뀌는 제너러티브 입자 레이어.
 function initParticles() {
   const canvas = document.querySelector("#market-particles");
@@ -1783,9 +1800,9 @@ window.addEventListener("hashchange", () => {
   applyHashFromLocation();
 });
 window.addEventListener("pageshow", () => {
+  window.scrollTo(0, 0);
   window.requestAnimationFrame(() => {
     resetChartToStart();
-    applyHashFromLocation();
   });
 });
 window.addEventListener("resize", () => {
@@ -2423,6 +2440,7 @@ renderChart();
 renderHero();
 renderEraPanels();
 observeChapters();
+observeChartSection();
 observeEraPanels();
 enableEraParallax();
 enableMobileReveal();
@@ -2433,9 +2451,16 @@ enableMinimap();
 initParticles();
 applyFilter("all");
 resetChartToStart();
-if (!applyHashFromLocation()) {
-  window.setTimeout(resetChartToStart, 120);
+window.setTimeout(resetChartToStart, 120);
+// 새로고침 시 항상 최상단에서 시작 (브라우저 스크롤 복원·해시 점프 차단)
+if ("scrollRestoration" in window.history) {
+  window.history.scrollRestoration = "manual";
 }
+if (window.location.hash) {
+  window.history.replaceState(null, "", window.location.pathname + window.location.search);
+}
+window.scrollTo(0, 0);
+window.addEventListener("load", () => window.scrollTo(0, 0));
 updateProgress();
 updateChartScrollbar();
 updateProvenance();

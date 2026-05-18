@@ -80,31 +80,12 @@ function kstNow() {
   };
 }
 
-// 다음 KRX 정산(평일 15:45 KST)까지 남은 초.
-function secondsToNextClose() {
-  const nowMs = Date.now();
-  const kstMs = nowMs + 9 * 3600 * 1000;
-  const k = new Date(kstMs);
-  for (let add = 0; add <= 6; add += 1) {
-    const d = new Date(kstMs + add * 86400000);
-    const day = d.getUTCDay();
-    if (day === 0 || day === 6) continue; // 주말 제외
-    const target = Date.UTC(
-      d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(),
-      Math.floor(CLOSE_MIN / 60), CLOSE_MIN % 60, 0
-    );
-    if (add === 0 && (k.getUTCHours() * 60 + k.getUTCMinutes()) >= CLOSE_MIN) continue;
-    const targetUtcMs = target - 9 * 3600 * 1000;
-    const sec = Math.floor((targetUtcMs - nowMs) / 1000);
-    if (sec > 0) return Math.min(sec, 3 * 86400);
-  }
-  return 6 * 3600;
-}
-
 module.exports = async (req, res) => {
   res.setHeader("Content-Type", "application/json; charset=utf-8");
-  const ttl = secondsToNextClose();
-  res.setHeader("Cache-Control", `public, s-maxage=${ttl}, stale-while-revalidate=86400`);
+  // 짧은 캐시로 자가 치유 — 업스트림(야후)이 늦게 갱신돼도 ~10분이면 최신을 따라잡는다.
+  // (이전엔 '다음 정산까지(≈24h)' + SWR 24h라, 장 마감 직후 야후가 아직 못 올린
+  //  옛 스냅샷을 하루 종일 고정 서빙해 날짜가 멈추거나 역행하는 문제가 있었다.)
+  res.setHeader("Cache-Control", "public, s-maxage=600, stale-while-revalidate=120");
 
   const out = { asOf: null, intraday: false, source: "none", monthly: [], daily: [] };
 
@@ -133,7 +114,13 @@ module.exports = async (req, res) => {
     return;
   }
 
-  const latest = out.daily.length ? out.daily[out.daily.length - 1] : out.monthly[out.monthly.length - 1];
+  // 일봉/월봉 중 가장 최근 '날짜'의 바를 최신으로 — 야후 일봉이 늦으면 월봉이
+  // 더 최신일 수 있어, 더 옛 바로 역행하지 않도록 max(date)를 고른다.
+  const lastDaily = out.daily.length ? out.daily[out.daily.length - 1] : null;
+  const lastMonthly = out.monthly.length ? out.monthly[out.monthly.length - 1] : null;
+  const latest = !lastDaily ? lastMonthly
+    : !lastMonthly ? lastDaily
+    : (lastDaily.date >= lastMonthly.date ? lastDaily : lastMonthly);
   out.latest = latest;
   out.asOf = latest.date;
 

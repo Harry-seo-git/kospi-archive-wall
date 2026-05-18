@@ -852,8 +852,8 @@ h1 span {
   overflow-x: auto;
   overflow-y: hidden;
   margin-top: 28px;
-  height: clamp(760px, calc(100svh - 158px), 960px);
-  min-height: 760px;
+  height: clamp(660px, calc(100svh - 196px), 880px);
+  min-height: 660px;
   border-top: 1px solid rgba(199, 154, 75, 0.1);
   border-bottom: 1px solid rgba(199, 154, 75, 0.1);
   padding: 4px 0 0;

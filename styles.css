@@ -2804,3 +2804,79 @@ h1 {
     animation: sealInk 560ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 }
+
+/* ===== 참여 후크 — 내 생년/입사년의 코스피 ===== */
+.year-lens {
+  margin-top: clamp(28px, 4vw, 44px);
+  padding-top: clamp(20px, 3vw, 30px);
+  border-top: 1px solid rgba(232, 222, 202, 0.1);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 22px;
+}
+
+.year-lens-q {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--hangul-serif);
+  font-size: clamp(1.05rem, 1.7vw, 1.45rem);
+  font-weight: 700;
+  word-break: keep-all;
+}
+
+.year-lens-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.year-lens-select {
+  border: 1px solid rgba(199, 154, 75, 0.45);
+  border-radius: 999px;
+  padding: 9px 14px;
+  background: rgba(12, 10, 12, 0.72);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+}
+
+.year-lens-select:focus-visible {
+  outline: 2px solid var(--hwang);
+  outline-offset: 2px;
+}
+
+.year-lens-out {
+  border: 1px solid rgba(199, 154, 75, 0.34);
+  border-radius: 999px;
+  padding: 9px 18px;
+  background: rgba(185, 142, 68, 0.1);
+  color: rgba(240, 233, 218, 0.92);
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.year-lens-out:hover {
+  color: var(--ink);
+  border-color: var(--hwang);
+  background: rgba(185, 142, 68, 0.2);
+}
+
+@media (max-width: 620px) {
+  .year-lens {
+    gap: 12px 18px;
+  }
+
+  .year-lens-out {
+    white-space: normal;
+  }
+}

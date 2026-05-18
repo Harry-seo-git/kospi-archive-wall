@@ -4,10 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>코스피 45년 아카이브 · KOSPI Archive Wall — 1980부터 실시간까지</title>
+    <title>코스피 기록의 벽 · KOSPI Archive Wall — 1980년 100에서 오늘까지, 45년 한 화면에</title>
     <meta
       name="description"
-      content="1980년 지수 100부터 오늘까지, 코스피 45년사를 한 화면에서. IMF 외환위기·글로벌 금융위기·코로나 쇼크·최근 사상 최고치 랠리를 인터랙티브 수묵 곡선으로 훑어봅니다. KRX 종가에 맞춰 실데이터가 자동 갱신되며 한국어·영어를 지원합니다."
+      content="1980년 지수 100부터 사상 첫 8,000까지 — 코스피 45년을 수묵 곡선 한 줄로. IMF 외환위기·글로벌 금융위기·코로나 쇼크·2021년 고점·AI 반도체 랠리를 핀조명으로 훑어봅니다. KRX 종가 기준 실데이터 자동 갱신, 한국어·영어 지원."
     />
     <meta name="author" content="Harry · hey-hu.com" />
     <meta
@@ -17,6 +17,14 @@
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="googlebot" content="index, follow" />
     <meta name="theme-color" content="#08060a" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="application-name" content="코스피 기록의 벽" />
+    <meta name="apple-mobile-web-app-title" content="코스피 기록의 벽" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <link rel="canonical" href="https://kospi.hey-hu.com/" />
     <link rel="alternate" hreflang="ko" href="https://kospi.hey-hu.com/" />
     <link rel="alternate" hreflang="en" href="https://kospi.hey-hu.com/" />
@@ -24,10 +32,10 @@
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="KOSPI Archive Wall" />
-    <meta property="og:title" content="코스피 45년 아카이브 · KOSPI Archive Wall" />
+    <meta property="og:title" content="코스피 기록의 벽 · KOSPI Archive Wall" />
     <meta
       property="og:description"
-      content="1980년 지수 100부터 오늘까지. 사상 최고치 랠리로 전 세계가 주목하는 코스피 45년을 인터랙티브 수묵 곡선으로 훑는 기록의 벽. 실데이터 자동 갱신·한영 지원."
+      content="1980년 지수 100에서 사상 첫 8,000까지 — 코스피 45년을 수묵 곡선 한 줄로. 핀조명을 옮기면 그날의 사건과 숫자가 낙관처럼 떠오릅니다. 실데이터 자동 갱신·한영 지원."
     />
     <meta property="og:url" content="https://kospi.hey-hu.com/" />
     <meta property="og:locale" content="ko_KR" />
@@ -40,10 +48,10 @@
     <meta property="og:image:alt" content="KOSPI Archive Wall — 1980년부터 현재까지 코스피 수묵 곡선" />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="코스피 45년 아카이브 · KOSPI Archive Wall" />
+    <meta name="twitter:title" content="코스피 기록의 벽 · KOSPI Archive Wall" />
     <meta
       name="twitter:description"
-      content="1980년 지수 100부터 오늘까지. 사상 최고치 랠리를 인터랙티브 수묵 곡선으로 훑는 코스피 45년 기록의 벽."
+      content="1980년 지수 100에서 사상 첫 8,000까지 — 코스피 45년을 수묵 곡선 한 줄로. 실데이터·한영, 가입 없음."
     />
     <meta name="twitter:image" content="https://kospi.hey-hu.com/og.png" />
     <meta name="twitter:image:alt" content="KOSPI Archive Wall — 코스피 45년 수묵 곡선" />
@@ -266,6 +274,13 @@
               <small id="pulse-latest-note" data-i18n="pulse.note4">한국장 마감(15:45 KST) 자동 갱신</small>
             </div>
           </aside>
+        </div>
+        <div class="year-lens">
+          <label class="year-lens-q" for="year-lens-input" data-i18n="lens.q">내가 태어난 · 입사한 해의 코스피는?</label>
+          <div class="year-lens-row">
+            <select id="year-lens-input" class="year-lens-select" data-i18n-aria="aria.yearLens" aria-label="연도 선택"></select>
+            <button class="year-lens-out" id="year-lens-out" type="button" data-i18n-aria="aria.yearLensCta" aria-label="차트에서 이 시점 보기"></button>
+          </div>
         </div>
       </section>
 

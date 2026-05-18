@@ -344,6 +344,10 @@ const I18N = {
     "pulse.note2": "2024.12 정치 충격",
     "pulse.note3": "2021.06 팬데믹기 고점 3,316",
     "pulse.note4": "한국장 마감(15:45 KST) 자동 갱신",
+    "lens.q": "내가 태어난 · 입사한 해의 코스피는?",
+    "lens.fmt": "{y}년 말 {then} → 오늘 {now} · 약 {mult}배",
+    "aria.yearLens": "연도 선택",
+    "aria.yearLensCta": "차트에서 이 시점 보기",
     "hero.figcaption": "어둠의 벽 · 움직이는 빛 아래의 가격 기억.",
     "hero.quoteLabel": "코스피 종가",
     "hero.quoteIntraday": "장중 잠정",
@@ -434,6 +438,10 @@ const I18N = {
     "pulse.note2": "Dec 2024 political shock",
     "pulse.note3": "Jun 2021 · pandemic-era peak 3,316",
     "pulse.note4": "Auto-updates at 15:45 KST close",
+    "lens.q": "KOSPI the year you were born — or started work?",
+    "lens.fmt": "End of {y}: {then} → today {now} · ~{mult}x",
+    "aria.yearLens": "Select a year",
+    "aria.yearLensCta": "See this moment on the chart",
     "hero.figcaption": "Dark wall · price memory under a moving light.",
     "hero.quoteLabel": "KOSPI close",
     "hero.quoteIntraday": "intraday",
@@ -1938,6 +1946,59 @@ function enableChapterNav() {
   }
 }
 
+// 참여 후크: 내 생년/입사년의 코스피 → 오늘 대비 몇 배. 클릭 시 차트에서 그 시점으로.
+function getLatestIndex() {
+  if (liveLine && liveLine.length) return liveLine[liveLine.length - 1].index;
+  const bl = buildLinePoints();
+  return bl && bl.length ? bl[bl.length - 1].index : null;
+}
+
+function renderYearLens() {
+  const sel = document.querySelector("#year-lens-input");
+  const out = document.querySelector("#year-lens-out");
+  if (!sel || !out || !sel.options.length) return;
+  const y = Number(sel.value);
+  const then = yearlyCloses[y];
+  const now = getLatestIndex();
+  if (!then || !now) return;
+  const m = now / then;
+  const mult = m >= 10 ? String(Math.round(m)) : m.toFixed(1);
+  out.textContent = t("lens.fmt", { y, then: formatIndex(then), now: formatIndex(now), mult });
+  out.dataset.year = String(y);
+}
+
+function enableYearLens() {
+  const sel = document.querySelector("#year-lens-input");
+  const out = document.querySelector("#year-lens-out");
+  if (!sel || !out) return;
+  const years = Object.keys(yearlyCloses).map(Number).sort((a, b) => a - b);
+  sel.innerHTML = "";
+  years.forEach((y) => {
+    const o = document.createElement("option");
+    o.value = String(y);
+    o.textContent = String(y);
+    sel.appendChild(o);
+  });
+  sel.value = String(years.includes(2000) ? 2000 : years[0]);
+  sel.addEventListener("change", renderYearLens);
+  out.addEventListener("click", () => {
+    const yr = Number(out.dataset.year || sel.value);
+    let best = null;
+    events.forEach((ev) => {
+      if (!best || Math.abs(ev.year - yr) < Math.abs(best.year - yr)) best = ev;
+    });
+    if (!best) return;
+    stopTour();
+    const sec = document.querySelector("#index");
+    if (sec && sec.scrollIntoView) {
+      sec.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "start" });
+    }
+    revealPoint(best, true);
+    writeHash(best.id);
+  });
+  renderYearLens();
+}
+
 let scrollTick = false;
 window.addEventListener("scroll", () => {
   if (scrollTick) return;
@@ -2195,6 +2256,8 @@ function updateLatestUI() {
     }
     if (qAsof) qAsof.textContent = ` · ${dataMeta.asOf}`;
   }
+
+  renderYearLens();
 }
 
 /* ===== 시대(갤러리) 데이터 ===== */
@@ -2645,6 +2708,7 @@ window.setInterval(maybeRefreshLive, 5 * 60 * 1000);
 enableShareDeepLink();
 enableHelpOverlay();
 enableChapterNav();
+enableYearLens();
 
 document.querySelector("#lang-toggle")?.addEventListener("click", () => {
   applyLang(lang === "ko" ? "en" : "ko");

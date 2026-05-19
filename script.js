@@ -923,16 +923,43 @@ function updateModal(event) {
   applyStatTone(modalCagr, metrics.cagr);
 }
 
+// 모달 접근성 — 포커스 트랩 + 열기 전 포커스 복원.
+let lastFocusedEl = null;
+function getFocusable(c) {
+  return [...c.querySelectorAll(
+    'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])'
+  )].filter((el) => el.offsetParent !== null || el === document.activeElement);
+}
+function trapTab(c, e) {
+  const f = getFocusable(c);
+  if (!f.length) { e.preventDefault(); return; }
+  const first = f[0];
+  const last = f[f.length - 1];
+  const a = document.activeElement;
+  if (e.shiftKey) {
+    if (a === first || !c.contains(a)) { e.preventDefault(); last.focus(); }
+  } else if (a === last || !c.contains(a)) {
+    e.preventDefault();
+    first.focus();
+  }
+}
+function restoreFocus() {
+  if (lastFocusedEl && typeof lastFocusedEl.focus === "function") lastFocusedEl.focus();
+  lastFocusedEl = null;
+}
+
 function openMomentModal(id = selectedId) {
   const event = events.find((item) => item.id === id) || getSelectedEvent();
   lastModalId = event.id;
   updateModal(event);
+  lastFocusedEl = document.activeElement;
   momentModal.hidden = false;
   modalClose.focus();
 }
 
 function closeMomentModal() {
   momentModal.hidden = true;
+  restoreFocus();
 }
 
 function centeredScrollLeft(point) {
@@ -1365,6 +1392,7 @@ function showTooltip(point) {
   tooltip.classList.toggle("is-down", Number.isFinite(metrics.change) && metrics.change < 0);
   tooltip.style.left = `${point.x * scaleX}px`;
   tooltip.style.top = `${point.y * scaleY}px`;
+  // XSS 불변식: 삽입값은 숫자(formatIndex)·큐레이션/자체 API 날짜뿐. 외부 미가공 문자열 금지.
   tooltip.innerHTML =
     `<strong>${formatIndex(point.index)}</strong>` +
     `<span>${point.date}</span>` +
@@ -1801,14 +1829,25 @@ filterButtons.forEach((button) => {
 tourButton?.addEventListener("click", toggleTour);
 modalClose.addEventListener("click", closeMomentModal);
 modalScrim.addEventListener("click", closeMomentModal);
+function openHelp() {
+  const h = document.querySelector("#help-modal");
+  if (!h) return;
+  lastFocusedEl = document.activeElement;
+  h.hidden = false;
+  (h.querySelector("#help-close") || h).focus();
+}
 function closeHelp() {
   const h = document.querySelector("#help-modal");
-  if (h && !h.hidden) h.hidden = true;
+  if (h && !h.hidden) {
+    h.hidden = true;
+    restoreFocus();
+  }
 }
 function toggleHelp() {
   const h = document.querySelector("#help-modal");
   if (!h) return;
-  h.hidden = !h.hidden;
+  if (h.hidden) openHelp();
+  else closeHelp();
 }
 
 window.addEventListener("keydown", (event) => {
@@ -1817,8 +1856,15 @@ window.addEventListener("keydown", (event) => {
     closeHelp();
     return;
   }
+  if (event.key === "Tab") {
+    const help = document.querySelector("#help-modal");
+    if (!momentModal.hidden) { trapTab(momentModal, event); return; }
+    if (help && !help.hidden) { trapTab(help, event); return; }
+  }
   const tag = (event.target && event.target.tagName) || "";
-  if (tag === "INPUT" || tag === "TEXTAREA" || event.metaKey || event.ctrlKey || event.altKey) return;
+  const editable = event.target && event.target.isContentEditable;
+  if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || editable
+      || event.metaKey || event.ctrlKey || event.altKey) return;
   if (event.key === "?" || (event.shiftKey && event.key === "/")) {
     event.preventDefault();
     toggleHelp();
@@ -1963,7 +2009,10 @@ function renderYearLens() {
   if (!then || !now) return;
   const m = now / then;
   const mult = m >= 10 ? String(Math.round(m)) : m.toFixed(1);
-  out.textContent = t("lens.fmt", { y, then: formatIndex(then), now: formatIndex(now), mult });
+  const text = t("lens.fmt", { y, then: formatIndex(then), now: formatIndex(now), mult });
+  out.textContent = text;
+  // 동적 결과를 스크린리더에 노출 (정적 aria-label이 변경값을 가리지 않도록).
+  out.setAttribute("aria-label", `${text} · ${t("aria.yearLensCta")}`);
   out.dataset.year = String(y);
 }
 
@@ -2424,6 +2473,7 @@ function renderHero() {
   const setReadout = (svgX) => {
     const ev = nearestEventToX(svgX);
     if (ev && heroReadout) {
+      // XSS 불변식: ev는 큐레이션 데이터, formatIndex는 숫자 — 외부 미가공 문자열 금지.
       heroReadout.innerHTML = `<b>${formatIndex(ev.index)}</b><span>${ev.date} · ${tEv(ev, "title")}</span>`;
     }
     return ev;
@@ -2713,8 +2763,14 @@ enableYearLens();
 document.querySelector("#lang-toggle")?.addEventListener("click", () => {
   applyLang(lang === "ko" ? "en" : "ko");
 });
+// 연속 리사이즈 시 히어로 SVG 전면 재구성이 매 이벤트마다 돌지 않도록 디바운스.
+let heroResizeRaf = 0;
 window.addEventListener("resize", () => {
-  renderHero();
-  renderEraPanels();
-  updateEraProgress();
+  if (heroResizeRaf) return;
+  heroResizeRaf = window.requestAnimationFrame(() => {
+    heroResizeRaf = 0;
+    renderHero();
+    renderEraPanels();
+    updateEraProgress();
+  });
 }, { passive: true });

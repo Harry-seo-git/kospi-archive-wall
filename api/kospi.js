@@ -89,14 +89,18 @@ module.exports = async (req, res) => {
 
   const out = { asOf: null, intraday: false, source: "none", monthly: [], daily: [] };
 
-  try {
-    const [m, d] = await Promise.all([yahoo("max", "1mo"), yahoo("1y", "1d")]);
+  // 부분 성공 허용 — 일봉이 일시적으로 실패해도 월봉만으로 라이브 갱신을 유지.
+  // (예전엔 Promise.all이라 한쪽만 흔들려도 멀쩡한 월봉 장기라인까지 통째로 버려졌음.)
+  {
+    const [mr, dr] = await Promise.allSettled([yahoo("max", "1mo"), yahoo("1y", "1d")]);
+    const m = mr.status === "fulfilled" ? mr.value : [];
+    const d = dr.status === "fulfilled" ? dr.value : [];
     if (m.length > 12) {
       out.monthly = m;
       out.daily = d;
       out.source = "yahoo";
     }
-  } catch (e) { /* fall through */ }
+  }
 
   if (out.source === "none") {
     try {

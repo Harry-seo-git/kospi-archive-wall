@@ -1,8 +1,8 @@
-// KOSPI 실데이터 프록시 — Twelve Data → Stooq → Yahoo(query1→query2).
+// KOSPI 실데이터 프록시 — Stooq → Yahoo(query1→query2).
 // 월봉(장기 곡선) + 일봉(정확한 최신 종가)을 함께 반환하고,
 // 짧은 캐시(s-maxage=600)로 업스트림 지연을 자가치유한다.
 // 장중 호출이면 intraday=true(잠정). 모든 소스 실패 시 502 → 클라이언트 번들 폴백.
-// 키: TWELVEDATA_APIKEY(1순위, 권장), STOOQ_APIKEY(폴백). 둘 다 없으면 Yahoo만 사용.
+// 키: STOOQ_APIKEY(1순위, KRX 원본 가까움). 없거나 실패 시 Yahoo 폴백.
 
 const UA = { "User-Agent": "Mozilla/5.0 (compatible; KospiArchiveWall/1.0)" };
 const CLOSE_MIN = 15 * 60 + 45; // 15:45 KST — 정산 + 버퍼
@@ -48,34 +48,6 @@ async function yahoo(range, interval) {
   throw lastErr || new Error("yahoo failed");
 }
 
-// Twelve Data — 1순위. KOSPI 종합지수 심볼은 보통 "KS11"; 계정·플랜에 따라
-// 다른 표기를 쓰는 경우 TWELVEDATA_SYMBOL 환경변수로 덮어쓸 수 있다(예: "^KS11").
-async function twelveData(interval) {
-  const key = process.env.TWELVEDATA_APIKEY;
-  if (!key) throw new Error("twelvedata skipped: no TWELVEDATA_APIKEY");
-  const symbol = process.env.TWELVEDATA_SYMBOL || "KS11";
-  const outputsize = interval === "1day" ? "365" : "600";
-  const url = `https://api.twelvedata.com/time_series?symbol=${encodeURIComponent(symbol)}`
-    + `&interval=${interval}&outputsize=${outputsize}&order=ASC&timezone=Asia/Seoul`
-    + `&apikey=${encodeURIComponent(key)}`;
-  const res = await timedFetch(url, { headers: { Accept: "application/json" } });
-  if (!res.ok) throw new Error(`twelvedata ${res.status}`);
-  const json = await res.json();
-  if (!json || json.status === "error" || !Array.isArray(json.values)) {
-    throw new Error(`twelvedata: ${(json && (json.message || json.code)) || "no values"}`);
-  }
-  const out = [];
-  for (const v of json.values) {
-    const c = parseFloat(v.close);
-    if (v.datetime && Number.isFinite(c) && c > 0) {
-      out.push({ date: String(v.datetime).slice(0, 10), close: Math.round(c * 100) / 100 });
-    }
-  }
-  // order=ASC지만 만약 응답이 descending이어도 안전하게 정렬.
-  out.sort((a, b) => a.date.localeCompare(b.date));
-  return out;
-}
-
 async function stooq(interval) {
   const key = process.env.STOOQ_APIKEY;
   if (!key) throw new Error("stooq skipped: no STOOQ_APIKEY");
@@ -116,20 +88,8 @@ module.exports = async (req, res) => {
 
   const out = { asOf: null, intraday: false, source: "none", monthly: [], daily: [] };
 
-  // 1순위 — Twelve Data (TWELVEDATA_APIKEY 있을 때만). 부분 성공 허용.
+  // 1순위 — Stooq (STOOQ_APIKEY 있을 때만, KRX 원본 가까움). 부분 성공 허용.
   {
-    const [mr, dr] = await Promise.allSettled([twelveData("1month"), twelveData("1day")]);
-    const m = mr.status === "fulfilled" ? mr.value : [];
-    const d = dr.status === "fulfilled" ? dr.value : [];
-    if (m.length > 12) {
-      out.monthly = m;
-      out.daily = d;
-      out.source = "twelvedata";
-    }
-  }
-
-  // 2순위 — Stooq (STOOQ_APIKEY 있을 때만, KRX 원본 가까움). 부분 성공 허용.
-  if (out.source === "none") {
     const [mr, dr] = await Promise.allSettled([stooq("m"), stooq("d")]);
     const m = mr.status === "fulfilled" ? mr.value : [];
     const d = dr.status === "fulfilled" ? dr.value : [];
@@ -140,7 +100,7 @@ module.exports = async (req, res) => {
     }
   }
 
-  // 3순위 — Yahoo (키 없이 무조건 시도, 마지막 안전망). 부분 성공 허용.
+  // 2순위 — Yahoo (키 없이 무조건 시도, 마지막 안전망). 부분 성공 허용.
   if (out.source === "none") {
     const [mr, dr] = await Promise.allSettled([yahoo("max", "1mo"), yahoo("1y", "1d")]);
     const m = mr.status === "fulfilled" ? mr.value : [];

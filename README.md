@@ -90,5 +90,6 @@ Analytics → Enable)만 하면 됩니다.
 
 ## 크레딧
 
-제작 [Harry](https://www.hey-hu.com). 지수 데이터: Yahoo Finance,
-Stooq. 이벤트 맥락은 항목별로 출처를 본문에 명시했습니다.
+제작 [Harry](https://www.hey-hu.com). 지수 데이터: Twelve Data(1순위),
+Stooq, Yahoo Finance(폴백). 큐레이션 이벤트 맥락은 한겨레·연합뉴스·
+머니투데이 등 항목별 출처를 본문에 명시했습니다.

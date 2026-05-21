@@ -145,7 +145,7 @@
                 "name": "이 사이트의 코스피 데이터는 어디서 오고 얼마나 자주 갱신되나요?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "Yahoo Finance의 ^KS11과 Stooq의 ^kospi 시계열을 사용하며, 한국거래소 정산 시점(평일 15:45 KST)에 맞춰 캐시가 자동 갱신됩니다. 외부 데이터를 가져오지 못하면 사이트에 내장된 번들 데이터로 폴백합니다."
+                  "text": "코스피 시계열은 Twelve Data를 1순위로, Stooq(^kospi)와 Yahoo Finance(^KS11)를 폴백으로 사용하며, 한국거래소 정산 시점(평일 15:45 KST)에 맞춰 캐시가 자동 갱신됩니다. 외부 데이터를 가져오지 못하면 사이트에 내장된 번들 데이터로 폴백합니다."
                 }
               },
               {
@@ -432,8 +432,9 @@
         <p>
           <span id="data-source-note">Provenance · 번들 폴백 데이터 · as of 2024.12.30</span> ·
           <span data-i18n="sources.rest">최신 구간은 한국장 마감(15:45 KST) 기준 실데이터로 자동 반영되며, 라이브 미연결 시 번들 폴백(1980–2024 실측)을 사용합니다. 데이터 출처:</span>
-          <a href="https://finance.yahoo.com/quote/%5EKS11" target="_blank" rel="noreferrer">Yahoo Finance (^KS11)</a>,
-          <a href="https://stooq.com/q/?s=^kospi" target="_blank" rel="noreferrer">Stooq (^kospi)</a><span data-i18n="sources.refs"> · 참고</span>
+          <a href="https://twelvedata.com/" target="_blank" rel="noreferrer">Twelve Data</a>,
+          <a href="https://stooq.com/q/?s=^kospi" target="_blank" rel="noreferrer">Stooq (^kospi)</a>,
+          <a href="https://finance.yahoo.com/quote/%5EKS11" target="_blank" rel="noreferrer">Yahoo Finance (^KS11)</a><span data-i18n="sources.refs"> · 참고</span>
           <a href="https://en.wikipedia.org/wiki/KOSPI" target="_blank" rel="noreferrer">KOSPI (Wikipedia)</a>.
         </p>
         <p class="site-credit">

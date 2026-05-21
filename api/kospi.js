@@ -157,13 +157,12 @@ module.exports = async (req, res) => {
     return;
   }
 
-  // 일봉/월봉 중 가장 최근 '날짜'의 바를 최신으로 — 야후 일봉이 늦으면 월봉이
-  // 더 최신일 수 있어, 더 옛 바로 역행하지 않도록 max(date)를 고른다.
+  // 정산된 일봉을 우선 — 월봉의 마지막 바는 '진행 중 월'일 수 있어 그 close가
+  // 정산 종가가 아닌 스냅샷/인트라데이 값을 보일 수 있다(예: Yahoo monthly가
+  // 일봉의 정산값과 안 맞는 케이스). 일봉이 비어 있을 때만 월봉으로 폴백.
   const lastDaily = out.daily.length ? out.daily[out.daily.length - 1] : null;
   const lastMonthly = out.monthly.length ? out.monthly[out.monthly.length - 1] : null;
-  const latest = !lastDaily ? lastMonthly
-    : !lastMonthly ? lastDaily
-    : (lastDaily.date >= lastMonthly.date ? lastDaily : lastMonthly);
+  const latest = lastDaily || lastMonthly;
   out.latest = latest;
   out.asOf = latest.date;
 

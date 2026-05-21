@@ -1,4 +1,4 @@
-// KOSPI 실데이터 프록시 — Twelve Data → Yahoo(query1→query2) → Stooq.
+// KOSPI 실데이터 프록시 — Twelve Data → Stooq → Yahoo(query1→query2).
 // 월봉(장기 곡선) + 일봉(정확한 최신 종가)을 함께 반환하고,
 // 짧은 캐시(s-maxage=600)로 업스트림 지연을 자가치유한다.
 // 장중 호출이면 intraday=true(잠정). 모든 소스 실패 시 502 → 클라이언트 번들 폴백.
@@ -128,7 +128,19 @@ module.exports = async (req, res) => {
     }
   }
 
-  // 2순위 — Yahoo. 부분 성공 허용 (일봉 실패해도 월봉으로 라이브 유지).
+  // 2순위 — Stooq (STOOQ_APIKEY 있을 때만, KRX 원본 가까움). 부분 성공 허용.
+  if (out.source === "none") {
+    const [mr, dr] = await Promise.allSettled([stooq("m"), stooq("d")]);
+    const m = mr.status === "fulfilled" ? mr.value : [];
+    const d = dr.status === "fulfilled" ? dr.value : [];
+    if (m.length > 12) {
+      out.monthly = m;
+      out.daily = d;
+      out.source = "stooq";
+    }
+  }
+
+  // 3순위 — Yahoo (키 없이 무조건 시도, 마지막 안전망). 부분 성공 허용.
   if (out.source === "none") {
     const [mr, dr] = await Promise.allSettled([yahoo("max", "1mo"), yahoo("1y", "1d")]);
     const m = mr.status === "fulfilled" ? mr.value : [];
@@ -138,18 +150,6 @@ module.exports = async (req, res) => {
       out.daily = d;
       out.source = "yahoo";
     }
-  }
-
-  // 3순위 — Stooq (STOOQ_APIKEY 있을 때만).
-  if (out.source === "none") {
-    try {
-      const [m, d] = await Promise.all([stooq("m"), stooq("d")]);
-      if (m.length > 12) {
-        out.monthly = m;
-        out.daily = d;
-        out.source = "stooq";
-      }
-    } catch (e) { /* fall through */ }
   }
 
   if (!out.monthly.length) {

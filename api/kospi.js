@@ -86,7 +86,12 @@ module.exports = async (req, res) => {
   //  옛 스냅샷을 하루 종일 고정 서빙해 날짜가 멈추거나 역행하는 문제가 있었다.)
   res.setHeader("Cache-Control", "public, s-maxage=600, stale-while-revalidate=120");
 
-  const out = { asOf: null, intraday: false, source: "none", monthly: [], daily: [] };
+  const out = { asOf: null, intraday: false, source: "none", monthly: [], daily: [], errors: [] };
+  const pickErr = (r) => (r && r.status === "rejected" && r.reason && r.reason.message) || null;
+  const noteErr = (src, mr, dr) => {
+    const e1 = pickErr(mr); if (e1) out.errors.push(`${src}/m: ${String(e1).slice(0, 200)}`);
+    const e2 = pickErr(dr); if (e2) out.errors.push(`${src}/d: ${String(e2).slice(0, 200)}`);
+  };
 
   // 1순위 — Stooq (STOOQ_APIKEY 있을 때만, KRX 원본 가까움). 부분 성공 허용.
   {
@@ -97,6 +102,8 @@ module.exports = async (req, res) => {
       out.monthly = m;
       out.daily = d;
       out.source = "stooq";
+    } else {
+      noteErr("stooq", mr, dr);
     }
   }
 
@@ -109,6 +116,8 @@ module.exports = async (req, res) => {
       out.monthly = m;
       out.daily = d;
       out.source = "yahoo";
+    } else {
+      noteErr("yahoo", mr, dr);
     }
   }
 

@@ -95,6 +95,9 @@
             "browserRequirements": "Requires JavaScript",
             "inLanguage": ["ko", "en"],
             "isAccessibleForFree": true,
+            "datePublished": "2026-05-16",
+            "dateModified": "2026-05-20",
+            "keywords": "코스피, KOSPI, 코스피 지수, 코스피 역사, 코스피 차트, 코스피 8000, 코스피 45년, KOSPI history, KOSPI chart, KOSPI 8000, South Korea stock index, 데이터 시각화, data visualization",
             "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
             "creator": { "@id": "https://www.hey-hu.com/#person" },
             "about": { "@id": "https://kospi.hey-hu.com/#dataset" }
@@ -106,12 +109,15 @@
             "description": "코리아 종합주가지수(KOSPI, ^KS11)의 월봉·일봉 종가 시계열. KRX 정산 시점에 맞춰 자동 갱신되며 결측 시 번들 데이터로 폴백.",
             "temporalCoverage": "1980-01-04/..",
             "inLanguage": "ko",
+            "isAccessibleForFree": true,
             "license": "https://kospi.hey-hu.com/",
+            "dateModified": "2026-05-20",
+            "keywords": ["코스피", "KOSPI", "코스피 지수", "코스피 종가", "KOSPI index", "KOSPI closing price"],
             "creator": { "@id": "https://www.hey-hu.com/#person" },
             "variableMeasured": "KOSPI 종가 (코스피 지수 포인트)",
             "isBasedOn": [
-              "https://finance.yahoo.com/quote/%5EKS11",
-              "https://stooq.com/q/?s=^kospi"
+              "https://stooq.com/q/?s=^kospi",
+              "https://finance.yahoo.com/quote/%5EKS11"
             ]
           },
           {
@@ -146,6 +152,22 @@
                 "acceptedAnswer": {
                   "@type": "Answer",
                   "text": "코스피 시계열은 Stooq(^kospi)를 1순위로, Yahoo Finance(^KS11)를 폴백으로 사용하며, 한국거래소 정산 시점(평일 15:45 KST)에 맞춰 캐시가 자동 갱신됩니다. 외부 데이터를 가져오지 못하면 사이트에 내장된 번들 데이터로 폴백합니다."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "코스피가 사상 처음 8,000을 넘은 것은 언제인가요?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "코스피는 2026년 5월 15일 장중 사상 처음으로 8,000을 넘었습니다(장중 고점 8,046.78). 올해 들어 약 90% 상승한 결과로, AI 반도체 호황 속에서 삼성전자·SK하이닉스가 상승을 이끌었습니다. 앞서 1월 27일 종가 기준 사상 첫 5,000을 돌파했습니다."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "코스피가 처음으로 1,000·2,000·3,000을 넘은 것은 각각 언제인가요?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "코스피는 1989년 3월 처음으로 1,000선을, 2007년 7월 처음으로 2,000선을, 2021년 1월 처음으로 3,000선을 넘었습니다. 팬데믹기 고점은 2021년 6월 장중 3,316이었습니다. 이후 2026년에 5,000·6,000·7,000·8,000을 차례로 돌파했습니다."
                 }
               },
               {

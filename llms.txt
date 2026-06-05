@@ -1,0 +1,35 @@
+# KOSPI Archive Wall (코스피 기록의 벽)
+
+> An interactive data visualization of 45 years of South Korea's KOSPI stock
+> index, from its base value of 100 on 4 January 1980 to its first-ever close
+> above 8,000 in 2026. The full arc is drawn as a single ink-brush curve on a
+> dark "gallery wall," where a pin light follows the cursor and each milestone
+> rises like a Korean seal stamp. Bilingual (Korean / English), free, no signup.
+> Live at https://kospi.hey-hu.com/
+
+## Key facts (sourced; recent data auto-updates at the Korean market close, 15:45 KST)
+
+- The KOSPI (Korea Composite Stock Price Index, 코스피) began at a base value of
+  100 on 4 January 1980.
+- It first closed above 1,000 in March 1989, above 2,000 in July 2007, and
+  above 3,000 in January 2021.
+- Its pandemic-era high was an intraday 3,316 in June 2021.
+- It first closed above 5,000 on 27 January 2026, and crossed 8,000 for the
+  first time on 15 May 2026 (intraday high 8,046.78) — up about 90%
+  year-to-date, driven by the AI-semiconductor boom led by Samsung Electronics
+  and SK hynix.
+- Major crisis lows include the 1997–1998 IMF (Asian financial) crisis, the
+  2008 global financial crisis, and the 2020 COVID-19 shock.
+- Historical 1980–2024 values are real measured year-end closes; the latest
+  point is always the live feed. No values are invented or interpolated.
+
+## Site
+- [KOSPI Archive Wall](https://kospi.hey-hu.com/): The interactive 45-year KOSPI visualization (Korean / English, free, no signup).
+
+## Data and sources
+- Index time series: Stooq (`^kospi`) as primary source, Yahoo Finance (`^KS11`) as fallback, with bundled real 1980–2024 closes as an offline fallback.
+- Curated milestone events cite their individual sources (Yonhap, Hankyoreh, Money Today).
+
+## How it is built
+- Hand-built with vanilla JavaScript and a single SVG — no chart library, no framework, no build step. One Node serverless function proxies and caches the live feed to the KRX settlement.
+- Created by Harry (https://www.hey-hu.com).
